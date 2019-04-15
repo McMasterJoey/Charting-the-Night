@@ -1,7 +1,7 @@
 package Model;
 /**
- * Place holder model for the project
- * Please edit once we do something meaningful with it.
+ * The main model used by the project.
+ * Stores all objects being displayed by the project.
  * @author Joey McMaster
  * @author Nicholas Fiegel
  * @author Matt Theisen
@@ -9,8 +9,7 @@ package Model;
  *
  */
 public class CTS_Model {
-
 	public CTS_Model() {
+		
 	}
-
 }
