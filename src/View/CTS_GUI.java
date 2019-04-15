@@ -10,7 +10,7 @@ package View;
  */
 public class CTS_GUI {
 
-	public CTS_GUI() {
+	public CTS_GUI(String[] args) {
 	}
 
 }
