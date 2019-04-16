@@ -1,5 +1,6 @@
 package View;
 
+import Controller.CTS_Controller;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -27,11 +28,11 @@ public class CTS_GUI extends Application {
 	public static final int VIEWING_AREA_HEIGHT = 600;
 	private GraphicsContext _gc;
 	private HBox _uicontrols;
+	private CTS_Controller _controller;
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
 	public CTS_GUI() {
-		
 	}
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -59,6 +60,9 @@ public class CTS_GUI extends Application {
 		_uicontrols.getChildren().add(b);
         mainpane.setTop(_uicontrols);
 		// Display it!
+        
+        //privateTests();
+        
 		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT + 30);
         stage.setScene(scene);
         stage.show();
@@ -105,7 +109,7 @@ public class CTS_GUI extends Application {
 			throw new IllegalArgumentException("drawLine: thickness must be 1 or greater");
 		}
 		double offset = thickness / 2.0;
-		System.out.println(offset);
+		//System.out.println(offset);
 		double[] xcords = new double[4];
 		double[] ycords = new double[4];
 		boolean skiprest = false;
@@ -120,14 +124,10 @@ public class CTS_GUI extends Application {
 			ycords[1] = starty;
 			ycords[2] = endy;
 			ycords[3] = endy;
-			//System.out.println("Case 1!");
 		}
-		double changey = starty - endy;
-		double changex = startx - endx;
+		double changey = endy - starty;
+		double changex = endx - startx;
 		double slope = changey / changex;
-		//System.out.println(slope);
-		//System.out.println(changey);
-		//System.out.println(changex);
 		if (slope == 0.0 && !skiprest) {
 			// Case of horitontal line
 			skiprest = true;
@@ -141,7 +141,6 @@ public class CTS_GUI extends Application {
 			ycords[3] = starty + offset;
 			//System.out.println("Case 2!");
 		}
-		// WARNING, this is still buggy.
 		if (!skiprest) {
 			double invslope = (1 / slope) * -1;
 			ycords[0] = starty + (invslope * offset);
@@ -149,11 +148,10 @@ public class CTS_GUI extends Application {
 			ycords[2] = endy - (invslope * offset);
 			ycords[3] = endy + (invslope * offset);
 			
-			xcords[0] = startx + (slope * offset);
-			xcords[1] = startx - (slope * offset);
-			xcords[2] = endx - (slope * offset);
-			xcords[3] = endx + (slope * offset);
-			//System.out.println("Case 3!");
+			xcords[0] = startx + offset;
+			xcords[1] = startx - offset;
+			xcords[2] = endx - offset;
+			xcords[3] = endx + offset;
 			
 		}
 		// Check for errors
@@ -168,10 +166,15 @@ public class CTS_GUI extends Application {
 		_gc.setFill(color);
 		_gc.fillPolygon(xcords, ycords, 4);
 	}
+	/**
+	 * Joeys speific testing function to test, inprogress
+	 * Varrious draw functions. 
+	 */
 	private void privateTests() {
 		// Test lines
 		drawLine(5,20,20,580,580,Color.RED);
+		drawLine(5,20,580,580,20,Color.RED);
 		drawLine(8,250,100,350,10,Color.BLUE);
-		drawLine(1,2,2,4,500,Color.GREEN);
+		drawLine(1,1,1,4,500,Color.GREEN);
 	}
 }
