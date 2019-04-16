@@ -2,8 +2,11 @@ package View;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -16,7 +19,9 @@ import javafx.stage.Stage;
  *
  */
 public class CTS_GUI extends Application {
-
+	public static final int VIEWING_AREA_WIDTH = 600;
+	public static final int VIEWING_AREA_HEIGHT = 600;
+	private GraphicsContext _gc;
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
@@ -28,10 +33,33 @@ public class CTS_GUI extends Application {
 		stage.setTitle("Charting The Stars");
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
 		BorderPane mainpane = new BorderPane();
-		System.out.println("Display!");
-		Scene scene = new Scene(mainpane, 600,600);
+		Canvas canvas = new Canvas( VIEWING_AREA_HEIGHT, VIEWING_AREA_WIDTH);
+		mainpane.setCenter(canvas);
+		_gc = canvas.getGraphicsContext2D();
+		_gc.setFill(Color.LIGHTGREY);
+		_gc.fillRect(0, 0,  VIEWING_AREA_HEIGHT, VIEWING_AREA_WIDTH);
+		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
+		// Display it!
+		Scene scene = new Scene(mainpane, VIEWING_AREA_HEIGHT, VIEWING_AREA_WIDTH);
         stage.setScene(scene);
         stage.show();
 	}
-
+	/**
+	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 
+	 * x and y are absolute, relative to the upper left side of the rectangular view. 
+	 * @param radius The radius of the circle
+	 * @param x The horizontal coordinate of the grid to put the circle center. 
+	 * @param y The vertical coordinate of the grid to put the circle center.
+	 * @param color The color of the circle.
+	 * @throws IllegalArgumentException If the circle can not be fully displayed on the graphics context.
+	 */
+	public void drawCircle(int radius, int x, int y, Color color) {
+		int xx = x - radius;
+		int yy = y - radius;
+		if (xx < 0 || yy < 0 || xx > (VIEWING_AREA_WIDTH -  radius)|| yy > (VIEWING_AREA_HEIGHT - radius)) {
+			throw new IllegalArgumentException("drawCircle: invalid set of radius and x/y cordnates");
+		}
+		_gc.setFill(color);
+		_gc.fillOval(xx,yy, radius * 2, radius * 2);
+	}
 }
