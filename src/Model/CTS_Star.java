@@ -52,6 +52,39 @@ public class CTS_Star extends CTS_SpaceObject {
 		return magnitude;
 	}
 
+    /**
+     * Fetches the days from J2000.
+     * @return a double indicating the days from J2000
+     */
+	public double getDaysSinceStandard() {
+	    return daysSinceStandard;
+    }
+
+    /**
+     * Helper method to calculate and set the days since J2000. The time should be in UT.
+     * @param year an integer representing the year, CE is positive, BCE is negative
+     * @param month an integer representation of the month, 1 = Jan, 2 = Feb, ...
+     * @param day an integer representing the day of the month
+     * @param hour an integer representing the hour (0-23)
+     * @param minutes an integer representing the minutes
+     * @param seconds an integer representing the seconds
+     */
+	public void calcDaysSinceStandard(int year, int month, int day, int hour, int minutes, int seconds) {
+	    double j2000 =  2451545.0;
+	    double decTime = (3600 * hour + 60 * minutes + seconds);
+	    decTime /= 86400;
+	    decTime -= 0.5;
+	    System.out.println("decTime = " + decTime);
+	    // Formual from https://en.wikipedia.org/wiki/Julian_day#Julian_date_calculation
+	    double jd = (1461 * (year + 4800 + (month - 14) / 12)) / 4 +
+                    (367 * (month - 2 - 12 * ((month - 14) / 12))) / 12 -
+                    (3 * ((year + 4900 + (month - 14) / 12) / 100)) / 4 +
+                    day - 32075;
+	    jd += decTime;
+		System.out.println("jd = " + jd);
+	    daysSinceStandard = jd - j2000;
+    }
+
 	/**
 	 * Returns the local siderial time for the star.
 	 * ASSUMES: daysSinceStand is set to the decimal days since J2000
