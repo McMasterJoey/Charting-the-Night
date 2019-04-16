@@ -21,6 +21,6 @@ public class CTS_MovingObject extends CTS_SpaceObject {
 	 * @return The string representation of the CTS_MovingObject object.
 	 */
 	public String toString() {
-		return "MovingObject: [" + _name + "," + _rightAscension + "," + _declination + "," + _altitude + "," + _azimuth + "]";
+		return "MovingObject: [" + name + "," + id + "," + rightAscension + "," + declination + "," + altitude + "," + azimuth + "]";
 	}
 }

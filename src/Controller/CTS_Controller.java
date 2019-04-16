@@ -83,7 +83,7 @@ public class CTS_Controller {
 	    
 	    // TODO: DELETE BELOW CODE, IT IS PRINTS FOR TESTING!
 	    for (CTS_Star star : starList) {
-	    	System.out.println(star.ID() + ",  " + star.name() + ",  " + star.getMagnitude() + ",  " + star.getRightAscension() + ",  " + star.getDeclination());
+	    	System.out.println(star.getId() + ",  " + star.getName() + ",  " + star.getMagnitude() + ",  " + star.getRightAscension() + ",  " + star.getDeclination());
 	    }
 	}
 	
