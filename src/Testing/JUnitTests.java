@@ -16,5 +16,4 @@ public class JUnitTests {
 	void dummyTest() {
 		System.out.println("Ran dummyTest()");
 	}
-
 }
