@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class CTS_Star extends CTS_SpaceObject {
 	private double _rightAscension = 0.0;
 	private double _declination = 0.0;
-	private String _name = "Default Star Name";
+	private String _name;
 	private double _magnitude = 0.0;
 	private double _altitude = 0.0;
 	private double _azimuth = 0.0;
@@ -33,8 +33,9 @@ public class CTS_Star extends CTS_SpaceObject {
 	 * @param rightAcension The Right Acension of the star.
 	 * @param declination The Declination of the star.
 	 */
-	public CTS_Star(int id, String name, double magnitude, double rightAcension, double declination) {
-		super(id, name, rightAcension, declination);
+	public CTS_Star(int id, String name, double magnitude, double rightAscension, double declination) {
+		super(id, name, rightAscension, declination);
+		_name = name;
 		_magnitude = magnitude;
 		_linesTo = new ArrayList<CTS_Star>();		
 	}
@@ -60,6 +61,10 @@ public class CTS_Star extends CTS_SpaceObject {
 	 */
 	public double getMagnitude() {
 		return _magnitude;
+	}
+	
+	public int ID() {
+		return this._ID;
 	}
 	
 	public double RA() {
