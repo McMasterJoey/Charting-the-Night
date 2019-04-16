@@ -1,4 +1,6 @@
 package Model;
+import java.util.ArrayList;
+
 /**
  * The CTS_Star is a class that holds all the associated data with a star
  * is used by the program.
@@ -20,8 +22,12 @@ public class CTS_Star extends CTS_SpaceObject {
 	private double universalTime = 0.0;
 	// The days since J2000, including the decimal portion
 	private double daysSinceStandard = 0.0;
+	// List of other stars in this constellation this star is "connected" to
+	// in the visual drawing of a constellation
+	private ArrayList<CTS_Star> linesTo;
 	/**
 	 * Inits a new star.
+	 * @param id The id number of the star from CSV database
 	 * @param name The name of the star.
 	 * @param magnitude The Magnitude of the star.
 	 * @param rightAcension The Right Acension of the star.
@@ -31,8 +37,11 @@ public class CTS_Star extends CTS_SpaceObject {
 		super(name, rightAcension, declination);
 		this.magnitude = magnitude;
 	}
+	
+	
 	/**
 	 * Inits a new star.
+	 * @param id The id number of the star from CSV database
 	 * @param name The name of the star.
 	 * @param magnitude The Magnitude of the star.
 	 * @param rightAcension The Right Acension of the star.
@@ -51,7 +60,6 @@ public class CTS_Star extends CTS_SpaceObject {
 	public double getMagnitude() {
 		return magnitude;
 	}
-
     /**
      * Fetches the days from J2000.
      * @return a double indicating the days from J2000
@@ -154,6 +162,25 @@ public class CTS_Star extends CTS_SpaceObject {
 		else {
 			azimuth = 360 - A;
 		}
+	
+	public int ID() {
+		return this._ID;
+	}
+	
+	public double RA() {
+		return this._rightAscension;
+	}
+	public double DEC() {
+		return this._declination;
+	}
+	public String name() {
+		return this._name;
+	}
+	public double altitude() {
+		return this._altitude;
+	}
+	public double azimuth() {
+		return this._azimuth;
 	}
 
 	/**
