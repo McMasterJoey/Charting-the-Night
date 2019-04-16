@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class CTS_Star extends CTS_SpaceObject {
 	private double latitude = 0.0;
 	private double longitude = 0.0;
+	private boolean east = false;
 	private double magnitude = 0.0;
 	private double universalTime = 0.0;
 	// The days since J2000, including the decimal portion
@@ -28,9 +29,12 @@ public class CTS_Star extends CTS_SpaceObject {
 	 * @param rightAcension The Right Acension of the star.
 	 * @param declination The Declination of the star.
 	 */
-	public CTS_Star(int Id, String name, double magnitude, double rightAcension, double declination) {
+	public CTS_Star(int Id, String name, double magnitude, double rightAcension, double declination, double latitude, double longitude, boolean east) {
 		super(Id, name, rightAcension, declination);
 		this.magnitude = magnitude;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.east = east;
 	}
 	
 	
@@ -96,6 +100,13 @@ public class CTS_Star extends CTS_SpaceObject {
 	 */
 	public double getLocalSiderialTime() {
 		double lst = 100.46 + 0.985647 * daysSinceStandard + 15 * universalTime;
+
+		if (east) {
+		    lst + longitude;
+        }
+		else {
+		    lst - longitude;
+        }
 
 		while (lst < 0) {
 			lst += 360;
