@@ -4,14 +4,18 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
- * Place holder GUI class for the project
- * Please edit once we do something meaningful with it.
+ * The GUI of the project.
+ * Generates a window that the user can interact with.
  * @author Joey McMaster
  * @author Nicholas Fiegel
  * @author Matt Theisen
@@ -22,6 +26,7 @@ public class CTS_GUI extends Application {
 	public static final int VIEWING_AREA_WIDTH = 600;
 	public static final int VIEWING_AREA_HEIGHT = 600;
 	private GraphicsContext _gc;
+	private HBox _uicontrols;
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
@@ -33,21 +38,39 @@ public class CTS_GUI extends Application {
 		stage.setTitle("Charting The Stars");
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
 		BorderPane mainpane = new BorderPane();
-		Canvas canvas = new Canvas( VIEWING_AREA_HEIGHT, VIEWING_AREA_WIDTH);
+		Canvas canvas = new Canvas(VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		mainpane.setCenter(canvas);
 		_gc = canvas.getGraphicsContext2D();
 		_gc.setFill(Color.LIGHTGREY);
-		_gc.fillRect(0, 0,  VIEWING_AREA_HEIGHT, VIEWING_AREA_WIDTH);
+		_gc.fillRect(0, 0,  VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
-		// Test lines
-		//drawLine(5,20,20,580,580,Color.RED);
-		//drawLine(8,250,100,350,10,Color.BLUE);
-		//drawLine(1,2,2,4,500,Color.GREEN);
-		
+		// Set up Buttons
+		_uicontrols = new HBox();
+		TextField timetext = new TextField("0:00");
+		TextField location = new TextField("Tuscon Arizona");
+		Button b = new Button("Update");
+		b.setOnAction((event) -> {
+			chartTheStars();
+        });
+		_uicontrols.getChildren().add(new Label("Time"));
+		_uicontrols.getChildren().add(timetext);
+		_uicontrols.getChildren().add(new Label("Location"));
+		_uicontrols.getChildren().add(location);
+		_uicontrols.getChildren().add(b);
+        mainpane.setTop(_uicontrols);
 		// Display it!
-		Scene scene = new Scene(mainpane, VIEWING_AREA_HEIGHT, VIEWING_AREA_WIDTH);
+		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT + 30);
         stage.setScene(scene);
         stage.show();
+	}
+	/**
+	 * Updates the GUI with the star chart of the inputed time and date.
+	 */
+	public void chartTheStars() {
+		TextField time = (TextField) _uicontrols.getChildren().get(1);
+		TextField location = (TextField) _uicontrols.getChildren().get(3);
+		System.out.println(time.getText());
+		System.out.println(location.getText());
 	}
 	/**
 	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 
@@ -75,6 +98,7 @@ public class CTS_GUI extends Application {
 	 * @param endx The ending x coordinate of the line.
 	 * @param endy The ending y coordinate of the line.
 	 * @param color The color of the line.
+	 * @throws IllegalArgumentException If the line can not be fully displayed on the graphics context or if the thickness is less than 1.
 	 */
 	public void drawLine(int thickness, int startx, int starty, int endx, int endy, Color color) {
 		if (thickness < 1) {
@@ -96,7 +120,7 @@ public class CTS_GUI extends Application {
 			ycords[1] = starty;
 			ycords[2] = endy;
 			ycords[3] = endy;
-			System.out.println("Case 1!");
+			//System.out.println("Case 1!");
 		}
 		double changey = starty - endy;
 		double changex = startx - endx;
@@ -115,8 +139,9 @@ public class CTS_GUI extends Application {
 			ycords[1] = starty - offset;
 			ycords[2] = starty - offset;
 			ycords[3] = starty + offset;
-			System.out.println("Case 2!");
+			//System.out.println("Case 2!");
 		}
+		// WARNING, this is still buggy.
 		if (!skiprest) {
 			double invslope = (1 / slope) * -1;
 			ycords[0] = starty + (invslope * offset);
@@ -128,7 +153,7 @@ public class CTS_GUI extends Application {
 			xcords[1] = startx - (slope * offset);
 			xcords[2] = endx - (slope * offset);
 			xcords[3] = endx + (slope * offset);
-			System.out.println("Case 3!");
+			//System.out.println("Case 3!");
 			
 		}
 		// Check for errors
@@ -142,7 +167,11 @@ public class CTS_GUI extends Application {
 		}
 		_gc.setFill(color);
 		_gc.fillPolygon(xcords, ycords, 4);
-		//_gc.setStroke(color);
-		//_gc.strokeLine(startx, starty, endx, endy);
+	}
+	private void privateTests() {
+		// Test lines
+		drawLine(5,20,20,580,580,Color.RED);
+		drawLine(8,250,100,350,10,Color.BLUE);
+		drawLine(1,2,2,4,500,Color.GREEN);
 	}
 }
