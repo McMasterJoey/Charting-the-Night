@@ -59,6 +59,9 @@ public class CTS_GUI extends Application {
 		_uicontrols.getChildren().add(b);
         mainpane.setTop(_uicontrols);
 		// Display it!
+        
+        //privateTests();
+        
 		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT + 30);
         stage.setScene(scene);
         stage.show();
@@ -122,12 +125,12 @@ public class CTS_GUI extends Application {
 			ycords[3] = endy;
 			//System.out.println("Case 1!");
 		}
-		double changey = starty - endy;
-		double changex = startx - endx;
+		double changey = endy - starty;
+		double changex = endx - startx;
 		double slope = changey / changex;
-		//System.out.println(slope);
-		//System.out.println(changey);
-		//System.out.println(changex);
+		//System.out.println("slope: " + slope);
+		//System.out.println("changey: " + changey);
+		//System.out.println("changex: " + changex);
 		if (slope == 0.0 && !skiprest) {
 			// Case of horitontal line
 			skiprest = true;
@@ -144,15 +147,16 @@ public class CTS_GUI extends Application {
 		// WARNING, this is still buggy.
 		if (!skiprest) {
 			double invslope = (1 / slope) * -1;
+			//System.out.println("invslope: " + invslope);
 			ycords[0] = starty + (invslope * offset);
 			ycords[1] = starty - (invslope * offset);
 			ycords[2] = endy - (invslope * offset);
 			ycords[3] = endy + (invslope * offset);
 			
-			xcords[0] = startx + (slope * offset);
-			xcords[1] = startx - (slope * offset);
-			xcords[2] = endx - (slope * offset);
-			xcords[3] = endx + (slope * offset);
+			xcords[0] = startx + offset;
+			xcords[1] = startx - offset;
+			xcords[2] = endx - offset;
+			xcords[3] = endx + offset;
 			//System.out.println("Case 3!");
 			
 		}
@@ -168,10 +172,15 @@ public class CTS_GUI extends Application {
 		_gc.setFill(color);
 		_gc.fillPolygon(xcords, ycords, 4);
 	}
+	/**
+	 * Joeys speific testing function to test, inprogress
+	 * Varrious draw functions. 
+	 */
 	private void privateTests() {
 		// Test lines
 		drawLine(5,20,20,580,580,Color.RED);
+		drawLine(5,20,580,580,20,Color.RED);
 		drawLine(8,250,100,350,10,Color.BLUE);
-		drawLine(1,2,2,4,500,Color.GREEN);
+		drawLine(1,1,1,4,500,Color.GREEN);
 	}
 }
