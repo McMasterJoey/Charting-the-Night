@@ -10,11 +10,11 @@ package Model;
  */
 public class CTS_MovingObject extends CTS_SpaceObject {
 
-	public CTS_MovingObject(String name, double rightAcension, double declination) {
-		super(name, declination, declination);
+	public CTS_MovingObject(int id, String name, double rightAcension, double declination) {
+		super(id, name, declination, declination);
 	}
-	public CTS_MovingObject(String name, double rightAcension, double declination, double altitude, double azimuth) {
-		super(name, azimuth, azimuth, azimuth, azimuth);
+	public CTS_MovingObject(int id, String name, double rightAcension, double declination, double altitude, double azimuth) {
+		super(id, name, azimuth, azimuth, azimuth, azimuth);
 	}
 	/**
 	 * Makes the object printable easily.
