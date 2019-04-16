@@ -14,26 +14,32 @@ public abstract class CTS_SpaceObject {
 	protected double _altitude = 0.0;
 	protected double _azimuth = 0.0;
 	protected String _name = "Default Name";
+	protected int _ID;
+	
 	/**
 	 * Inits a new space object.
+	 * @param id The id number of the SO from CSV database
 	 * @param name The name of the space object.
 	 * @param rightAcension The Right Acension of the space object.
 	 * @param declination The Declination of the space object.
 	 */
-	public CTS_SpaceObject(String name, double rightAcension, double declination) {
+	public CTS_SpaceObject(int id, String name, double rightAcension, double declination) {
+		_ID = id;
 		_name = name;
 		_rightAscension = rightAcension;
 		_declination = declination;
 	}
 	/**
 	 * Inits a new space object.
+	 * @param id The id number of the SO from CSV database
 	 * @param name The name of the space object.
 	 * @param rightAcension The Right Acension of the space object.
 	 * @param declination The Declination of the space object.
 	 * @param altitude The altitude of the space object.
 	 * @param azimuth The azimuth of the space object.
 	 */
-	public CTS_SpaceObject(String name, double rightAcension, double declination, double altitude, double azimuth) {
+	public CTS_SpaceObject(int id, String name, double rightAcension, double declination, double altitude, double azimuth) {
+		_ID = id;
 		_name = name;
 		_rightAscension = rightAcension;
 		_declination = declination;
