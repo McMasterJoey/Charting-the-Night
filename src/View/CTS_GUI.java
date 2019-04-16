@@ -39,6 +39,11 @@ public class CTS_GUI extends Application {
 		_gc.setFill(Color.LIGHTGREY);
 		_gc.fillRect(0, 0,  VIEWING_AREA_HEIGHT, VIEWING_AREA_WIDTH);
 		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
+		// Test lines
+		//drawLine(5,20,20,580,580,Color.RED);
+		//drawLine(8,250,100,350,10,Color.BLUE);
+		//drawLine(1,2,2,4,500,Color.GREEN);
+		
 		// Display it!
 		Scene scene = new Scene(mainpane, VIEWING_AREA_HEIGHT, VIEWING_AREA_WIDTH);
         stage.setScene(scene);
@@ -61,5 +66,83 @@ public class CTS_GUI extends Application {
 		}
 		_gc.setFill(color);
 		_gc.fillOval(xx,yy, radius * 2, radius * 2);
+	}
+	/**
+	 * Draws a line of inputed thickness between 2 points.
+	 * @param thickness The thickness of the line in pixels
+	 * @param startx The starting x coordinate of the line.
+	 * @param starty The starting y coordinate of the line.
+	 * @param endx The ending x coordinate of the line.
+	 * @param endy The ending y coordinate of the line.
+	 * @param color The color of the line.
+	 */
+	public void drawLine(int thickness, int startx, int starty, int endx, int endy, Color color) {
+		if (thickness < 1) {
+			throw new IllegalArgumentException("drawLine: thickness must be 1 or greater");
+		}
+		double offset = thickness / 2.0;
+		System.out.println(offset);
+		double[] xcords = new double[4];
+		double[] ycords = new double[4];
+		boolean skiprest = false;
+		if (startx - endx == 0) {
+			// Case of verticle line.
+			skiprest = true;
+			xcords[0] = startx + offset;
+			xcords[1] = startx - offset;
+			xcords[2] = startx - offset;
+			xcords[3] = startx + offset;
+			ycords[0] = starty;
+			ycords[1] = starty;
+			ycords[2] = endy;
+			ycords[3] = endy;
+			System.out.println("Case 1!");
+		}
+		double changey = starty - endy;
+		double changex = startx - endx;
+		double slope = changey / changex;
+		//System.out.println(slope);
+		//System.out.println(changey);
+		//System.out.println(changex);
+		if (slope == 0.0 && !skiprest) {
+			// Case of horitontal line
+			skiprest = true;
+			xcords[0] = startx;
+			xcords[1] = startx;
+			xcords[2] = endx;
+			xcords[3] = endx;
+			ycords[0] = starty + offset;
+			ycords[1] = starty - offset;
+			ycords[2] = starty - offset;
+			ycords[3] = starty + offset;
+			System.out.println("Case 2!");
+		}
+		if (!skiprest) {
+			double invslope = (1 / slope) * -1;
+			ycords[0] = starty + (invslope * offset);
+			ycords[1] = starty - (invslope * offset);
+			ycords[2] = endy - (invslope * offset);
+			ycords[3] = endy + (invslope * offset);
+			
+			xcords[0] = startx + (slope * offset);
+			xcords[1] = startx - (slope * offset);
+			xcords[2] = endx - (slope * offset);
+			xcords[3] = endx + (slope * offset);
+			System.out.println("Case 3!");
+			
+		}
+		// Check for errors
+		for(int x = 0; x < 4; x++) {
+			if (ycords[x] < 0.0 || ycords[x] > VIEWING_AREA_HEIGHT) {
+				throw new IllegalArgumentException("drawLine: Line goes off screen.");
+			}
+			if (xcords[x] < 0.0 || xcords[x] > VIEWING_AREA_WIDTH) {
+				throw new IllegalArgumentException("drawLine: Line goes off screen.");
+			}
+		}
+		_gc.setFill(color);
+		_gc.fillPolygon(xcords, ycords, 4);
+		//_gc.setStroke(color);
+		//_gc.strokeLine(startx, starty, endx, endy);
 	}
 }
