@@ -123,14 +123,10 @@ public class CTS_GUI extends Application {
 			ycords[1] = starty;
 			ycords[2] = endy;
 			ycords[3] = endy;
-			//System.out.println("Case 1!");
 		}
 		double changey = endy - starty;
 		double changex = endx - startx;
 		double slope = changey / changex;
-		//System.out.println("slope: " + slope);
-		//System.out.println("changey: " + changey);
-		//System.out.println("changex: " + changex);
 		if (slope == 0.0 && !skiprest) {
 			// Case of horitontal line
 			skiprest = true;
@@ -144,10 +140,8 @@ public class CTS_GUI extends Application {
 			ycords[3] = starty + offset;
 			//System.out.println("Case 2!");
 		}
-		// WARNING, this is still buggy.
 		if (!skiprest) {
 			double invslope = (1 / slope) * -1;
-			//System.out.println("invslope: " + invslope);
 			ycords[0] = starty + (invslope * offset);
 			ycords[1] = starty - (invslope * offset);
 			ycords[2] = endy - (invslope * offset);
@@ -157,7 +151,6 @@ public class CTS_GUI extends Application {
 			xcords[1] = startx - offset;
 			xcords[2] = endx - offset;
 			xcords[3] = endx + offset;
-			//System.out.println("Case 3!");
 			
 		}
 		// Check for errors
