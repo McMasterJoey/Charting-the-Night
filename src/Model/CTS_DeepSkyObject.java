@@ -10,16 +10,16 @@ package Model;
 public class CTS_DeepSkyObject extends CTS_SpaceObject {
 
 	public CTS_DeepSkyObject(String name, double rightAcension, double declination) {
-		super(name, declination, declination);
+		super(0,name, declination, declination);
 	}
 	public CTS_DeepSkyObject(String name, double rightAcension, double declination, double altitude, double azimuth) {
-		super(name, azimuth, azimuth, azimuth, azimuth);
+		super(0,name, azimuth, azimuth, azimuth, azimuth);
 	}
 	/**
 	 * Makes the object printable easily.
 	 * @return The string representation of the CTS_DeepSkyObject object.
 	 */
 	public String toString() {
-		return "Star: [" + _name + "," + _rightAscension + "," + _declination + "," + _altitude + "," + _azimuth + "]";
+		return "Star: [" + name + "," + id + "," + rightAscension + "," + declination + "," + altitude + "," + azimuth + "]";
 	}
 }

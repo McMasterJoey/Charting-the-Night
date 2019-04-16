@@ -24,7 +24,7 @@ public class JUnitTests {
 
 	@Test
 	void test_Star_calcDaysSinceStandard() {
-		CTS_Star star = new CTS_Star("test", 1, 0, 0);
+		CTS_Star star = new CTS_Star(0,"test", 1, 0, 0);
 		DecimalFormat round4 = new DecimalFormat("#.####");
 
 		round4.setRoundingMode(RoundingMode.HALF_UP);
