@@ -102,10 +102,10 @@ public class CTS_Star extends CTS_SpaceObject {
 		double lst = 100.46 + 0.985647 * daysSinceStandard + 15 * universalTime;
 
 		if (east) {
-		    lst + longitude;
+		    lst += longitude;
         }
 		else {
-		    lst - longitude;
+		    lst -= longitude;
         }
 
 		while (lst < 0) {
