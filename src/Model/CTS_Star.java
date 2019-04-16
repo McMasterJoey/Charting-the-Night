@@ -144,7 +144,16 @@ public class CTS_Star extends CTS_SpaceObject {
 	 */
 	public void calcAzimuth() {
 		calcAltitude();
-		azimuth = Math.cos(altitude);
+		double sinOfHA = Math.sin(getHourAngle());
+		double cosOfA = (Math.sin(declination) - Math.sin(altitude) * Math.sin(latitude)) / (Math.cos(altitude) * Math.cos(latitude));
+		double A = Math.acos(cosOfA);
+
+		if (sinOfHA < 0) {
+			azimuth = A;
+		}
+		else {
+			azimuth = 360 - A;
+		}
 	}
 
 	/**
