@@ -1,5 +1,6 @@
 package View;
 
+import Controller.CTS_Controller;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -27,11 +28,11 @@ public class CTS_GUI extends Application {
 	public static final int VIEWING_AREA_HEIGHT = 600;
 	private GraphicsContext _gc;
 	private HBox _uicontrols;
+	private CTS_Controller _controller;
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
 	public CTS_GUI() {
-		
 	}
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -108,7 +109,7 @@ public class CTS_GUI extends Application {
 			throw new IllegalArgumentException("drawLine: thickness must be 1 or greater");
 		}
 		double offset = thickness / 2.0;
-		System.out.println(offset);
+		//System.out.println(offset);
 		double[] xcords = new double[4];
 		double[] ycords = new double[4];
 		boolean skiprest = false;
