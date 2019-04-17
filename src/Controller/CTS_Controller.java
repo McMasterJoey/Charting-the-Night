@@ -35,7 +35,9 @@ public class CTS_Controller {
 		}
 		
 	}
-	
+	public CTS_Model getModel() {
+		return model;
+	}
 
 	/**
 	 * Calculates and sets the azimuth and altitude for a star.
