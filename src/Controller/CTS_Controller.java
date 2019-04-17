@@ -83,7 +83,7 @@ public class CTS_Controller {
 			ha -= 360;
 		}
 
-		return lst - ha;
+		return ha;
 	}
 
 
