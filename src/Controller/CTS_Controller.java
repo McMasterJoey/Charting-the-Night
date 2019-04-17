@@ -1,4 +1,4 @@
-package Controller;
+	package Controller;
 
 import Model.*;
 
@@ -27,6 +27,12 @@ public class CTS_Controller {
 	
 	public CTS_Controller() {
 		model = new CTS_Model();
+		
+		// Update azimuth and altitude for all stars
+		ArrayList<CTS_Star> starList = model.getStarList();		
+		for (CTS_Star star : starList) {
+			calcAzimuthAndAltitude(star);
+		}
 		
 	}
 	
