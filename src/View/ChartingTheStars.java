@@ -1,5 +1,6 @@
 package View;
 import Controller.*;
+import Model.*;
 
 /**
  * The class file that holds the main function.
@@ -14,6 +15,8 @@ public class ChartingTheStars {
 
 	public static void main(String[] args) {
 		CTS_GUI i = new CTS_GUI(args);
+		CTS_Controller controller = new CTS_Controller();
+		CTS_Model model = new CTS_Model();
 	}
 
 }
