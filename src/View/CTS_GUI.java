@@ -1,6 +1,9 @@
 package View;
 
+import java.util.ArrayList;
+
 import Controller.CTS_Controller;
+import Model.CTS_Model;
 import Model.CTS_SpaceObject;
 import Model.CTS_Star;
 import javafx.application.Application;
@@ -64,7 +67,7 @@ public class CTS_GUI extends Application {
         mainpane.setTop(uicontrols);
 		// Display it!
         
-        privateTests();
+        //privateTests();
         
 		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT + 30);
         stage.setScene(scene);
@@ -78,6 +81,21 @@ public class CTS_GUI extends Application {
 		TextField location = (TextField) uicontrols.getChildren().get(3);
 		System.out.println(time.getText());
 		System.out.println(location.getText());
+		ArrayList<CTS_Star> n = controller.getModel().getStarList();
+		long count = 0;
+		for(int x = 0; x < n.size(); x++) {
+			CTS_Star star = n.get(x);
+			try {
+				if (star.getAltitude() != 0 && star.getAzimuth() != 0) {
+					drawSpaceObject(star,3,Color.WHITE);
+					//System.out.println(star.getAltitude() + "," + star.getAzimuth());
+					count++;
+				}
+			} catch(IllegalArgumentException e) {
+				//System.err.println("An object that attempted to be drawn triggerd a execption");
+			}
+		}
+		//System.out.println(count);
 	}
 	/**
 	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 
@@ -177,6 +195,10 @@ public class CTS_GUI extends Application {
 	 */
 	public void drawSpaceObject(CTS_SpaceObject obj, int radius, Color color) {
 		double[] result = getPositionOfSpaceObject(obj);
+		if (result == null) {
+			//System.err.println("getPostionOfSpaceObject returned null!");
+			throw new IllegalArgumentException("Something went wrong");
+		}
 		drawCircle(radius, (int) result[0], (int) result[1], color);
 	}
 	/**

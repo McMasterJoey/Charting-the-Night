@@ -44,12 +44,10 @@ public class CTS_Star extends CTS_SpaceObject {
 	 * @param altitude The altitude of the star.
 	 * @param azimuth The azimuth of the star.
 	 */
-	/*
 	public CTS_Star(int Id, String name, double magnitude, double rightAcension, double declination, double altitude, double azimuth) {
 		super(Id, name, rightAcension, declination, altitude, azimuth);
 		this.magnitude = magnitude;
 	}
-	*/  // MATT- NOT ENTIRELY SURE WE NEED THIS CONSTRUCTOR
 	
 	
 	/**
