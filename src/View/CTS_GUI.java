@@ -26,9 +26,9 @@ import javafx.stage.Stage;
 public class CTS_GUI extends Application {
 	public static final int VIEWING_AREA_WIDTH = 600;
 	public static final int VIEWING_AREA_HEIGHT = 600;
-	private GraphicsContext _gc;
-	private HBox _uicontrols;
-	private CTS_Controller _controller;
+	private GraphicsContext gc;
+	private HBox uicontrols;
+	//private CTS_Controller _controller;
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
@@ -41,24 +41,24 @@ public class CTS_GUI extends Application {
 		BorderPane mainpane = new BorderPane();
 		Canvas canvas = new Canvas(VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		mainpane.setCenter(canvas);
-		_gc = canvas.getGraphicsContext2D();
-		_gc.setFill(Color.LIGHTGREY);
-		_gc.fillRect(0, 0,  VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
+		gc = canvas.getGraphicsContext2D();
+		gc.setFill(Color.LIGHTGREY);
+		gc.fillRect(0, 0,  VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
 		// Set up Buttons
-		_uicontrols = new HBox();
+		uicontrols = new HBox();
 		TextField timetext = new TextField("0:00");
 		TextField location = new TextField("Tuscon Arizona");
 		Button b = new Button("Update");
 		b.setOnAction((event) -> {
 			chartTheStars();
         });
-		_uicontrols.getChildren().add(new Label("Time"));
-		_uicontrols.getChildren().add(timetext);
-		_uicontrols.getChildren().add(new Label("Location"));
-		_uicontrols.getChildren().add(location);
-		_uicontrols.getChildren().add(b);
-        mainpane.setTop(_uicontrols);
+		uicontrols.getChildren().add(new Label("Time"));
+		uicontrols.getChildren().add(timetext);
+		uicontrols.getChildren().add(new Label("Location"));
+		uicontrols.getChildren().add(location);
+		uicontrols.getChildren().add(b);
+        mainpane.setTop(uicontrols);
 		// Display it!
         
         //privateTests();
@@ -71,8 +71,8 @@ public class CTS_GUI extends Application {
 	 * Updates the GUI with the star chart of the inputed time and date.
 	 */
 	public void chartTheStars() {
-		TextField time = (TextField) _uicontrols.getChildren().get(1);
-		TextField location = (TextField) _uicontrols.getChildren().get(3);
+		TextField time = (TextField) uicontrols.getChildren().get(1);
+		TextField location = (TextField) uicontrols.getChildren().get(3);
 		System.out.println(time.getText());
 		System.out.println(location.getText());
 	}
@@ -91,8 +91,8 @@ public class CTS_GUI extends Application {
 		if (xx < 0 || yy < 0 || xx > (VIEWING_AREA_WIDTH -  radius)|| yy > (VIEWING_AREA_HEIGHT - radius)) {
 			throw new IllegalArgumentException("drawCircle: invalid set of radius and x/y cordnates");
 		}
-		_gc.setFill(color);
-		_gc.fillOval(xx,yy, radius * 2, radius * 2);
+		gc.setFill(color);
+		gc.fillOval(xx,yy, radius * 2, radius * 2);
 	}
 	/**
 	 * Draws a line of inputed thickness between 2 points.
@@ -163,8 +163,8 @@ public class CTS_GUI extends Application {
 				throw new IllegalArgumentException("drawLine: Line goes off screen.");
 			}
 		}
-		_gc.setFill(color);
-		_gc.fillPolygon(xcords, ycords, 4);
+		gc.setFill(color);
+		gc.fillPolygon(xcords, ycords, 4);
 	}
 	/**
 	 * Joeys speific testing function to test, inprogress

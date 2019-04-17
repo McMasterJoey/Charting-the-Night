@@ -9,12 +9,12 @@ package Model;
  *
  */
 public abstract class CTS_SpaceObject {
-	protected double _rightAscension = 0.0;
-	protected double _declination = 0.0;
-	protected double _altitude = 0.0;
-	protected double _azimuth = 0.0;
-	protected String _name = "Default Name";
-	protected int _ID;
+	protected double rightAscension = 0.0;
+	protected double declination = 0.0;
+	protected double altitude = 0.0;
+	protected double azimuth = 0.0;
+	protected String name = "Default Name";
+	protected int id;
 	
 	/**
 	 * Inits a new space object.
@@ -23,84 +23,91 @@ public abstract class CTS_SpaceObject {
 	 * @param rightAcension The Right Acension of the space object.
 	 * @param declination The Declination of the space object.
 	 */
-	public CTS_SpaceObject(int id, String name, double rightAcension, double declination) {
-		_ID = id;
-		_name = name;
-		_rightAscension = rightAcension;
-		_declination = declination;
+	public CTS_SpaceObject(int _id, String _name, double _rightAcension, double _declination) {
+		id = _id;
+		name = _name;
+		rightAscension = _rightAcension;
+		declination = _declination;
 	}
 	/**
 	 * Inits a new space object.
-	 * @param id The id number of the SO from CSV database
-	 * @param name The name of the space object.
-	 * @param rightAcension The Right Acension of the space object.
-	 * @param declination The Declination of the space object.
-	 * @param altitude The altitude of the space object.
-	 * @param azimuth The azimuth of the space object.
+	 * @param Id The id number of the SO from CSV database
+	 * @param Name The name of the space object.
+	 * @param rA The Right Acension of the space object.
+	 * @param dec The Declination of the space object.
+	 * @param alt The altitude of the space object.
+	 * @param az The azimuth of the space object.
 	 */
-	public CTS_SpaceObject(int id, String name, double rightAcension, double declination, double altitude, double azimuth) {
-		_ID = id;
-		_name = name;
-		_rightAscension = rightAcension;
-		_declination = declination;
-		_altitude = altitude;
-		_azimuth = azimuth;
+	public CTS_SpaceObject(int Id, String Name, double rA, double dec, double alt, double az) {
+		id = Id;
+		name = Name;
+		rightAscension = rA;
+		declination = dec;
+		altitude = alt;
+		azimuth = az;
 	}
 	/**
 	 * Sets the Azimuth data point to the inputed value.
-	 * @param azimuth The azimuth of the space object
+	 * @param az The azimuth of the space object
 	 */
-	public void setAzimuth(double azimuth) {
-		_azimuth = azimuth;
+	public void setAzimuth(double az) {
+		azimuth = az;
 	}
 	/**
 	 * Sets the altitude data point to the inputed value.
-	 * @param altitude The altitude of the space object
+	 * @param alt The altitude of the space object
 	 */
-	public void setAltitude(double altitude) {
-		_altitude = altitude;
+	public void setAltitude(double alt) {
+		altitude = alt;
 	}
 	/**
 	 * Fetches the altitude of the space object.
 	 * @return The altitude of the space object.
 	 */
 	public double getAltitude() {
-		return _altitude;
+		return altitude;
 	}
 	/**
 	 * Fetches the azimuth of the space object.
 	 * @return The azimuth of the space object.
 	 */
 	public double getAzimuth() {
-		return _azimuth;
+		return azimuth;
 	}
 	/**
 	 * Fetches the Right Ascension of the space object.
 	 * @return The Right Ascension of the space object.
 	 */
 	public double getRightAscension() {
-		return _rightAscension;
+		return rightAscension;
 	}
 	/**
 	 * Fetches the declination of the space object.
 	 * @return The declination of the space object.
 	 */
 	public double getDeclination() {
-		return _declination;
+		return declination;
 	}
 	/**
 	 * Fetches the name of the space object.
 	 * @return The name of the space object.
 	 */
 	public String getName() {
-		return _name;
+		return name;
+	}
+	/**
+	 * Fetches the id of the space object.
+	 * @return the id of the space object.
+	 */
+	public int getId() {
+		return id;
 	}
 	/**
 	 * Makes the object printable easily.
 	 * @return The string representation of the space object.
 	 */
 	public String toString() {
-		return "SpaceObject: [" + _name + "," + _rightAscension + "," + _declination + "," + _altitude + "," + _azimuth + "]";
+		return "SpaceObject: [" + name + "," + id +","+ rightAscension + "," + declination + "," + altitude + "," + azimuth + "]";
 	}
 
 }
