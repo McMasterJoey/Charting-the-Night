@@ -44,8 +44,8 @@ public class CTS_Controller {
 			String line = "";
 			String[] tokens;
 		    
-			// Read all lines of Stars.csv file, skipping the header line:
-			fileReader.readLine();			
+			// Read all lines of Stars.csv file
+			fileReader.readLine(); // skip header
 		    while ((line = fileReader.readLine()) != null)
 		    {
 		    	// Get all tokens available in line
@@ -85,6 +85,7 @@ public class CTS_Controller {
 	    for (CTS_Star star : starList) {
 	    	System.out.println(star.ID() + ",  " + star.name() + ",  " + star.getMagnitude() + ",  " + star.getRightAscension() + ",  " + star.getDeclination());
 	    }
+	    // END TODO
 	}
 	
 }
