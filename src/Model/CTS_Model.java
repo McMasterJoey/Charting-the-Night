@@ -95,7 +95,13 @@ public class CTS_Model {
         }
 	}
 	
-
+	public void setLatitude(double lat) {
+		latitude = lat;
+	}
+	
+	public void setLongitude(double lon) {
+		longitude = lon;
+	}
 
 	public double getLatitude() {
 		return latitude;
