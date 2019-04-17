@@ -40,6 +40,10 @@ public class CTS_Model {
 		
 	}
 	
+	public ArrayList<CTS_Star> getStarList() {
+	    return this.starList;
+	}
+	
 	/**
 	 * Parse Stars.csv database to build list of stars
 	 */
