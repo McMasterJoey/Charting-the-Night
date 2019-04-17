@@ -30,29 +30,26 @@ public class CTS_Controller {
 		
 	}
 	
-	
 
 	/**
-	 * Calculates and sets the altitude for a star.
+	 * Calculates and sets the azimuth and altitude for a star.
 	 * USES: getHourAngle, so transitively the assumptions in getLocalSiderialTime
 	 * are in full affect for this method.
 	 */
-	public void calcAltitude(CTS_Star star) {
-		double sinOfAlt = Math.sin(star.getDeclination()) * Math.sin(model.getLatitude()) + Math.cos(star.getDeclination()) * Math.cos(model.getLatitude()) * Math.cos(getHourAngle(star));
-
-		star.setAltitude(Math.asin(sinOfAlt));
-	}
-
-
-	/**
-	 * Calculates and sets the azimuth for a star.
-	 * USES: calcAltitude, so transitively the assumptions in getLocalSiderialTime
-	 * are in full affect for this method.
-	 */
-	public void calcAzimuth(CTS_Star star) {
-		calcAltitude(star);
-		double sinOfHA = Math.sin(getHourAngle(star));
-		double cosOfA = (Math.sin(star.getDeclination()) - Math.sin(star.getAltitude()) * Math.sin(model.getLatitude())) / (Math.cos(star.getAltitude()) * Math.cos(model.getLatitude()));
+	public void calcAzimuthAndAltitude(CTS_Star star) {
+		double declination = star.getDeclination();
+		double latitude = model.getLatitude();
+		double longitude = model.getLongitude();
+		double ha = getHourAngle(star);
+		
+		// Calc altitude	
+		double sinOfAlt = Math.sin(declination) * Math.sin(latitude) + Math.cos(declination) * Math.cos(latitude) * Math.cos(ha);
+		double altitude = Math.asin(sinOfAlt);
+		star.setAltitude(altitude);
+		
+		// Calc azimuth
+		double sinOfHA = Math.sin(ha);
+		double cosOfA = (Math.sin(declination) - Math.sin(altitude) * Math.sin(latitude) / (Math.cos(altitude) * Math.cos(latitude)));
 		double A = Math.acos(cosOfA);
 
 		if (sinOfHA < 0) {
