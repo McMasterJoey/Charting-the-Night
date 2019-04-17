@@ -80,11 +80,12 @@ public class CTS_Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-	    
+	    /*
 	    // TODO: DELETE BELOW CODE, IT IS PRINTS FOR TESTING!
 	    for (CTS_Star star : starList) {
 	    	System.out.println(star.getId() + ",  " + star.getName() + ",  " + star.getMagnitude() + ",  " + star.getRightAscension() + ",  " + star.getDeclination());
 	    }
+	    */
 	}
 	
 }

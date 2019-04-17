@@ -14,7 +14,6 @@ public class ChartingTheStars {
 
 	public static void main(String[] args) {
 		CTS_GUI i = new CTS_GUI(args);
-		CTS_Controller controller = new CTS_Controller();
 	}
 
 }
