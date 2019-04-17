@@ -18,11 +18,26 @@ public class CTS_Model {
 	ArrayList<CTS_Star> starList;
 	
 	// The days since J2000, including the decimal portion
-	private double daysSinceStandard = 0.0;
-
+	private double daysSinceStandard;
+	private double universalTime;
+	
+	private double latitude;
+	private double longitude;
+	
 	public CTS_Model() {
+		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
 		build_starList();
+		
+		// Set default days since standard and universal time
+		daysSinceStandard = 0.0;
+		universalTime = 0.0;
+		
+		// Set default latitude / longitude
+		latitude = 0.0;
+		longitude = 0.0;
+		
+		
 	}
 	
 	/**
@@ -80,6 +95,36 @@ public class CTS_Model {
         }
 	}
 	
+
+
+	public double getLatitude() {
+		return latitude;
+	}
+	
+	public double getLongitude() {
+		return longitude;
+	}
+	
+	/**
+	 * Returns the local siderial time.
+	 * ASSUMES: daysSinceStand is set to the decimal days since J2000
+	 * ASSUMES: universalTime is appropriately set
+	 * @return a double representing the local siderial time for the star
+	 */
+	public double getLocalSiderialTime() {
+		double lst = 100.46 + 0.985647 * daysSinceStandard + 15 * universalTime;
+
+		while (lst < 0) {
+			lst += 360;
+		}
+
+		while (lst > 360) {
+			lst -= 360;
+		}
+
+		return lst;
+	}
+	
     /**
      * Helper method to calculate and set the days since J2000. The time should be in UT.
      * @param year an integer representing the year, CE is positive, BCE is negative
@@ -103,5 +148,13 @@ public class CTS_Model {
 	    jd += decTime;
 		System.out.println("jd = " + jd);
 	    daysSinceStandard = jd - j2000;
+    }
+	
+    /**
+     * Fetches the days from J2000.
+     * @return a double indicating the days from J2000
+     */
+	public double getDaysSinceStandard() {
+	    return daysSinceStandard;
     }
 }
