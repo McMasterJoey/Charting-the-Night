@@ -16,6 +16,9 @@ import java.util.ArrayList;
 public class CTS_Model {
 	
 	ArrayList<CTS_Star> starList;
+	
+	// The days since J2000, including the decimal portion
+	private double daysSinceStandard = 0.0;
 
 	public CTS_Model() {
 		starList = new ArrayList<CTS_Star>();
@@ -75,10 +78,30 @@ public class CTS_Model {
         } catch (Exception e) {
             e.printStackTrace();
         }
-	    
-	    // TODO: DELETE BELOW CODE, IT IS PRINTS FOR TESTING!
-	    for (CTS_Star star : starList) {
-	    	System.out.println(star.ID() + ",  " + star.name() + ",  " + star.getMagnitude() + ",  " + star.getRightAscension() + ",  " + star.getDeclination());
-	    }
 	}
+	
+    /**
+     * Helper method to calculate and set the days since J2000. The time should be in UT.
+     * @param year an integer representing the year, CE is positive, BCE is negative
+     * @param month an integer representation of the month, 1 = Jan, 2 = Feb, ...
+     * @param day an integer representing the day of the month
+     * @param hour an integer representing the hour (0-23)
+     * @param minutes an integer representing the minutes
+     * @param seconds an integer representing the seconds
+     */
+	public void calcDaysSinceStandard(int year, int month, int day, int hour, int minutes, int seconds) {
+	    double j2000 =  2451545.0;
+	    double decTime = (3600 * hour + 60 * minutes + seconds);
+	    decTime /= 86400;
+	    decTime -= 0.5;
+	    System.out.println("decTime = " + decTime);
+	    // Formula from https://en.wikipedia.org/wiki/Julian_day#Julian_date_calculation
+	    double jd = (1461 * (year + 4800 + (month - 14) / 12)) / 4 +
+                    (367 * (month - 2 - 12 * ((month - 14) / 12))) / 12 -
+                    (3 * ((year + 4900 + (month - 14) / 12) / 100)) / 4 +
+                    day - 32075;
+	    jd += decTime;
+		System.out.println("jd = " + jd);
+	    daysSinceStandard = jd - j2000;
+    }
 }

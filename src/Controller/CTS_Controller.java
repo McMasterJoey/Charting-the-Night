@@ -1,4 +1,5 @@
 package Controller;
+
 import Model.*;
 
 import java.io.BufferedReader;
@@ -7,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 
 /**
  * Place holder controller for the project
@@ -26,6 +28,6 @@ public class CTS_Controller {
 	
 	}
 
-	
+
 	
 }

@@ -14,8 +14,7 @@ import Model.*;
 public class ChartingTheStars {
 
 	public static void main(String[] args) {
-		System.out.println("Hello World!");
-		
+		CTS_GUI i = new CTS_GUI(args);
 		CTS_Controller controller = new CTS_Controller();
 		CTS_Model model = new CTS_Model();
 	}

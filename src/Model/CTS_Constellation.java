@@ -13,15 +13,12 @@ import java.util.List;
  *
  */
 public class CTS_Constellation extends CTS_SpaceObject {
-	private List<CTS_Star> _stars;
-	private List<CTS_Constellation_Line> _lines;
-	private String _name = "Default Constellation Name";
+	private List<CTS_Star> stars;
+	private List<CTS_Constellation_Line> lines;
 	public CTS_Constellation(String name, double rightAcension, double declination) {
-		super(name, rightAcension, declination);
-		_name = name;
+		super(0,name, rightAcension, declination);
 	}
 	public CTS_Constellation(String name, double rightAcension, double declination, double altitude, double azimuth, Collection<CTS_Star> stars) {
-		super(name, rightAcension, declination, altitude, azimuth);
-		_name = name;
+		super(0,name, rightAcension, declination, altitude, azimuth);
 	}
 }
