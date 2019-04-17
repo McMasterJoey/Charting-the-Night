@@ -1,4 +1,5 @@
 package Controller;
+
 import Model.*;
 
 import java.io.BufferedReader;
@@ -7,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 
 /**
  * Place holder controller for the project
@@ -19,72 +21,68 @@ import java.util.Scanner;
  */
 public class CTS_Controller {
 
-	ArrayList<CTS_Star> starList;
+	CTS_Model model;
+	
 	
 	
 	public CTS_Controller() {
-		starList = new ArrayList<CTS_Star>();
-		build_starList();
+		model = new CTS_Model();
+		
 	}
+	
 
 	/**
-	 * Parse Stars.csv database to build list of stars
+	 * Calculates and sets the azimuth and altitude for a star.
+	 * USES: getHourAngle, so transitively the assumptions in getLocalSiderialTime
+	 * are in full affect for this method.
 	 */
-	private void build_starList() {
+	public void calcAzimuthAndAltitude(CTS_Star star) {
+		double declination = star.getDeclination();
+		double latitude = model.getLatitude();
+		double longitude = model.getLongitude();
+		double ha = getHourAngle(star);
 		
-		BufferedReader fileReader = null;
-		int id; 
-		String name = null;
-		double magnitude;
-		double rightAscension; 
-		double declination;
+		// Calc altitude	
+		double sinOfAlt = Math.sin(declination) * Math.sin(latitude) + Math.cos(declination) * Math.cos(latitude) * Math.cos(ha);
+		double altitude = Math.asin(sinOfAlt);
+		star.setAltitude(altitude);
 		
-		try {
-			fileReader = new BufferedReader(new FileReader(".\\src\\Resources\\Stars.csv"));
-			String line = "";
-			String[] tokens;
-		    
-			// Read all lines of Stars.csv file, skipping the header line:
-			fileReader.readLine();			
-		    while ((line = fileReader.readLine()) != null)
-		    {
-		    	// Get all tokens available in line
-		        tokens = line.split(",");
-		        
-		        // Get relevant star data from line
-		        id = Integer.valueOf(tokens[0]);
-		        
-		        if (!tokens[4].isEmpty()) {
-		        	name = tokens[4];
-		        } else if (!tokens[5].isEmpty()) {
-		        	name = tokens[5];
-		        } else if (!tokens[6].isEmpty()) {
-		        	name = tokens[6];
-		        } else {
-		        	name = "UNNAMED STAR";
-		        }
-		        
-		        magnitude = Double.valueOf(tokens[13]);		        
-		        rightAscension = Double.valueOf(tokens[7]);
-		        declination = Double.valueOf(tokens[8]);		
-		        
-		        // Create new star object and add to starList
-		        starList.add(new CTS_Star(id, name, magnitude, rightAscension, declination));
-		    }
-		} catch (Exception e) {
-			e.printStackTrace();
+		// Calc azimuth
+		double sinOfHA = Math.sin(ha);
+		double cosOfA = (Math.sin(declination) - Math.sin(altitude) * Math.sin(latitude) / (Math.cos(altitude) * Math.cos(latitude)));
+		double A = Math.acos(cosOfA);
+
+		if (sinOfHA < 0) {
+			star.setAzimuth(A);
 		}
-	    
-	    try {
-            fileReader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-	    
-	    // TODO: DELETE BELOW CODE, IT IS PRINTS FOR TESTING!
-	    for (CTS_Star star : starList) {
-	    	System.out.println(star.getId() + ",  " + star.getName() + ",  " + star.getMagnitude() + ",  " + star.getRightAscension() + ",  " + star.getDeclination());
-	    }
+		else {
+			star.setAzimuth(360 - A);
+		}
 	}
+	
+	
+	
+	/**
+	 * Calculates and returns the hour angle of a star.
+	 * USES: getLocalSiderialTime, so the assumptions in getLocalSiderialTime
+	 * are in full affect for this method.
+	 * @return a double representing the hour angle
+	 */
+	public double getHourAngle(CTS_Star star) {
+		double lst = model.getLocalSiderialTime();
+		double ha = lst - star.getRightAscension();
+
+		while (ha < 0) {
+			ha += 360;
+		}
+
+		while (ha > 360) {
+			ha -= 360;
+		}
+
+		return ha;
+	}
+
+
 	
 }
