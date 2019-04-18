@@ -45,20 +45,21 @@ public class CTS_Controller {
 	 * are in full affect for this method.
 	 */
 	public void calcAzimuthAndAltitude(CTS_Star star) {
-		double declination = star.getDeclination();
-		double latitude = model.getLatitude();
-		double longitude = model.getLongitude();
-		double ha = getHourAngle(star);
+		double declination = Math.toRadians(star.getDeclination());
+		double latitude = Math.toRadians(model.getLatitude());
+		double longitude = Math.toRadians(model.getLongitude());
+		double ha = Math.toRadians(getHourAngle(star));
 		
 		// Calc altitude	
 		double sinOfAlt = Math.sin(declination) * Math.sin(latitude) + Math.cos(declination) * Math.cos(latitude) * Math.cos(ha);
 		double altitude = Math.asin(sinOfAlt);
-		star.setAltitude(altitude);
+		star.setAltitude(Math.toDegrees(altitude));
 		
 		// Calc azimuth
 		double sinOfHA = Math.sin(ha);
 		double cosOfA = (Math.sin(declination) - Math.sin(altitude) * Math.sin(latitude) / (Math.cos(altitude) * Math.cos(latitude)));
 		double A = Math.acos(cosOfA);
+		A = Math.toDegrees(A);
 
 		if (sinOfHA < 0) {
 			star.setAzimuth(A);

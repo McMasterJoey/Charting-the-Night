@@ -82,7 +82,7 @@ public class CTS_Model {
 		        }
 		        
 		        magnitude = Double.valueOf(tokens[13]);		        
-		        rightAscension = Double.valueOf(tokens[7]);
+		        rightAscension = Double.valueOf(tokens[7]) * 15;
 		        declination = Double.valueOf(tokens[8]);		
 		        
 		        // Create new star object and add to starList
@@ -158,6 +158,9 @@ public class CTS_Model {
 	    jd += decTime;
 		System.out.println("jd = " + jd);
 	    daysSinceStandard = jd - j2000;
+	    double minFrac = Double.valueOf(minutes / 60);
+	    double secFrac = Double.valueOf(seconds / 3600);
+	    universalTime = hour + minutes + seconds;
     }
 	
     /**

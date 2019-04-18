@@ -22,15 +22,15 @@ public class JUnitTests {
 		System.out.println("Ran dummyTest()");
 	}
 
-	@Test
-	void test_Star_calcDaysSinceStandard() {
-		CTS_Star star = new CTS_Star(0,"test", 1, 0, 0);
-		DecimalFormat round4 = new DecimalFormat("#.####");
-
-		round4.setRoundingMode(RoundingMode.HALF_UP);
-		star.calcDaysSinceStandard(1998, 8, 10, 23, 10, 0);
-		assertEquals("-508.5347", round4.format(star.getDaysSinceStandard()));
-		star.calcDaysSinceStandard(2008, 4, 4, 15, 30, 0);
-		assertEquals("3016.1458", round4.format(star.getDaysSinceStandard()));
-	}
+//	@Test
+//	void test_Star_calcDaysSinceStandard() {
+//		CTS_Star star = new CTS_Star(0,"test", 1, 0, 0);
+//		DecimalFormat round4 = new DecimalFormat("#.####");
+//
+//		round4.setRoundingMode(RoundingMode.HALF_UP);
+//		star.calcDaysSinceStandard(1998, 8, 10, 23, 10, 0);
+//		assertEquals("-508.5347", round4.format(star.getDaysSinceStandard()));
+//		star.calcDaysSinceStandard(2008, 4, 4, 15, 30, 0);
+//		assertEquals("3016.1458", round4.format(star.getDaysSinceStandard()));
+//	}
 }
