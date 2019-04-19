@@ -1,9 +1,7 @@
 package View;
 
 import java.util.ArrayList;
-
 import Controller.CTS_Controller;
-import Model.CTS_Model;
 import Model.CTS_SpaceObject;
 import Model.CTS_Star;
 import javafx.application.Application;
@@ -16,9 +14,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import static java.lang.Math.*;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * The GUI of the project.
@@ -34,11 +37,13 @@ public class CTS_GUI extends Application {
 	public static final int VIEWING_AREA_HEIGHT = 600;
 	private GraphicsContext gc;
 	private HBox uicontrols;
+	private CTS_GUI_Dialoguebox input;
 	CTS_Controller controller;
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
-	public CTS_GUI() {
+	public CTS_GUI() { 
+		
 	}
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -52,20 +57,13 @@ public class CTS_GUI extends Application {
 		gc.setFill(Color.LIGHTGREY);
 		gc.fillRect(0, 0,  VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
-		// Set up Buttons
-		uicontrols = new HBox();
-		TextField timetext = new TextField("0:00");
-		TextField location = new TextField("Tuscon Arizona");
-		Button b = new Button("Update");
-		b.setOnAction((event) -> {
-			chartTheStars();
+		// Setup Dialog box
+        setUpDialoguebox();
+        // Add a click handler so when the GUI is clicked, the settings menu comes up.
+        mainpane.setOnMouseClicked((event) -> {
+        	input.showAndWait();
         });
-		uicontrols.getChildren().add(new Label("Time"));
-		uicontrols.getChildren().add(timetext);
-		uicontrols.getChildren().add(new Label("Location"));
-		uicontrols.getChildren().add(location);
-		uicontrols.getChildren().add(b);
-        mainpane.setTop(uicontrols);
+        		
 		// Display it!
         
         privateTests();
@@ -78,10 +76,9 @@ public class CTS_GUI extends Application {
 	 * Updates the GUI with the star chart of the inputed time and date.
 	 */
 	public void chartTheStars() {
-		TextField time = (TextField) uicontrols.getChildren().get(1);
-		TextField location = (TextField) uicontrols.getChildren().get(3);
-		System.out.println(time.getText());
-		System.out.println(location.getText());
+		//TextField time = (TextField) uicontrols.getChildren().get(1);
+		//TextField location = (TextField) uicontrols.getChildren().get(3);
+		
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		long count = 0;
 		for(int x = 0; x < n.size(); x++) {
@@ -202,6 +199,48 @@ public class CTS_GUI extends Application {
 			throw new IllegalArgumentException("Something went wrong");
 		}
 		drawCircle(radius, (int) result[0], (int) result[1], color);
+	}
+	private void setUpDialoguebox() {
+		input = new CTS_GUI_Dialoguebox();
+		input.setTitle("Settings");
+		BorderPane pane = new BorderPane();
+		LocalTime t = LocalTime.now();
+		LocalDate d = LocalDate.now();
+		
+		VBox v = new VBox(5);
+		HBox box = new HBox(5);
+		TextField lat = new TextField("0");
+		TextField lon = new TextField("0");
+		box.getChildren().add(new Label("Latitude: "));
+		box.getChildren().add(lat);
+		box.getChildren().add(new Label("Longitude: "));
+		box.getChildren().add(lon);
+		HBox box1 = new HBox(5);
+		TextField time = new TextField(t.toString());
+		TextField date = new TextField(d.toString());
+		box1.getChildren().add(new Label("Date: "));
+		box1.getChildren().add(date);
+		box1.getChildren().add(new Label("Time: "));
+		box1.getChildren().add(time);
+		HBox box2 = new HBox(5);
+		Button but = new Button("Cancel");
+		Button but2 = new Button("Submit");
+		box2.getChildren().add(but);
+		v.getChildren().add(box);
+		v.getChildren().add(box1);
+		v.getChildren().add(but);
+		v.getChildren().add(but2);
+		
+		but.setOnAction((event) -> {
+        	input.close();
+        });
+		but2.setOnAction((event) -> {
+			chartTheStars();
+        	input.close();
+        });
+		pane.setCenter(v);
+		Scene scene = new Scene(pane, 400, 180);
+		input.setScene(scene);
 	}
 	/**
 	 * Determines where to plot space objects on the graph
