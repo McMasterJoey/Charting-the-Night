@@ -32,8 +32,7 @@ public class CTS_Controller {
 		ArrayList<CTS_Star> starList = model.getStarList();		
 		for (CTS_Star star : starList) {
 			calcAzimuthAndAltitude(star);
-		}
-		
+			}
 	}
 	
 
