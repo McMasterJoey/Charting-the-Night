@@ -5,6 +5,7 @@ import Controller.CTS_Controller;
 import Model.CTS_SpaceObject;
 import Model.CTS_Star;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -68,7 +69,7 @@ public class CTS_GUI extends Application {
         
         privateTests();
         
-		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT + 30);
+		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT);
         stage.setScene(scene);
         stage.show();
 	}
@@ -207,29 +208,36 @@ public class CTS_GUI extends Application {
 		LocalTime t = LocalTime.now();
 		LocalDate d = LocalDate.now();
 		
-		VBox v = new VBox(5);
-		HBox box = new HBox(5);
+		VBox v = new VBox(10);
+		HBox box0 = new HBox(5);
 		TextField lat = new TextField("0");
+		box0.getChildren().add(new Label("Latitude: "));
+		box0.getChildren().add(lat);
+		
 		TextField lon = new TextField("0");
-		box.getChildren().add(new Label("Latitude: "));
-		box.getChildren().add(lat);
-		box.getChildren().add(new Label("Longitude: "));
-		box.getChildren().add(lon);
 		HBox box1 = new HBox(5);
-		TextField time = new TextField(t.toString());
-		TextField date = new TextField(d.toString());
-		box1.getChildren().add(new Label("Date: "));
-		box1.getChildren().add(date);
-		box1.getChildren().add(new Label("Time: "));
-		box1.getChildren().add(time);
+		box1.getChildren().add(new Label("Longitude: "));
+		box1.getChildren().add(lon);
+		
 		HBox box2 = new HBox(5);
+		TextField date = new TextField(d.toString());
+		box2.getChildren().add(new Label("Date: "));
+		box2.getChildren().add(date);
+		
+		TextField time = new TextField(t.toString());
+		HBox box3 = new HBox(5);
+		box3.getChildren().add(new Label("Time: "));
+		box3.getChildren().add(time);
+		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
 		Button but2 = new Button("Submit");
-		box2.getChildren().add(but);
-		v.getChildren().add(box);
+		box4.getChildren().add(but);
+		box4.getChildren().add(but2);
+		v.getChildren().add(box0);
 		v.getChildren().add(box1);
-		v.getChildren().add(but);
-		v.getChildren().add(but2);
+		v.getChildren().add(box2);
+		v.getChildren().add(box3);
+		v.getChildren().add(box4);
 		
 		but.setOnAction((event) -> {
         	input.close();
@@ -239,6 +247,7 @@ public class CTS_GUI extends Application {
         	input.close();
         });
 		pane.setCenter(v);
+		pane.setPadding(new Insets(10));
 		Scene scene = new Scene(pane, 400, 180);
 		input.setScene(scene);
 	}
