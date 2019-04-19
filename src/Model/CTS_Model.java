@@ -39,7 +39,24 @@ public class CTS_Model {
 		
 		
 	}
-	
+	/**
+	 * Constructs the model with the given params
+	 * @param latitude The latitude on earth of where the observer will be
+	 * @param longitude The longitude on earth where the observer will be.
+	 * @param daysSinceStanderd Days since the year 2000
+	 * @param universaltime  Time of day of where the observer will be.
+	 */
+	public CTS_Model(double latitude, double longitude, double daysSinceStanderd, double universaltime) {
+		// Generate list of star objects
+		starList = new ArrayList<CTS_Star>();
+		build_starList();
+				
+		// Set params with custom values.
+		this.daysSinceStandard = daysSinceStanderd;
+		this.universalTime = universaltime;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
 	public ArrayList<CTS_Star> getStarList() {
 	    return this.starList;
 	}
