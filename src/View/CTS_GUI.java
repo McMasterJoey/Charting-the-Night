@@ -9,9 +9,11 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -38,7 +40,8 @@ public class CTS_GUI extends Application {
 	private VBox uicontrols;
 	private CTS_GUI_Dialoguebox input;
 	private Canvas canvas;
-	CTS_Controller controller;
+	private Alert GUIerrorout;
+	private CTS_Controller controller;
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
@@ -247,19 +250,57 @@ public class CTS_GUI extends Application {
         	input.close();
         });
 		but2.setOnAction((event) -> {
-			chartTheStars();
-        	input.close();
+			long i = validateInput();
+			if (i == 0) {
+				chartTheStars();
+				input.close();
+			} else {
+				GUIerrorout = new Alert(AlertType.ERROR, getGUIErrorMsg(i));
+				GUIerrorout.showAndWait();
+			}
         });
 		pane.setCenter(uicontrols);
 		pane.setPadding(new Insets(10));
 		Scene scene = new Scene(pane, 400, 180);
 		input.setScene(scene);
 	}
+	private String getGUIErrorMsg(long errorcode) {
+		if (errorcode == 0) {
+			return "This popup shouldn't have launched!";
+		} else if (errorcode == 9) {
+			return "Latitude input format incorrect!\nValid Latitude values are -90 to 90 with negative values being south Latitude.";
+		} else if (errorcode == 10) {
+			return "Longitude input format incorrect!\nValid Longitude values are -180 to 180 with negative values being west latitude.";
+		} else if (errorcode == 11) {
+			return "Date input format incorrect!\nValid dates go <year>-<month>-<day>\nValid month values are 1- 12 and valid day values are 1 - 31.";
+		} else if (errorcode == 12) {
+			return "Time input format incorrect!\nValid times go <hour>-<miniute>-<second>\nValid hour values are 0 - 23 and valid miniute and second values are 0 - 59";
+		} else if (errorcode == 1) {
+			return "Invalid latitude!\nValid Latitude values are -90 to 90 with negative values being south Latitude.";
+		} else if (errorcode == 2) {
+			return "Invalid Longitude!\nValid Longitude values are -180 to 180 with negative values being west latitude.";
+		} else if (errorcode == 3) {
+			return "Invalid Year!\nValid year values are " + Integer.MIN_VALUE + " - " + Integer.MAX_VALUE + ".";
+		} else if (errorcode == 4) {
+			return "Invalid Month!\nValid month values are 1 - 12";
+		} else if (errorcode == 5) {
+			return "Invalid Day!\nValid day values are 1 - 31";
+		} else if (errorcode == 6) {
+			return "Invalid Hour!\nValid hour values are 0 - 23";
+		} else if (errorcode == 7) {
+			return "Invalid Minute!\nValid minute values are 0 - 59";
+		} else if (errorcode == 8) {
+			return "Invalid Second!\nValid second values are 0 - 59";
+		} 
+		return "Undefined Error Message!";
+	}
 	/**
 	 * Grabs info stored in the UI controls and translates to a series of longs.
-	 * @return An array of length 8 with the first 2 values being latitude and longitude
+	 * @return An array of length 9 with the first 2 values being latitude and longitude
 	 * The 3,4 and 5 being Year,Month,Day
 	 * The 6,7 and 8 being Hour,Minute,Second
+	 * 9 being an error code: 0 = NO ERROR
+	 * 9 = Bad latitude, 10 = Bad longitude, 11 = bad date, 12 = bad time
 	 */
 	private long[] getUserInputFromUIControls() {
 		HBox n0 = (HBox) uicontrols.getChildren().get(0);
@@ -270,47 +311,82 @@ public class CTS_GUI extends Application {
 		TextField t1 = (TextField) n1.getChildren().get(1);
 		TextField t2 = (TextField) n2.getChildren().get(1);
 		TextField t3 = (TextField) n3.getChildren().get(1);
-		System.out.println(t0.getText());
-		System.out.println(t1.getText());
-		System.out.println(t2.getText());
-		System.out.println(t3.getText());
-		long[] retval = new long[8];
+		//System.out.println(t0.getText());
+		//System.out.println(t1.getText());
+		//System.out.println(t2.getText());
+		//System.out.println(t3.getText());
+		long[] retval = new long[9];
+		retval[8] = 9;
 		try {
-			retval[0] = Byte.parseByte(t0.getText());
-			retval[1] = Byte.parseByte(t1.getText());
+			retval[0] = Long.parseLong(t0.getText());
+			retval[8] = 10;
+			retval[1] = Long.parseLong(t1.getText());
 		} catch(Exception e) {
-			return null; // Range is between -180 to 180, if its too large for a byte. Can't be valid.
+			return retval;
 		}
 		String[] date = t2.getText().split("-");
 		if (date.length != 3) {
-			return null;
+			retval[8] = 11;
+			return retval;
 		}
 		try {
 			retval[2] = Long.parseLong(date[0]);
-			retval[3] = Byte.parseByte(date[1]);
-			retval[4] = Byte.parseByte(date[2]);
+			retval[3] = Long.parseLong(date[1]);
+			retval[4] = Long.parseLong(date[2]);
 		} catch(Exception e) {
-			return null;
+			retval[8] = 11;
+			return retval;
 		}
 		String[] time = t3.getText().split(":");
 		if (time.length != 3) {
-			return null;
+			retval[8] = 12;
+			return retval;
 		}
 		try {
-			retval[5] = Byte.parseByte(time[0]);
-			retval[6] = Byte.parseByte(time[1]);
+			retval[5] = Long.parseLong(time[0]);
+			retval[6] = Long.parseLong(time[1]);
 			retval[7] = (long) floor(Double.parseDouble(time[2]));
 		} catch(Exception e) {
-			return null;
+			retval[8] = 12;
+			return retval;
 		}
+		retval[8] = 0;
 		return retval;
 	}
-	private boolean validateInput() {
+	private long validateInput() {
 		long[] inputs = getUserInputFromUIControls();
 		if (inputs == null) {
-			return false;
+			return 9;
 		}
-		return true;
+		if (inputs[8] != 0) {
+			return inputs[8];
+		}
+		if (inputs[0] > 90 || inputs[0] < -90) {
+			return 1;
+		}
+		if (inputs[1] > 180 || inputs[1] < -180) {
+			return 2;
+		}
+		// Year can be any number that can be fit within an integer.
+		if (inputs[2] > Integer.MAX_VALUE || inputs[2] < Integer.MIN_VALUE) {
+			return 3;
+		}
+		if (inputs[3] > 12 || inputs[3] < 1) {
+			return 4;
+		}
+		if (inputs[4] > 31 || inputs[4] < 1) {
+			return 5;
+		}
+		if (inputs[5] > 23 || inputs[5] < 0) {
+			return 6;
+		}
+		if (inputs[6] > 59 || inputs[6] < 0) {
+			return 7;
+		}
+		if (inputs[7] > 59 || inputs[7] < 0) {
+			return 8;
+		}
+		return 0;
 	}
 	/**
 	 * Determines where to plot space objects on the graph
