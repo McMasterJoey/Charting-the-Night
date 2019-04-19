@@ -27,13 +27,19 @@ public class CTS_Controller {
 	
 	public CTS_Controller() {
 		model = new CTS_Model();
+		updateAzimuthAndAltitude();
 		
+	}
+	public CTS_Controller(double latitude, double longitude, double daysSinceStanderd, double universaltime) {
+		model = new CTS_Model(latitude, longitude, daysSinceStanderd, universaltime);
+		updateAzimuthAndAltitude();
+	}
+	private void updateAzimuthAndAltitude() {
 		// Update azimuth and altitude for all stars
 		ArrayList<CTS_Star> starList = model.getStarList();		
 		for (CTS_Star star : starList) {
 			calcAzimuthAndAltitude(star);
 		}
-		
 	}
 	public CTS_Model getModel() {
 		return model;
