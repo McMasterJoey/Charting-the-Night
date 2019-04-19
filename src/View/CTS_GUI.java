@@ -19,8 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import static java.lang.Math.*;
-
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -37,8 +35,9 @@ public class CTS_GUI extends Application {
 	public static final int VIEWING_AREA_WIDTH = 600;
 	public static final int VIEWING_AREA_HEIGHT = 600;
 	private GraphicsContext gc;
-	private HBox uicontrols;
+	private VBox uicontrols;
 	private CTS_GUI_Dialoguebox input;
+	private Canvas canvas;
 	CTS_Controller controller;
 	public CTS_GUI(String[] args) {
 		launch(args);
@@ -52,7 +51,7 @@ public class CTS_GUI extends Application {
 		stage.setTitle("Charting The Stars");
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
 		BorderPane mainpane = new BorderPane();
-		Canvas canvas = new Canvas(VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
+		canvas = new Canvas(VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		mainpane.setCenter(canvas);
 		gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.LIGHTGREY);
@@ -77,9 +76,9 @@ public class CTS_GUI extends Application {
 	 * Updates the GUI with the star chart of the inputed time and date.
 	 */
 	public void chartTheStars() {
-		//TextField time = (TextField) uicontrols.getChildren().get(1);
-		//TextField location = (TextField) uicontrols.getChildren().get(3);
-		
+		resetSkyDrawing();
+		long[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
+		controller = new CTS_Controller(data[0],data[1],0,0); // Only using latitude and longitude
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		long count = 0;
 		for(int x = 0; x < n.size(); x++) {
@@ -201,6 +200,9 @@ public class CTS_GUI extends Application {
 		}
 		drawCircle(radius, (int) result[0], (int) result[1], color);
 	}
+	/**
+	 * Sets up the Dialoguebox that is used to take inputs
+	 */
 	private void setUpDialoguebox() {
 		input = new CTS_GUI_Dialoguebox();
 		input.setTitle("Settings");
@@ -208,7 +210,7 @@ public class CTS_GUI extends Application {
 		LocalTime t = LocalTime.now();
 		LocalDate d = LocalDate.now();
 		
-		VBox v = new VBox(10);
+		uicontrols = new VBox(10);
 		HBox box0 = new HBox(5);
 		TextField lat = new TextField("0");
 		box0.getChildren().add(new Label("Latitude: "));
@@ -230,14 +232,16 @@ public class CTS_GUI extends Application {
 		box3.getChildren().add(time);
 		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
+		but.setPadding(new Insets(5));
 		Button but2 = new Button("Submit");
+		but2.setPadding(new Insets(5));
 		box4.getChildren().add(but);
 		box4.getChildren().add(but2);
-		v.getChildren().add(box0);
-		v.getChildren().add(box1);
-		v.getChildren().add(box2);
-		v.getChildren().add(box3);
-		v.getChildren().add(box4);
+		uicontrols.getChildren().add(box0);
+		uicontrols.getChildren().add(box1);
+		uicontrols.getChildren().add(box2);
+		uicontrols.getChildren().add(box3);
+		uicontrols.getChildren().add(box4);
 		
 		but.setOnAction((event) -> {
         	input.close();
@@ -246,10 +250,67 @@ public class CTS_GUI extends Application {
 			chartTheStars();
         	input.close();
         });
-		pane.setCenter(v);
+		pane.setCenter(uicontrols);
 		pane.setPadding(new Insets(10));
 		Scene scene = new Scene(pane, 400, 180);
 		input.setScene(scene);
+	}
+	/**
+	 * Grabs info stored in the UI controls and translates to a series of longs.
+	 * @return An array of length 8 with the first 2 values being latitude and longitude
+	 * The 3,4 and 5 being Year,Month,Day
+	 * The 6,7 and 8 being Hour,Minute,Second
+	 */
+	private long[] getUserInputFromUIControls() {
+		HBox n0 = (HBox) uicontrols.getChildren().get(0);
+		HBox n1 = (HBox) uicontrols.getChildren().get(1);
+		HBox n2 = (HBox) uicontrols.getChildren().get(2);
+		HBox n3 = (HBox) uicontrols.getChildren().get(3);
+		TextField t0 = (TextField) n0.getChildren().get(1);
+		TextField t1 = (TextField) n1.getChildren().get(1);
+		TextField t2 = (TextField) n2.getChildren().get(1);
+		TextField t3 = (TextField) n3.getChildren().get(1);
+		System.out.println(t0.getText());
+		System.out.println(t1.getText());
+		System.out.println(t2.getText());
+		System.out.println(t3.getText());
+		long[] retval = new long[8];
+		try {
+			retval[0] = Byte.parseByte(t0.getText());
+			retval[1] = Byte.parseByte(t1.getText());
+		} catch(Exception e) {
+			return null; // Range is between -180 to 180, if its too large for a byte. Can't be valid.
+		}
+		String[] date = t2.getText().split("-");
+		if (date.length != 3) {
+			return null;
+		}
+		try {
+			retval[2] = Long.parseLong(date[0]);
+			retval[3] = Byte.parseByte(date[1]);
+			retval[4] = Byte.parseByte(date[2]);
+		} catch(Exception e) {
+			return null;
+		}
+		String[] time = t3.getText().split(":");
+		if (time.length != 3) {
+			return null;
+		}
+		try {
+			retval[5] = Byte.parseByte(time[0]);
+			retval[6] = Byte.parseByte(time[1]);
+			retval[7] = (long) floor(Double.parseDouble(time[2]));
+		} catch(Exception e) {
+			return null;
+		}
+		return retval;
+	}
+	private boolean validateInput() {
+		long[] inputs = getUserInputFromUIControls();
+		if (inputs == null) {
+			return false;
+		}
+		return true;
 	}
 	/**
 	 * Determines where to plot space objects on the graph
@@ -324,6 +385,12 @@ public class CTS_GUI extends Application {
 		drawSpaceObject(n4,20,Color.PINK);
 		drawSpaceObject(n5,2,Color.ORANGE);
 		drawSpaceObject(n6,2,Color.AQUA);
+	}
+	private void resetSkyDrawing() {
+		gc = canvas.getGraphicsContext2D();
+		gc.setFill(Color.LIGHTGREY);
+		gc.fillRect(0, 0,  VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
+		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
 	}
 	/*
 	 * Alt is distance from the edge of the circle. 90 deg - 0 (goes to - 90)
