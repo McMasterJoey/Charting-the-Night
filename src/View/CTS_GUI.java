@@ -18,6 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import static java.lang.Math.*;
 
 /**
  * The GUI of the project.
@@ -67,7 +68,7 @@ public class CTS_GUI extends Application {
         mainpane.setTop(uicontrols);
 		// Display it!
         
-        //privateTests();
+        privateTests();
         
 		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT + 30);
         stage.setScene(scene);
@@ -86,7 +87,7 @@ public class CTS_GUI extends Application {
 		for(int x = 0; x < n.size(); x++) {
 			CTS_Star star = n.get(x);
 			try {
-				if (star.getAltitude() != 0 && star.getAzimuth() != 0) {
+				if (star.getAltitude() != 0 && star.getAzimuth() != 0 && star.getMagnitude() < 6) {
 					drawSpaceObject(star,3,Color.WHITE);
 					//System.out.println(star.getAltitude() + "," + star.getAzimuth());
 					count++;
@@ -192,6 +193,7 @@ public class CTS_GUI extends Application {
 	 * @param obj The space object to be drawn.
 	 * @param radius Its radius
 	 * @param color Its color
+	 * @throws IllegalArgumentException When something that is inputed causes an issue with displaying.
 	 */
 	public void drawSpaceObject(CTS_SpaceObject obj, int radius, Color color) {
 		double[] result = getPositionOfSpaceObject(obj);
@@ -212,9 +214,9 @@ public class CTS_GUI extends Application {
 		if (altitude < 0 || altitude > 90) {
 			return null;
 		}
-		altitude = Math.abs(altitude - 90);
-		double rad = (altitude / 90) * (Math.PI / 2);
-		double sin = Math.sin(rad);
+		altitude = abs(altitude - 90);
+		double rad = (altitude / 90) * (PI / 2);
+		double sin = sin(rad);
 		double hypo = sin * (VIEWING_AREA_WIDTH / 2);
 		//System.out.println(hypo);
 		// hypo * sin(degree) = x
@@ -231,12 +233,12 @@ public class CTS_GUI extends Application {
 		azimuth -= 90;
 		azimuth = Math.abs(azimuth);
 		//System.out.println(azimuth);
-		double changey = hypo * Math.sin(azimuth * (Math.PI / 180));
-		double changex = Math.sqrt((hypo * hypo) - (changey * changey));
+		double changey = hypo * sin(azimuth * (PI / 180));
+		double changex = sqrt((hypo * hypo) - (changey * changey));
 		if (left) {
 			changex *= -1;
 		}
-		if (postive) {
+		if (!postive) {
 			changey *= -1;
 		}
 		
@@ -256,17 +258,24 @@ public class CTS_GUI extends Application {
 		//drawLine(5,20,580,580,20,Color.RED);
 		//drawLine(8,250,100,350,10,Color.BLUE);
 		//drawLine(1,1,1,4,500,Color.GREEN);
-		CTS_Star n = new CTS_Star(0, "Test", 0, 0, 0,45,90);
 		CTS_Star n1 = new CTS_Star(0, "Test", 0, 0, 0,90,50);
+		
+		CTS_Star n5 = new CTS_Star(0, "Test", 0, 0, 0,10,0);
+		CTS_Star n = new CTS_Star(0, "Test", 0, 0, 0,10,90);
+		CTS_Star n6 = new CTS_Star(0, "Test", 0, 0, 0,10,180);
 		CTS_Star n2 = new CTS_Star(0, "Test", 0, 0, 0,10,270);
 		CTS_Star n3 = new CTS_Star(0, "Test", 0, 0, 0,45,300);
+		CTS_Star n4 = new CTS_Star(0, "Test", 0, 0, 0,45,10); //Incorrect
 		
 		// CTS_Star(int Id, String name, double magnitude, double rightAcension, double declination, 
 		// double altitude, double azimuth)
-		drawSpaceObject(n, 5, Color.RED);
-		drawSpaceObject(n1,5,Color.YELLOW);
+		drawSpaceObject(n, 2, Color.RED);
+		drawSpaceObject(n1,2,Color.YELLOW);
 		drawSpaceObject(n2,2,Color.BLUE);
 		drawSpaceObject(n3,10,Color.GREEN);
+		drawSpaceObject(n4,20,Color.PINK);
+		drawSpaceObject(n5,2,Color.ORANGE);
+		drawSpaceObject(n6,2,Color.AQUA);
 	}
 	/*
 	 * Alt is distance from the edge of the circle. 90 deg - 0 (goes to - 90)
