@@ -52,6 +52,18 @@ public class CTS_Controller {
 		double altitude = Math.asin(sinOfAlt);
 		star.setAltitude(altitude);
 		
+		/*
+		// Corrected azimuth calculation?
+		double cosDec = Math.cos(declination);
+		double sinHA = Math.sin(ha);
+		double sinDec = Math.sin(declination);
+		double cosLat = Math.cos(latitude);
+		double cosHA = Math.cos(ha);
+		double sinLat  = Math.sin(latitude);
+		
+		double azimuth = Math.atan(-(cosDec*sinHA)/(sinDec*cosLat - cosDec*cosHA*sinLat));
+		*/
+		
 		// Calc azimuth
 		double sinOfHA = Math.sin(ha);
 		double cosOfA = (Math.sin(declination) - Math.sin(altitude) * Math.sin(latitude) / (Math.cos(altitude) * Math.cos(latitude)));
