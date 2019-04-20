@@ -400,9 +400,40 @@ public class CTS_GUI extends Application {
 			return null;
 		}
 		altitude = abs(altitude - 90);
-		double rad = (altitude / 90) * (PI / 2);
+		double rad = toRadians(altitude);
 		double sin = sin(rad);
 		double hypo = sin * (VIEWING_AREA_WIDTH / 2);
+		double r = VIEWING_AREA_WIDTH / 2;
+		
+		double x_val, y_val, distanceFromCenter;
+		distanceFromCenter = r*cos(rad);
+		
+		// x_val, y_val are coords relative to the center of the viewing area
+		// being considered 0,0 on the Cartesian plane
+		x_val = distanceFromCenter*(cos(90-azimuth));
+		y_val = distanceFromCenter*(sin(90-azimuth));
+		
+		// view_x, view_y are the actual JavaFX coordinates to draw at
+		double view_x = 0, view_y = 0;
+		
+		if (azimuth < 90) {
+			view_x = x_val + 299;
+			view_y = max(0,(299-y_val));
+		} else if (azimuth < 180) {
+			view_x = x_val + 299;
+			view_y = min(599,(299-y_val));
+		} else if (azimuth < 270) {
+			view_x = max(0,(299+x_val));
+			view_y = min(599,(299-y_val));
+		} else {
+			view_x = max(0,(299+x_val));
+			view_y = max(0,(299-y_val));
+		}
+				
+		double[] retval = {view_x, view_y};
+		return retval;
+		
+		/*
 		//System.out.println(hypo);
 		// hypo * sin(degree) = x
 		// rad = degree * PI / 180
@@ -432,6 +463,7 @@ public class CTS_GUI extends Application {
 		retval[1] = changey + (VIEWING_AREA_HEIGHT / 2);
 		//System.out.println(changex + " " + changey);
 		return retval;
+		*/
 	}
 	/**
 	 * Joeys speific testing function to test, inprogress

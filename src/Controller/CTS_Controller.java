@@ -51,6 +51,7 @@ public class CTS_Controller {
 	 * are in full affect for this method.
 	 */
 	public void calcAzimuthAndAltitude(CTS_Star star) {
+		// Convert these values from degrees to radians prior to using math libs
 		double declination = Math.toRadians(star.getDeclination());
 		double latitude = Math.toRadians(model.getLatitude());
 		double longitude = Math.toRadians(model.getLongitude());
@@ -59,20 +60,30 @@ public class CTS_Controller {
 		// Calc altitude	
 		double sinOfAlt = Math.sin(declination) * Math.sin(latitude) + Math.cos(declination) * Math.cos(latitude) * Math.cos(ha);
 		double altitude = Math.asin(sinOfAlt);
+		// Convert altitude back to degrees and set it
 		star.setAltitude(Math.toDegrees(altitude));
 		
-		// Calc azimuth
-		double sinOfHA = Math.sin(ha);
-		double cosOfA = (Math.sin(declination) - Math.sin(altitude) * Math.sin(latitude) / (Math.cos(altitude) * Math.cos(latitude)));
-		double A = Math.acos(cosOfA);
-		A = Math.toDegrees(A);
+		
+		// Corrected azimuth calculation?
+		double cosDec = Math.cos(declination);
+		double sinHA = Math.sin(ha);
+		double sinDec = Math.sin(declination);
+		double cosLat = Math.cos(latitude);
+		double cosHA = Math.cos(ha);
+		double sinLat  = Math.sin(latitude);
+		
+		double azimuth = Math.atan(-(cosDec*sinHA)/(sinDec*cosLat - cosDec*cosHA*sinLat));
+		// Convert azimuth back to degrees
+		azimuth = Math.toDegrees(azimuth);
+		
+		// Azimuth will be in the interval [0,360)
+		azimuth = azimuth % 360;
 
-		if (sinOfHA < 0) {
-			star.setAzimuth(A);
+		if (azimuth < 0) {
+			azimuth = (360+azimuth);
 		}
-		else {
-			star.setAzimuth(360 - A);
-		}
+		star.setAzimuth(azimuth);
+
 	}
 	
 	
