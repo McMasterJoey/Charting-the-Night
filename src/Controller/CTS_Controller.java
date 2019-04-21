@@ -30,17 +30,29 @@ public class CTS_Controller {
 		updateAzimuthAndAltitude();
 		
 	}
+	
+	
 	public CTS_Controller(double latitude, double longitude, double daysSinceStanderd, double universaltime) {
 		model = new CTS_Model(latitude, longitude, daysSinceStanderd, universaltime);
 		updateAzimuthAndAltitude();
 	}
+	
+	
 	private void updateAzimuthAndAltitude() {
 		// Update azimuth and altitude for all stars
 		ArrayList<CTS_Star> starList = model.getStarList();		
 		for (CTS_Star star : starList) {
 			calcAzimuthAndAltitude(star);
 		}
+		
+		// Update azimuth and altitude for all DSOs
+		ArrayList<CTS_DeepSkyObject> DSOlist = model.getDSOlist();
+		for (CTS_DeepSkyObject dso : DSOlist) {
+			calcAzimuthAndAltitude(dso);
+		}	
 	}
+	
+	
 	public CTS_Model getModel() {
 		return model;
 	}
@@ -50,7 +62,7 @@ public class CTS_Controller {
 	 * USES: getHourAngle, so transitively the assumptions in getLocalSiderialTime
 	 * are in full affect for this method.
 	 */
-	public void calcAzimuthAndAltitude(CTS_Star star) {
+	public void calcAzimuthAndAltitude(CTS_SpaceObject star) {
 		// Convert these values from degrees to radians prior to using math libs
 		double declination = Math.toRadians(star.getDeclination());
 		double latitude = Math.toRadians(model.getLatitude());
@@ -64,7 +76,7 @@ public class CTS_Controller {
 		star.setAltitude(Math.toDegrees(altitude));
 		
 		
-		// Corrected azimuth calculation?
+		// Calc azimuth
 		double cosDec = Math.cos(declination);
 		double sinHA = Math.sin(ha);
 		double sinDec = Math.sin(declination);
@@ -79,6 +91,7 @@ public class CTS_Controller {
 		// Azimuth will be in the interval [0,360)
 		azimuth = azimuth % 360;
 
+		// If azimuth is given as negative, find the positive coterminal angle
 		if (azimuth < 0) {
 			azimuth = (360+azimuth);
 		}
@@ -94,7 +107,7 @@ public class CTS_Controller {
 	 * are in full affect for this method.
 	 * @return a double representing the hour angle
 	 */
-	public double getHourAngle(CTS_Star star) {
+	public double getHourAngle(CTS_SpaceObject star) {
 		double lst = model.getLocalSiderialTime();
 		double ha = lst - star.getRightAscension();
 

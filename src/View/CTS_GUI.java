@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import Controller.CTS_Controller;
 import Model.CTS_SpaceObject;
 import Model.CTS_Star;
+import Model.CTS_DeepSkyObject;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -83,7 +84,10 @@ public class CTS_GUI extends Application {
 		long[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
 		controller = new CTS_Controller(data[0],data[1],0,0); // Only using latitude and longitude
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
+		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		long count = 0;
+		
+		// Plot stars
 		for(int x = 0; x < n.size(); x++) {
 			CTS_Star star = n.get(x);
 			try {
@@ -93,10 +97,21 @@ public class CTS_GUI extends Application {
 					count++;
 				}
 			} catch(IllegalArgumentException e) {
-				//System.err.println("An object that attempted to be drawn triggerd a execption");
+				//System.err.println("An object that attempted to be drawn triggered an execption");
 			}
 		}
-		//System.out.println(count);
+		
+		// Plot DSOs
+		for(int x = 0; x < d.size(); x++) {
+			CTS_DeepSkyObject dso = d.get(x);
+			try {
+				if (dso.getAltitude() != 0 && dso.getAzimuth() != 0 && dso.getMagnitude() < 6) {
+					drawSpaceObject(dso,3,Color.WHITE);
+				}
+			} catch(IllegalArgumentException e) {
+				//System.err.println("An object that attempted to be drawn triggered an execption");
+			}
+		}
 	}
 	/**
 	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 
@@ -402,7 +417,6 @@ public class CTS_GUI extends Application {
 		altitude = abs(altitude - 90);
 		double rad = toRadians(altitude);
 		double sin = sin(rad);
-		double hypo = sin * (VIEWING_AREA_WIDTH / 2);
 		double r = VIEWING_AREA_WIDTH / 2;
 		
 		double x_val, y_val, distanceFromCenter;

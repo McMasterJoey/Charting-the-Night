@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class CTS_Model {
 	
 	ArrayList<CTS_Star> starList;
+	ArrayList<CTS_DeepSkyObject> DSOlist;
 	
 	// The days since J2000, including the decimal portion
 	private double daysSinceStandard;
@@ -28,6 +29,10 @@ public class CTS_Model {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
 		build_starList();
+		
+		// Generate list of deep sky objects
+		DSOlist = new ArrayList<CTS_DeepSkyObject>();
+		build_DSOlist();
 		
 		// Set default days since standard and universal time
 		daysSinceStandard = 0.0;
@@ -50,6 +55,10 @@ public class CTS_Model {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
 		build_starList();
+		
+		// Generate list of deep sky objects
+		DSOlist = new ArrayList<CTS_DeepSkyObject>();
+		build_DSOlist();
 				
 		// Set params with custom values.
 		this.daysSinceStandard = daysSinceStanderd;
@@ -57,8 +66,24 @@ public class CTS_Model {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
+	
+	/**
+	 * Fetch star list
+	 * 
+	 * @return ArrayList of star objects
+	 */
 	public ArrayList<CTS_Star> getStarList() {
 	    return this.starList;
+	}
+	
+	
+	/**
+	 * Fetch DSO list
+	 * 
+	 * @return ArrayList of deep sky objects
+	 */
+	public ArrayList<CTS_DeepSkyObject> getDSOlist() {
+		return this.DSOlist;
 	}
 	
 	/**
@@ -78,7 +103,7 @@ public class CTS_Model {
 			String line = "";
 			String[] tokens;
 		    
-			// Read all lines of Stars.csv file, skipping the header line:
+			// Read all lines of csv file, skipping the header line:
 			fileReader.readLine();			
 		    while ((line = fileReader.readLine()) != null)
 		    {
@@ -104,6 +129,63 @@ public class CTS_Model {
 		        
 		        // Create new star object and add to starList
 		        starList.add(new CTS_Star(id, name, magnitude, rightAscension, declination));
+		    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	    
+	    try {
+            fileReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+	
+	/**
+	 * Parse DeepSkyObjects.csv to build list of deep sky objects
+	 */
+	private void build_DSOlist() {
+		
+		BufferedReader fileReader = null;
+		int id; 
+		String name = null;
+		double magnitude;
+		double rightAscension; 
+		double declination;
+		
+		try {
+			fileReader = new BufferedReader(new FileReader(".\\src\\Resources\\DeepSkyObjects.csv"));
+			String line = "";
+			String[] tokens;
+			
+			// Read all lines of csv file, skipping the header line:
+			fileReader.readLine();			
+		    while ((line = fileReader.readLine()) != null)
+		    {
+		    	// Get all tokens available in line
+		        tokens = line.split(",");
+		        
+		        // Get relevant DSO data from line
+		        id = Integer.valueOf(tokens[8]);
+		        
+		        if (!tokens[5].isEmpty()) {
+		        	name = tokens[5];
+		        } else {
+		        	name = "UNNAMED DEEP SKY OBJECT";
+		        }
+		        
+		        // Some DSO in the database do not have magnitude given: ignore these
+		        // and do not create the object
+		        if (tokens[4].isEmpty()) {
+		        	continue;
+		        }
+		        
+		        magnitude = Double.valueOf(tokens[4]);		        
+		        rightAscension = Double.valueOf(tokens[0]) * 15;
+		        declination = Double.valueOf(tokens[1]);		
+		        
+		        // Create new star object and add to starList
+		        DSOlist.add(new CTS_DeepSkyObject(id, name, magnitude, rightAscension, declination));		     
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();
