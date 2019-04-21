@@ -12,9 +12,6 @@ import java.util.ArrayList;
  */
 public class CTS_Star extends CTS_SpaceObject {
 
-	private double magnitude = 0.0;
-	private double altitude;
-	private double azimuth;
 
 	// List of other stars in this constellation this star is "connected" to
 	// in the visual drawing of a constellation

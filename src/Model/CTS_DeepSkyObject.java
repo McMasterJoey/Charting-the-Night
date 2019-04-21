@@ -9,12 +9,24 @@ package Model;
  */
 public class CTS_DeepSkyObject extends CTS_SpaceObject {
 
-	public CTS_DeepSkyObject(String name, double rightAcension, double declination) {
-		super(0,name, declination, declination);
+	public CTS_DeepSkyObject(int id, String name, double magnitude, double rightAcension, double declination) {
+		super(id ,name, rightAcension, declination);
+		this.magnitude = magnitude;
 	}
-	public CTS_DeepSkyObject(String name, double rightAcension, double declination, double altitude, double azimuth) {
-		super(0,name, azimuth, azimuth, azimuth, azimuth);
+	public CTS_DeepSkyObject(int id, String name, double magnitude, double rightAcension, double declination, double altitude, double azimuth) {
+		super(id ,name, rightAcension, declination, altitude, azimuth);
+		this.magnitude = magnitude;
 	}
+	
+	/**
+	 * Fetches the magnitude of the DSO.
+	 * @return The magnitude of the DSO.
+	 */
+	public double getMagnitude() {
+		// This is a constant set directly from DeepSkyObjects.csv, setter not needed
+		return magnitude;
+	}
+	
 	/**
 	 * Makes the object printable easily.
 	 * @return The string representation of the CTS_DeepSkyObject object.

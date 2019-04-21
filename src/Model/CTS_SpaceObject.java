@@ -13,6 +13,7 @@ public abstract class CTS_SpaceObject {
 	protected double declination = 0.0;
 	protected double altitude = 0.0;
 	protected double azimuth = 0.0;
+	protected double magnitude = 0.0;
 	protected String name = "Default Name";
 	protected int id;
 	
