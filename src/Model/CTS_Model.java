@@ -125,7 +125,7 @@ public class CTS_Model {
 		        
 		        magnitude = Double.valueOf(tokens[13]);		        
 		        rightAscension = Double.valueOf(tokens[7]) * 15;
-		        declination = Double.valueOf(tokens[8]);		
+		        declination = Double.valueOf(tokens[8]);	
 		        
 		        // Create new star object and add to starList
 		        starList.add(new CTS_Star(id, name, magnitude, rightAscension, declination));
@@ -182,7 +182,7 @@ public class CTS_Model {
 		        
 		        magnitude = Double.valueOf(tokens[4]);		        
 		        rightAscension = Double.valueOf(tokens[0]) * 15;
-		        declination = Double.valueOf(tokens[1]);		
+		        declination = Double.valueOf(tokens[1]);	
 		        
 		        // Create new star object and add to starList
 		        DSOlist.add(new CTS_DeepSkyObject(id, name, magnitude, rightAscension, declination));		     

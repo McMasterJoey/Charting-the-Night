@@ -85,28 +85,33 @@ public class CTS_GUI extends Application {
 		controller = new CTS_Controller(data[0],data[1],0,0); // Only using latitude and longitude
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
-		long count = 0;
+		double azi = 0, alt = 0, mag = 0;
 		
 		// Plot stars
 		for(int x = 0; x < n.size(); x++) {
 			CTS_Star star = n.get(x);
 			try {
-				if (star.getAltitude() != 0 && star.getAzimuth() != 0 && star.getMagnitude() < 6) {
-					drawSpaceObject(star,3,Color.WHITE);
-					//System.out.println(star.getAltitude() + "," + star.getAzimuth());
-					count++;
+				alt = star.getAltitude();
+				azi = star.getAzimuth();
+				mag = star.getMagnitude();
+				if (alt >= 0 && mag < 6) {
+					drawSpaceObject(star,1,Color.WHITE);
 				}
 			} catch(IllegalArgumentException e) {
 				//System.err.println("An object that attempted to be drawn triggered an execption");
 			}
 		}
 		
+		
 		// Plot DSOs
 		for(int x = 0; x < d.size(); x++) {
 			CTS_DeepSkyObject dso = d.get(x);
 			try {
-				if (dso.getAltitude() != 0 && dso.getAzimuth() != 0 && dso.getMagnitude() < 6) {
-					drawSpaceObject(dso,3,Color.WHITE);
+				alt = dso.getAltitude();
+				azi = dso.getAzimuth();
+				mag = dso.getMagnitude();
+				if (alt >= 0 && mag < 6) {
+					drawSpaceObject(dso,3,Color.RED);
 				}
 			} catch(IllegalArgumentException e) {
 				//System.err.println("An object that attempted to be drawn triggered an execption");
