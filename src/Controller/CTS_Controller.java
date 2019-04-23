@@ -72,26 +72,34 @@ public class CTS_Controller {
 		double latitude = Math.toRadians(model.getLatitude());
 		double longitude = Math.toRadians(model.getLongitude());
 		double ha = Math.toRadians(getHourAngle(star));
-		
-		// Calc altitude	
-		double sinOfAlt = Math.sin(declination) * Math.sin(latitude) + Math.cos(declination) * Math.cos(latitude) * Math.cos(ha);
-		double altitude = Math.asin(sinOfAlt);
-		// Convert altitude back to degrees and set it
-		star.setAltitude(Math.toDegrees(altitude));
-		
-		
-		// Calc azimuth
-		double cosDec = Math.cos(declination);
-		double sinHA = Math.sin(ha);
 		double sinDec = Math.sin(declination);
-		double cosLat = Math.cos(latitude);
-		double cosHA = Math.cos(ha);
+		double cosDec = Math.cos(declination);
 		double sinLat  = Math.sin(latitude);
+		double cosLat = Math.cos(latitude);
+		double sinHA = Math.sin(ha);
+		double cosHA = Math.cos(ha);
+			
+		// Calc altitude	
+		double sinOfAlt = sinDec * sinLat + cosDec * cosLat * cosHA;
 		
-		double azimuth = Math.atan(-(cosDec*sinHA)/(sinDec*cosLat - cosDec*cosHA*sinLat));
+		/*
+		double cosOfAlt = Math.cos(Math.asin(sinOfAlt));
+		
+		double cosOfA = (sinDec - sinOfAlt*sinLat) / (cosOfAlt*cosLat);
+		
+		double A = Math.acos(cosOfA);
+		A = Math.toDegrees(A);*/
+		
+		// Convert altitude back to degrees and set it
+		star.setAltitude(Math.toDegrees(Math.asin(sinOfAlt)));
+		
+		
+		// Calc azimuth			
+		double azimuth = Math.atan2(-(cosDec*sinHA),(sinDec*cosLat - cosDec*cosHA*sinLat));
+		
 		// Convert azimuth back to degrees
 		azimuth = Math.toDegrees(azimuth);
-		
+				
 		// Azimuth will be in the interval [0,360)
 		azimuth = azimuth % 360;
 
@@ -99,8 +107,9 @@ public class CTS_Controller {
 		if (azimuth < 0) {
 			azimuth = (360+azimuth);
 		}
+		
 		star.setAzimuth(azimuth);
-
+	
 	}
 	
 	

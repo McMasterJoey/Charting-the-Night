@@ -48,6 +48,13 @@ public abstract class CTS_SpaceObject {
 		azimuth = az;
 	}
 	/**
+	 * Fetches the magnitude of the space object.
+	 * @param The magnitude of the space object.
+	 */
+	public double getMagnitude(){
+		return magnitude;
+	}
+	/**
 	 * Sets the Azimuth data point to the inputed value.
 	 * @param az The azimuth of the space object
 	 */

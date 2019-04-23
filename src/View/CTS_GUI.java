@@ -502,12 +502,18 @@ public class CTS_GUI extends Application {
 		double r = VIEWING_AREA_WIDTH / 2;
 		
 		double x_val, y_val, distanceFromCenter;
-		distanceFromCenter = r*cos(rad);
+		
+		// Length of hypotenuse in viewing area from observer location based on angle of altitude
+		distanceFromCenter = abs(r*cos(rad));
 		
 		// x_val, y_val are coords relative to the center of the viewing area
-		// being considered 0,0 on the Cartesian plane
-		x_val = distanceFromCenter*(cos(90-azimuth));
-		y_val = distanceFromCenter*(sin(90-azimuth));
+		// being considered 0,0 on the Cartesian plane		
+		x_val = distanceFromCenter*(sin(toRadians(azimuth)));
+		y_val = distanceFromCenter*(cos(toRadians(azimuth)));
+		
+		System.out.print("dec: "+obj.getDeclination()+ ",  ra: " +obj.getRightAscension() +",  ");
+		System.out.println("alt: "+obj.getAltitude()+", azimuth: "+obj.getAzimuth());
+
 		
 		// view_x, view_y are the actual JavaFX coordinates to draw at
 		double view_x = 0, view_y = 0;
