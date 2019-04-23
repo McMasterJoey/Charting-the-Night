@@ -31,7 +31,6 @@ public class CTS_Model {
 		starList = new ArrayList<CTS_Star>();
 		Constellations = new ArrayList<CTS_Constellation>();
 		build_starList();
-		this.constellationTestPrint();
 		
 		// Generate list of deep sky objects
 		DSOlist = new ArrayList<CTS_DeepSkyObject>();
@@ -136,36 +135,6 @@ public class CTS_Model {
 		        // Create new star object and add to starList
 		        CTS_Star newStar = new CTS_Star(id, name, magnitude, rightAscension, declination);
 		        starList.add(newStar);
-		        
-		        //Instead of putting everything inside more tabs in an if, I'm just going to skip it if there's nothing there
-		        if (tokens[5].equals("")) {
-		        	continue;
-		        }
-		        //Find the name of our constellation next
-		        String confirmedName = "";
-		        String[] values = tokens[5].split(" ");
-		        //If there's only one value AND that value is length of three, that's our constellation
-		        //(For one that has one value that isn't a constellation, look at 761 on the csv)
-		        if (values.length == 1 && values[0].length() == 3) {
-		        	confirmedName = values[0];
-		        //Okay, I think there can only be 2, but the definition of what goes in this slot makes it unclear, so I'm
-		        //adding this safety just in case
-		        } else if (values[values.length-1].length() == 3){
-		        	confirmedName = values[values.length-1];
-		        }
-		        //Move on if there was something in slot six but it wasn't a constellation name as far as we could tell
-		        if (confirmedName.equals("")) {
-		        	continue;
-		        }
-		        //Now we know we do have a constellation name, check if it already exists
-		        CTS_Constellation alreadyHere = this.searchForExisting(confirmedName);
-		        if (alreadyHere != null) {
-		        	alreadyHere.add(newStar);
-		        } else {
-		        	CTS_Constellation newConstellation = new CTS_Constellation(confirmedName, 0.0, 0.0);
-		        	newConstellation.add(newStar);
-		        	this.Constellations.add(newConstellation);
-		        }
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -308,29 +277,4 @@ public class CTS_Model {
 	public double getDaysSinceStandard() {
 	    return daysSinceStandard;
     }
-	
-	/**
-	 * Searches the list of existing constellations we have to see if an existing constellation exists
-	 * @param name The name of the constellation to search for
-	 * @return The constellation in question if it's found, null if nothing is found. 
-	 */
-	public CTS_Constellation searchForExisting(String name) {
-		for (CTS_Constellation x : this.Constellations) {
-			if (x.name.equals(name)) {
-				return x;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * This is just a test method, delete this later
-	 */
-	private void constellationTestPrint() {
-		for (CTS_Constellation x : this.Constellations) {
-			System.out.println("This constellation has the name " + x.name +" and the following stars:");
-			x.prinStars();
-			System.out.println();
-		}
-	}
 }

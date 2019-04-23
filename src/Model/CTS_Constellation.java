@@ -1,8 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * The CTS_Constellation is a class that holds all the associated data with a constellation. 
@@ -12,30 +11,27 @@ import java.util.List;
  * @author Jackson
  *
  */
-public class CTS_Constellation extends CTS_SpaceObject {
-	private List<CTS_Star> stars;
-	private List<CTS_Constellation_Line> lines;
-	public CTS_Constellation(String name, double rightAcension, double declination) {
-		super(0,name, rightAcension, declination);
-		this.stars = new ArrayList<CTS_Star>();
+public class CTS_Constellation {
+	private String name;
+	private HashMap<CTS_Star, ArrayList<CTS_Star>> connections;
+	
+	public CTS_Constellation(String nameIn) {
+		this.name = nameIn;
+		this.connections = new HashMap<CTS_Star, ArrayList<CTS_Star>>();
 	}
-	public CTS_Constellation(String name, double rightAcension, double declination, double altitude, double azimuth, Collection<CTS_Star> stars) {
-		super(0,name, rightAcension, declination, altitude, azimuth);
-		this.stars = new ArrayList<CTS_Star>();
-	}
-	/**
-	 * A new method to add a star to this constellation
-	 * @param newStar The star in question to be added
-	 */
-	public void add(CTS_Star newStar) {
-		this.stars.add(newStar);
-	}
-	/**
-	 * test function, delete later
-	 */
-	public void prinStars() {
-		for (CTS_Star x : this.stars) {
-			System.out.print(x.name + " ");
+	
+	public void addConnection(CTS_Star from, CTS_Star to) {
+		if (this.connections.containsKey(from)) {
+			this.connections.get(from).add(to);
+		} else {
+			ArrayList<CTS_Star> newList = new ArrayList<CTS_Star>();
+			newList.add(to);
+			this.connections.put(from, newList);
 		}
 	}
+	
+	public HashMap<CTS_Star, ArrayList<CTS_Star>> getConnections(){
+		return this.connections;
+	}
+	
 }
