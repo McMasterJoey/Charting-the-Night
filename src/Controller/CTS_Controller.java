@@ -33,8 +33,9 @@ public class CTS_Controller {
 	}
 	
 	
-	public CTS_Controller(double latitude, double longitude, double daysSinceStanderd, double universaltime) {
-		model = new CTS_Model(latitude, longitude, daysSinceStanderd, universaltime);
+	public CTS_Controller(double latitude, double longitude, int year, int month, int day, int hour, int minutes, int seconds) {
+		model = new CTS_Model(latitude, longitude, 0, 0);
+		model.calcDaysSinceStandard(year, month, day, hour, minutes, seconds);
 		updateAzimuthAndAltitude();
 	}
 	// Placeholder

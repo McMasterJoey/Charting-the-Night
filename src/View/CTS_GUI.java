@@ -86,7 +86,18 @@ public class CTS_GUI extends Application {
 	public void chartTheStars() {
 		resetSkyDrawing();
 		long[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
-		controller = new CTS_Controller(data[0],data[1],0,0); // Only using latitude and longitude
+		/**
+		 * Grabs info stored in the UI controls and translates to a series of longs.
+		 * @return An array of length 9 with the first 2 values being latitude and longitude
+		 * The 3,4 and 5 being Year,Month,Day
+		 * The 6,7 and 8 being Hour,Minute,Second
+		 * 9 being an error code: 0 = NO ERROR
+		 * 9 = Bad latitude, 10 = Bad longitude, 11 = bad date, 12 = bad time
+		 */
+		// CTS_Controller(double latitude, double longitude, int year, int month, int day, int hour, int minutes, int seconds)
+		
+		
+		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		double azi = 0, alt = 0, mag = 0;
