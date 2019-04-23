@@ -215,11 +215,12 @@ public class CTS_Model {
 		int from, to;
 
 		try {
-			in = new BufferedReader(new FileReader(".\\src\\Resources\\Constillations.csv"));
+			in = new BufferedReader(new FileReader(".\\src\\Resources\\Constellations.csv"));
 			String line;
 			String  previousName = "NoSuchConstellationName";
 			String tokens[];
 			CTS_Constellation constellation = null;
+			in.readLine(); // Skip the first line with column names
 
 			while ( (line = in.readLine()) != null ) {
 
