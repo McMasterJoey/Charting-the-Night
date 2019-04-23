@@ -1,6 +1,10 @@
 package View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import Controller.CTS_Controller;
 import Model.CTS_SpaceObject;
 import Model.CTS_Star;
@@ -70,7 +74,7 @@ public class CTS_GUI extends Application {
         		
 		// Display it!
         
-        privateTests();
+        //privateTests();
         
 		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT);
         stage.setScene(scene);
@@ -82,7 +86,18 @@ public class CTS_GUI extends Application {
 	public void chartTheStars() {
 		resetSkyDrawing();
 		long[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
-		controller = new CTS_Controller(data[0],data[1],0,0); // Only using latitude and longitude
+		/**
+		 * Grabs info stored in the UI controls and translates to a series of longs.
+		 * @return An array of length 9 with the first 2 values being latitude and longitude
+		 * The 3,4 and 5 being Year,Month,Day
+		 * The 6,7 and 8 being Hour,Minute,Second
+		 * 9 being an error code: 0 = NO ERROR
+		 * 9 = Bad latitude, 10 = Bad longitude, 11 = bad date, 12 = bad time
+		 */
+		// CTS_Controller(double latitude, double longitude, int year, int month, int day, int hour, int minutes, int seconds)
+		
+		
+		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		double azi = 0, alt = 0, mag = 0;
@@ -122,10 +137,28 @@ public class CTS_GUI extends Application {
 				azi = dso.getAzimuth();
 				mag = dso.getMagnitude();
 				if (alt >= 0 && mag < 6) {
-					//drawSpaceObject(dso,3,Color.RED);
+					drawSpaceObject(dso,1,Color.BROWN);
 				}
 			} catch(IllegalArgumentException e) {
 				//System.err.println("An object that attempted to be drawn triggered an execption");
+			}
+		}
+		// Plot Constellations
+		HashMap<CTS_Star, ArrayList<CTS_Star>> con = controller.getConstellations();
+		if (con == null) {
+			return;
+		}
+		Iterator<CTS_Star> iter = con.keySet().iterator();
+		while(iter.hasNext()) {
+			CTS_Star primarystar = iter.next();
+			ArrayList<CTS_Star> vertex = con.get(primarystar);
+			if (vertex.size() == 0) {
+				continue;
+			}
+			double[] point1 = getPositionOfSpaceObject(primarystar);
+			for(int x = 0;  x < vertex.size(); x++) {
+				double[] endpoint = getPositionOfSpaceObject(vertex.get(x));
+				drawLine(1, point1[0], point1[1], endpoint[0], endpoint[1], Color.GREEN);
 			}
 		}
 	}
@@ -175,7 +208,7 @@ public class CTS_GUI extends Application {
 	 * @param color The color of the line.
 	 * @throws IllegalArgumentException If the line can not be fully displayed on the graphics context or if the thickness is less than 1.
 	 */
-	public void drawLine(int thickness, int startx, int starty, int endx, int endy, Color color) {
+	public void drawLine(double thickness, double startx, double starty, double endx, double endy, Color color) {
 		if (thickness < 1) {
 			throw new IllegalArgumentException("drawLine: thickness must be 1 or greater");
 		}
