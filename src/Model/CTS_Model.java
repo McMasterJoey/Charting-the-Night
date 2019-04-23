@@ -17,6 +17,7 @@ public class CTS_Model {
 	
 	ArrayList<CTS_Star> starList;
 	ArrayList<CTS_DeepSkyObject> DSOlist;
+	ArrayList<CTS_Constellation> Constellations;
 	
 	// The days since J2000, including the decimal portion
 	private double daysSinceStandard;
@@ -28,6 +29,7 @@ public class CTS_Model {
 	public CTS_Model() {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
+		Constellations = new ArrayList<CTS_Constellation>();
 		build_starList();
 		
 		// Generate list of deep sky objects
@@ -54,6 +56,8 @@ public class CTS_Model {
 	public CTS_Model(double latitude, double longitude, double daysSinceStanderd, double universaltime) {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
+		Constellations = new ArrayList<CTS_Constellation>();
+		
 		build_starList();
 		
 		// Generate list of deep sky objects
@@ -94,6 +98,7 @@ public class CTS_Model {
 		BufferedReader fileReader = null;
 		int id; 
 		String name = null;
+		String constellation;
 		double magnitude;
 		double rightAscension; 
 		double declination;
@@ -128,7 +133,8 @@ public class CTS_Model {
 		        declination = Double.valueOf(tokens[8]);	
 		        
 		        // Create new star object and add to starList
-		        starList.add(new CTS_Star(id, name, magnitude, rightAscension, declination));
+		        CTS_Star newStar = new CTS_Star(id, name, magnitude, rightAscension, declination);
+		        starList.add(newStar);
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -185,7 +191,9 @@ public class CTS_Model {
 		        declination = Double.valueOf(tokens[1]);	
 		        
 		        // Create new star object and add to starList
-		        DSOlist.add(new CTS_DeepSkyObject(id, name, magnitude, rightAscension, declination));		     
+		        DSOlist.add(new CTS_DeepSkyObject(id, name, magnitude, rightAscension, declination));	
+		        
+		        
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();
