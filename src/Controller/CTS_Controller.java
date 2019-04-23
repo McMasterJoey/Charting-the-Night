@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 
@@ -36,8 +37,10 @@ public class CTS_Controller {
 		model = new CTS_Model(latitude, longitude, daysSinceStanderd, universaltime);
 		updateAzimuthAndAltitude();
 	}
-	
-	
+	// Placeholder
+	public HashMap<CTS_Star, ArrayList<CTS_Star>> getConstellations() {
+		return null;
+	}
 	private void updateAzimuthAndAltitude() {
 		// Update azimuth and altitude for all stars
 		ArrayList<CTS_Star> starList = model.getStarList();		
