@@ -1,6 +1,10 @@
 package View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import Controller.CTS_Controller;
 import Model.CTS_SpaceObject;
 import Model.CTS_Star;
@@ -70,7 +74,7 @@ public class CTS_GUI extends Application {
         		
 		// Display it!
         
-        privateTests();
+        //privateTests();
         
 		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT);
         stage.setScene(scene);
@@ -82,7 +86,18 @@ public class CTS_GUI extends Application {
 	public void chartTheStars() {
 		resetSkyDrawing();
 		long[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
-		controller = new CTS_Controller(data[0],data[1],0,0); // Only using latitude and longitude
+		/**
+		 * Grabs info stored in the UI controls and translates to a series of longs.
+		 * @return An array of length 9 with the first 2 values being latitude and longitude
+		 * The 3,4 and 5 being Year,Month,Day
+		 * The 6,7 and 8 being Hour,Minute,Second
+		 * 9 being an error code: 0 = NO ERROR
+		 * 9 = Bad latitude, 10 = Bad longitude, 11 = bad date, 12 = bad time
+		 */
+		// CTS_Controller(double latitude, double longitude, int year, int month, int day, int hour, int minutes, int seconds)
+		
+		
+		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		double azi = 0, alt = 0, mag = 0;
@@ -95,7 +110,18 @@ public class CTS_GUI extends Application {
 				azi = star.getAzimuth();
 				mag = star.getMagnitude();
 				if (alt >= 0 && mag < 6) {
-					drawSpaceObject(star,1,Color.WHITE);
+					//drawSpaceObject(star,1,Color.WHITE);
+					// I named it cupcake because when I first tested it
+					// The result in the GUI was a cupcake!
+					double cupcake = magnitudeToRadius(mag);
+					//System.out.println(cupcake);
+					drawSpaceObject(star, cupcake,Color.WHITE);
+				} else if (alt >= 0 && mag < 8) {
+					if (mag < 7) {
+						drawSpaceObject(star, .2,Color.GREY);
+					} else {
+						drawSpaceObject(star, .15,Color.DARKGRAY);
+					}
 				}
 			} catch(IllegalArgumentException e) {
 				//System.err.println("An object that attempted to be drawn triggered an execption");
@@ -111,10 +137,28 @@ public class CTS_GUI extends Application {
 				azi = dso.getAzimuth();
 				mag = dso.getMagnitude();
 				if (alt >= 0 && mag < 6) {
-					drawSpaceObject(dso,3,Color.RED);
+					drawSpaceObject(dso,1,Color.BROWN);
 				}
 			} catch(IllegalArgumentException e) {
 				//System.err.println("An object that attempted to be drawn triggered an execption");
+			}
+		}
+		// Plot Constellations
+		HashMap<CTS_Star, ArrayList<CTS_Star>> con = controller.getConstellations();
+		if (con == null) {
+			return;
+		}
+		Iterator<CTS_Star> iter = con.keySet().iterator();
+		while(iter.hasNext()) {
+			CTS_Star primarystar = iter.next();
+			ArrayList<CTS_Star> vertex = con.get(primarystar);
+			if (vertex.size() == 0) {
+				continue;
+			}
+			double[] point1 = getPositionOfSpaceObject(primarystar);
+			for(int x = 0;  x < vertex.size(); x++) {
+				double[] endpoint = getPositionOfSpaceObject(vertex.get(x));
+				drawLine(1, point1[0], point1[1], endpoint[0], endpoint[1], Color.GREEN);
 			}
 		}
 	}
@@ -137,6 +181,24 @@ public class CTS_GUI extends Application {
 		gc.fillOval(xx,yy, radius * 2, radius * 2);
 	}
 	/**
+	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 
+	 * x and y are absolute, relative to the upper left side of the rectangular view. 
+	 * @param radius The radius of the circle
+	 * @param x The horizontal coordinate of the grid to put the circle center. 
+	 * @param y The vertical coordinate of the grid to put the circle center.
+	 * @param color The color of the circle.
+	 * @throws IllegalArgumentException If the circle can not be fully displayed on the graphics context.
+	 */
+	public void drawCircle(double radius, double x, double y, Color color) {
+		double xx = x - radius;
+		double yy = y - radius;
+		if (xx < 0.0 || yy < 0.0 || xx > (VIEWING_AREA_WIDTH -  radius)|| yy > (VIEWING_AREA_HEIGHT - radius)) {
+			throw new IllegalArgumentException("drawCircle: invalid set of radius and x/y cordnates");
+		}
+		gc.setFill(color);
+		gc.fillOval(xx,yy, radius * 2, radius * 2);
+	}
+	/**
 	 * Draws a line of inputed thickness between 2 points.
 	 * @param thickness The thickness of the line in pixels
 	 * @param startx The starting x coordinate of the line.
@@ -146,7 +208,7 @@ public class CTS_GUI extends Application {
 	 * @param color The color of the line.
 	 * @throws IllegalArgumentException If the line can not be fully displayed on the graphics context or if the thickness is less than 1.
 	 */
-	public void drawLine(int thickness, int startx, int starty, int endx, int endy, Color color) {
+	public void drawLine(double thickness, double startx, double starty, double endx, double endy, Color color) {
 		if (thickness < 1) {
 			throw new IllegalArgumentException("drawLine: thickness must be 1 or greater");
 		}
@@ -222,6 +284,21 @@ public class CTS_GUI extends Application {
 			throw new IllegalArgumentException("Something went wrong");
 		}
 		drawCircle(radius, (int) result[0], (int) result[1], color);
+	}
+	/**
+	 * Wrapper function to draw space objects.
+	 * @param obj The space object to be drawn.
+	 * @param radius Its radius
+	 * @param color Its color
+	 * @throws IllegalArgumentException When something that is inputed causes an issue with displaying.
+	 */
+	public void drawSpaceObject(CTS_SpaceObject obj, double radius, Color color) {
+		double[] result = getPositionOfSpaceObject(obj);
+		if (result == null) {
+			//System.err.println("getPostionOfSpaceObject returned null!");
+			throw new IllegalArgumentException("Something went wrong");
+		}
+		drawCircle(radius, result[0], result[1], color);
 	}
 	/**
 	 * Sets up the Dialoguebox that is used to take inputs
@@ -452,37 +529,6 @@ public class CTS_GUI extends Application {
 		double[] retval = {view_x, view_y};
 		return retval;
 		
-		/*
-		//System.out.println(hypo);
-		// hypo * sin(degree) = x
-		// rad = degree * PI / 180
-		if (azimuth == 360.0) {
-			azimuth = 0.0;
-		}
-		boolean postive = azimuth >= 90.0 && azimuth <= 270.0;
-		boolean left = false;
-		if (azimuth > 180.0) {
-			azimuth -= 180.0;
-			left = true;
-		}
-		azimuth -= 90;
-		azimuth = Math.abs(azimuth);
-		//System.out.println(azimuth);
-		double changey = hypo * sin(azimuth * (PI / 180));
-		double changex = sqrt((hypo * hypo) - (changey * changey));
-		if (left) {
-			changex *= -1;
-		}
-		if (!postive) {
-			changey *= -1;
-		}
-		
-		double[] retval = new double[2];
-		retval[0] = changex + (VIEWING_AREA_WIDTH / 2);
-		retval[1] = changey + (VIEWING_AREA_HEIGHT / 2);
-		//System.out.println(changex + " " + changey);
-		return retval;
-		*/
 	}
 	/**
 	 * Joeys speific testing function to test, inprogress
@@ -518,6 +564,28 @@ public class CTS_GUI extends Application {
 		gc.setFill(Color.LIGHTGREY);
 		gc.fillRect(0, 0,  VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
+	}
+	private double magnitudeToRadius(double mag) {
+		if (mag > 6.0) {
+			return 0.25;
+		} else if (mag < -2.0) {
+			return 4.0;
+		} else if (mag > 5.0) {
+			return 0.3;
+		} else if (mag > 4.0) {
+			return 0.4;
+		} else if (mag > 3.0) {
+			return 0.55;
+		} else if (mag > 2.0) {
+			return 0.7;
+		} else if (mag > 1.0) {
+			return 0.9;
+		} else if (mag > 0.5) {
+			return 1.1;
+		} else if (mag > .5) {
+			return 1.25;
+		}
+		return 1.5;
 	}
 	/*
 	 * Alt is distance from the edge of the circle. 90 deg - 0 (goes to - 90)
