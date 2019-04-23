@@ -31,6 +31,7 @@ public class CTS_Model {
 		starList = new ArrayList<CTS_Star>();
 		Constellations = new ArrayList<CTS_Constellation>();
 		build_starList();
+		build_ConstellationList();
 		
 		// Generate list of deep sky objects
 		DSOlist = new ArrayList<CTS_DeepSkyObject>();
@@ -59,6 +60,7 @@ public class CTS_Model {
 		Constellations = new ArrayList<CTS_Constellation>();
 		
 		build_starList();
+		build_ConstellationList();
 		
 		// Generate list of deep sky objects
 		DSOlist = new ArrayList<CTS_DeepSkyObject>();
@@ -205,6 +207,53 @@ public class CTS_Model {
             e.printStackTrace();
         }
 	}
+
+	public void build_ConstellationList() {
+
+		BufferedReader in = null;
+		String name;
+		int from, to;
+
+		try {
+			in = new BufferedReader(new FileReader(".\\src\\Resources\\Constellations.csv"));
+			String line;
+			String  previousName = "NoSuchConstellationName";
+			String tokens[];
+			CTS_Constellation constellation = null;
+			in.readLine(); // Skip the first line with column names
+
+			while ( (line = in.readLine()) != null ) {
+
+				tokens = line.split(",");
+				name = tokens[0];
+				from = Integer.valueOf(tokens[1]);
+				to = Integer.valueOf(tokens[2]);
+
+				if (!name.equals(previousName)) {
+
+					constellation = new CTS_Constellation(name);
+					Constellations.add(constellation);
+					previousName = name;
+				}
+
+				constellation.addConnection(getStar(from), getStar(to));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public CTS_Star getStar(int id) {
+
+		for (CTS_Star star : starList) {
+
+			if (star.id == id) {
+				return star;
+			}
+		}
+
+		return null;
+	}
 	
 	public void setLatitude(double lat) {
 		latitude = lat;
@@ -220,6 +269,10 @@ public class CTS_Model {
 	
 	public double getLongitude() {
 		return longitude;
+	}
+
+	public ArrayList<CTS_Constellation> getConstellations() {
+		return Constellations;
 	}
 	
 	/**
