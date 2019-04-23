@@ -1,11 +1,9 @@
 package View;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import Controller.CTS_Controller;
+import Model.CTS_Constellation;
 import Model.CTS_SpaceObject;
 import Model.CTS_Star;
 import Model.CTS_DeepSkyObject;
@@ -144,23 +142,35 @@ public class CTS_GUI extends Application {
 			}
 		}
 		// Plot Constellations
-		HashMap<CTS_Star, ArrayList<CTS_Star>> con = controller.getConstellations();
-		if (con == null) {
+		ArrayList<CTS_Constellation> constellations = controller.getConstellations();
+		if (constellations == null) {
 			return;
 		}
-		Iterator<CTS_Star> iter = con.keySet().iterator();
-		while(iter.hasNext()) {
-			CTS_Star primarystar = iter.next();
-			ArrayList<CTS_Star> vertex = con.get(primarystar);
-			if (vertex.size() == 0) {
-				continue;
+
+		for (CTS_Constellation constellation : constellations) {
+
+			HashMap<CTS_Star, ArrayList<CTS_Star>> connections = constellation.getConnections();
+			HashSet<CTS_Star> keys = new HashSet<>(connections.keySet());
+
+			for (CTS_Star fromStar : keys) {
+
+				double[] from = getPositionOfSpaceObject(fromStar);
+
+				for (CTS_Star toStar : connections.get(fromStar)) {
+					double[] to = getPositionOfSpaceObject(toStar);
+					if (from != null && to != null) {
+						drawLine(1, from[0], from[1], to[0], to[1], Color.GREEN);
+					}
+
+				}
 			}
-			double[] point1 = getPositionOfSpaceObject(primarystar);
-			for(int x = 0;  x < vertex.size(); x++) {
-				double[] endpoint = getPositionOfSpaceObject(vertex.get(x));
-				drawLine(1, point1[0], point1[1], endpoint[0], endpoint[1], Color.GREEN);
+
+//			double[] point1 = getPositionOfSpaceObject(primarystar);
+//			for(int x = 0;  x < vertex.size(); x++) {
+//				double[] endpoint = getPositionOfSpaceObject(vertex.get(x));
+//				drawLine(1, point1[0], point1[1], endpoint[0], endpoint[1], Color.GREEN);
 			}
-		}
+		//}
 	}
 	/**
 	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 

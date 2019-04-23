@@ -39,8 +39,8 @@ public class CTS_Controller {
 		updateAzimuthAndAltitude();
 	}
 	// Placeholder
-	public HashMap<CTS_Star, ArrayList<CTS_Star>> getConstellations() {
-		return null;
+	public ArrayList<CTS_Constellation> getConstellations() {
+		return model.getConstellations();
 	}
 	private void updateAzimuthAndAltitude() {
 		// Update azimuth and altitude for all stars

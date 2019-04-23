@@ -270,6 +270,10 @@ public class CTS_Model {
 	public double getLongitude() {
 		return longitude;
 	}
+
+	public ArrayList<CTS_Constellation> getConstellations() {
+		return Constellations;
+	}
 	
 	/**
 	 * Returns the local siderial time.
