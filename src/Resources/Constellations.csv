@@ -39,8 +39,51 @@ Cancer,42792,43939,Asellus Australis,Acubens
 Cancer,42792,41283,Asellus Australis,27 Cnc
 Cancer,42687,42984,Asellus Borealis,Iota Cancri
 Cancer,42687,40728,Asellus Borealis,Chi Cancri
+Leo,54718,54712,Chertan,Zosma
+Leo,54718,55476,Chertan,Iota Leonis
+Leo,54718,51475,Chertan,Rho Leonis
+Leo,54718,49441,Cherta,Eta Leonis
+Leo,54712,57459,Zosma,Denebola
+Leo,54712,50440,Zosma,Algieba
+Leo,50440,50193,Algieba,Adhafera
+Leo,50440,49441,Algieba,Eta Leonis
+Leo,50193,48318,Adhafera,Rasalas
+Leo,48318,46014,Rasalas,Al Minliar al Asad
+Leo,48318,47772,Rasalas,Algenubi
+Leo,46014,46617,Al Minliar al Asad,Alterf
+Leo,46617,47772,Alterf,Algenubi
+Leo,47772,49441,Algenubi,Eta Leonis
+Leo,49441,50440,Eta Leonis,Algieba
+Leo,49441,49528,Eta Leonis,Regulus
+Leo,49441,47373,Eta Leonis,Subra
 Leo Minor,51089,53075,Beta Leonis Minoris,Praecipua
 Leo Minor,51089,49451,Beta Leonis Minoris,21 Leonis Minoris
 Leo Minor,49451,46819,21 Leonis Minoris,10 Leonis Minoris
 Leo Minor,53075,50911,Praecipua,30 Leonis Minoris
 Leo Minor,50911,49451,30 Leonis Minoris,21 Leonis Minoris
+Orion,26142,27919,Meissa,Betelgeuse
+Orion,26142,25273,Meissa,Bellatrix
+Orion,27919,28543,Betelgeuse,Mu Orionis
+Orion,28543,29353,Mu Orionis,Xi Orionis
+Orion,28543,28966,Mu Orionis,Nu Orionis
+Orion,29353,28645,Xi Orionis,Chi-2 Orionis
+Orion,28966,27844,Nu Orionis,Chi-1 Orionis
+Orion,27919,26662,Betelgeuse,Alnitak
+Orion,26662,27298,Alnitak,Saiph
+Orion,26662,26484,Alnitak,Sigma Orionis
+Orion,26662,26246,Alnitak,Alnilam
+Orion,27298,24378,Saiph,Rigel
+Orion,24378,25218,Rigel,Eta Orionis
+Orion,25218,25865,Eta Orionis,Mintaka
+Orion,25865,25273,Mintaka,Bellatrix
+Orion,25273,22396,Bellatrix,Tabit
+Orion,22396,22456,Tabit,Pi-2 Orionis
+Orion,22396,22496,Tabit,Pi-4 Orionis
+Orion,22456,22904,Pi-2 Orionis,Omicron-2 Orionis
+Orion,22904,22614,Omicron-2 Orionis,Omicron-1 Orionis
+Orion,22496,22744,Pi-4 Orionis,Pi-5 Orionis
+Orion,22744,23069,Pi-5 Orionis,Pi-6 Orionis
+Cassiopeia,8867,6672,Segin,Ruchbah
+Cassiopeia,6672,4417,Ruchbah,Navi
+Cassiopeia,4417,3172,Navi,Schedar
+Cassiopeia,3172,744,Schedar,Caph
