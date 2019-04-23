@@ -146,7 +146,6 @@ public class CTS_GUI extends Application {
 		if (constellations == null) {
 			return;
 		}
-
 		for (CTS_Constellation constellation : constellations) {
 
 			HashMap<CTS_Star, ArrayList<CTS_Star>> connections = constellation.getConnections();
@@ -159,7 +158,8 @@ public class CTS_GUI extends Application {
 				for (CTS_Star toStar : connections.get(fromStar)) {
 					double[] to = getPositionOfSpaceObject(toStar);
 					if (from != null && to != null) {
-						drawLine(1, from[0], from[1], to[0], to[1], Color.GREEN);
+						System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
+						drawLine(from[0], from[1], to[0], to[1], Color.WHITE);
 					}
 
 				}
@@ -207,6 +207,10 @@ public class CTS_GUI extends Application {
 		}
 		gc.setFill(color);
 		gc.fillOval(xx,yy, radius * 2, radius * 2);
+	}
+	public void drawLine(double startx, double starty, double endx, double endy, Color color) {
+		gc.setStroke(color);
+		gc.strokeLine(startx,starty,endx,endy);
 	}
 	/**
 	 * Draws a line of inputed thickness between 2 points.
