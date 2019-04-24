@@ -229,7 +229,7 @@ public class CTS_Model {
 	 * @return a double representing the local siderial time for the star
 	 */
 	public double getLocalSiderialTime() {
-		double lst = 100.46 + 0.985647 * daysSinceStandard + (15 + longitude) * universalTime;
+		double lst = 100.46 + (0.985647 * daysSinceStandard) + longitude + (15 * universalTime);
 
 		while (lst < 0) {
 			lst += 360;

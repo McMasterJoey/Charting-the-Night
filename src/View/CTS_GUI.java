@@ -496,18 +496,18 @@ public class CTS_GUI extends Application {
 		if (altitude < 0 || altitude > 90) {
 			return null;
 		}
-		altitude = abs(altitude - 90);
-		double rad = toRadians(altitude);
-		double sin = sin(rad);
+
+		double radAlt = toRadians(altitude);
+
 		double r = VIEWING_AREA_WIDTH / 2;
 		
 		double x_val, y_val, distanceFromCenter;
-		distanceFromCenter = r*cos(rad);
+		distanceFromCenter = abs(r*cos(radAlt));
 		
 		// x_val, y_val are coords relative to the center of the viewing area
 		// being considered 0,0 on the Cartesian plane
-		x_val = distanceFromCenter*(cos(90-azimuth));
-		y_val = distanceFromCenter*(sin(90-azimuth));
+		x_val = distanceFromCenter*(sin(azimuth));
+		y_val = distanceFromCenter*(cos(azimuth));
 		
 		// view_x, view_y are the actual JavaFX coordinates to draw at
 		double view_x = 0, view_y = 0;
@@ -524,6 +524,10 @@ public class CTS_GUI extends Application {
 		} else {
 			view_x = max(0,(299+x_val));
 			view_y = max(0,(299-y_val));
+		}
+		
+		if (obj.getMagnitude() < 1) {
+			System.out.println(obj);
 		}
 				
 		double[] retval = {view_x, view_y};

@@ -72,6 +72,7 @@ public class CTS_Controller {
 		double latitude = Math.toRadians(model.getLatitude());
 		double longitude = Math.toRadians(model.getLongitude());
 		double ha = Math.toRadians(getHourAngle(star));
+		double azimuth;
 		
 		// Calc altitude	
 		double sinOfAlt = Math.sin(declination) * Math.sin(latitude) + Math.cos(declination) * Math.cos(latitude) * Math.cos(ha);
@@ -80,26 +81,42 @@ public class CTS_Controller {
 		star.setAltitude(Math.toDegrees(altitude));
 		
 		
-		// Calc azimuth
+		// Calc azimuth		
 		double cosDec = Math.cos(declination);
 		double sinHA = Math.sin(ha);
 		double sinDec = Math.sin(declination);
 		double cosLat = Math.cos(latitude);
 		double cosHA = Math.cos(ha);
 		double sinLat  = Math.sin(latitude);
+		double cosAlt = Math.cos(altitude);
+		double sinAlt = Math.sin(altitude);
 		
-		double azimuth = Math.atan(-(cosDec*sinHA)/(sinDec*cosLat - cosDec*cosHA*sinLat));
+		/* UNCERTAIN IF GOOD FORMULA
+		double cosA = (sinDec - sinAlt*sinLat)/(cosAlt*cosLat);
+		double A = Math.acos(cosA);
+		
+		if (sinHA < 0) {
+			azimuth = A;
+		} else {
+			azimuth = 360-A;
+		}
+		*/
+		
+		azimuth = Math.atan(-(cosDec*sinHA)/(sinDec*cosLat - cosDec*cosHA*sinLat));
+		
 		// Convert azimuth back to degrees
 		azimuth = Math.toDegrees(azimuth);
 		
-		// Azimuth will be in the interval [0,360)
+		// Final azimuth will be in the interval [0,360)
 		azimuth = azimuth % 360;
 
 		// If azimuth is given as negative, find the positive coterminal angle
 		if (azimuth < 0) {
 			azimuth = (360+azimuth);
 		}
+		
 		star.setAzimuth(azimuth);
+		
 
 	}
 	
