@@ -107,7 +107,13 @@ public class CTS_GUI extends Application {
 				alt = star.getAltitude();
 				azi = star.getAzimuth();
 				mag = star.getMagnitude();
-				if (alt >= 0 && mag < 6) {
+                if (alt >= 0 && mag < -20) {
+                	// The sun is the only star with mag < -20
+                	// Make it yellow
+                    double cupcake = magnitudeToRadius(mag);
+                    drawSpaceObject(star, cupcake,Color.YELLOW);
+                }
+                else if (alt >= 0 && mag < 6) {
 					//drawSpaceObject(star,1,Color.WHITE);
 					// I named it cupcake because when I first tested it
 					// The result in the GUI was a cupcake!
@@ -520,8 +526,8 @@ public class CTS_GUI extends Application {
 		
 		// x_val, y_val are coords relative to the center of the viewing area
 		// being considered 0,0 on the Cartesian plane
-		x_val = distanceFromCenter*(sin(azimuth));
-		y_val = distanceFromCenter*(cos(azimuth));
+		x_val = distanceFromCenter*(sin(toRadians(azimuth)));
+		y_val = distanceFromCenter*(cos(toRadians(azimuth)));
 		
 		// view_x, view_y are the actual JavaFX coordinates to draw at
 		double view_x = 0, view_y = 0;
@@ -540,14 +546,57 @@ public class CTS_GUI extends Application {
 			view_y = max(0,(299-y_val));
 		}
 		
-		if (obj.getMagnitude() < 1) {
-			System.out.println(obj);
+		// TESTING TESTING TESTING
+		/*
+		if (obj.getMagnitude() < -20) {
+			mattTest(obj,controller.getModel().getLatitude(),controller.getModel().getLongitude());
+			System.out.println("xval, yval = ("+x_val+", "+y_val+")");
+			System.out.println("viewx, viewy = ("+view_x+", "+view_y+")");
 		}
-				
+		*/
+		//////////////////////////
+		
 		double[] retval = {view_x, view_y};
 		return retval;
 		
 	}
+	
+	/** Matt testing function to print relevant info for online calculator
+	 * 
+	 */
+	private void mattTest(CTS_SpaceObject obj, double lati, double longi) {
+		System.out.println(obj);
+		double dec = obj.getDeclination();
+		double ra = obj.getRightAscension();
+		
+		
+		int decdeg = (int) dec;
+		
+		if (dec > 1) {
+			while (dec>1) {
+				dec--;
+			}
+		} else {
+			while (dec<-1) {
+				dec++;
+			}
+		}
+		double decmin = Math.abs(dec*60);
+		
+	
+		double rahour = ra/15;
+
+		int rah = (int) rahour;
+
+		
+		
+		double ramin = Math.abs((rahour-rah)*60);
+		
+		System.out.print("DEC: " + decdeg +"deg, "+decmin+" min,   RA: " +rah+" hours, "+ ramin + " mins...\n\n");
+		
+		
+	}
+	
 	/**
 	 * Joeys speific testing function to test, inprogress
 	 * Varrious draw functions. 

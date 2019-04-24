@@ -82,37 +82,23 @@ public class CTS_Controller {
 		
 		
 		// Calc azimuth		
+		double sinDec = Math.sin(declination);
 		double cosDec = Math.cos(declination);
 		double sinHA = Math.sin(ha);
-		double sinDec = Math.sin(declination);
-		double cosLat = Math.cos(latitude);
 		double cosHA = Math.cos(ha);
 		double sinLat  = Math.sin(latitude);
-		double cosAlt = Math.cos(altitude);
+		double cosLat = Math.cos(latitude);
 		double sinAlt = Math.sin(altitude);
-		
-		/* UNCERTAIN IF GOOD FORMULA
+		double cosAlt = Math.cos(altitude);
+
+		// Formula: http://www.convertalot.com/celestial_horizon_co-ordinates_calculator.html
 		double cosA = (sinDec - sinAlt*sinLat)/(cosAlt*cosLat);
-		double A = Math.acos(cosA);
+		double A = Math.toDegrees(Math.acos(cosA));
 		
 		if (sinHA < 0) {
 			azimuth = A;
 		} else {
 			azimuth = 360-A;
-		}
-		*/
-		
-		azimuth = Math.atan(-(cosDec*sinHA)/(sinDec*cosLat - cosDec*cosHA*sinLat));
-		
-		// Convert azimuth back to degrees
-		azimuth = Math.toDegrees(azimuth);
-		
-		// Final azimuth will be in the interval [0,360)
-		azimuth = azimuth % 360;
-
-		// If azimuth is given as negative, find the positive coterminal angle
-		if (azimuth < 0) {
-			azimuth = (360+azimuth);
 		}
 		
 		star.setAzimuth(azimuth);
