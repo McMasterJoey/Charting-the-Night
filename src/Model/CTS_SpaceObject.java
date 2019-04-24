@@ -104,11 +104,18 @@ public abstract class CTS_SpaceObject {
 		return id;
 	}
 	/**
+	 * Fetches the magnitude of the space object.
+	 * @return the magnitude of the space object.
+	 */
+	public double getMagnitude() {
+		return magnitude;
+	}
+	/**
 	 * Makes the object printable easily.
 	 * @return The string representation of the space object.
 	 */
 	public String toString() {
-		return "SpaceObject: [" + name + "," + id +","+ rightAscension + "," + declination + "," + altitude + "," + azimuth + "]";
+		return "SpaceObject: [NAME: " + name + ", MAG: " + magnitude + ", RA: " + rightAscension + ", DEC: " + declination + ", ALT: " + altitude + ", AZI: " + azimuth + "]";
 	}
 
 }

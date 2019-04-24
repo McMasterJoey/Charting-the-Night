@@ -63,6 +63,6 @@ public class CTS_Star extends CTS_SpaceObject {
 	 * @return The string representation of the CTS_Star object.
 	 */
 	public String toString() {
-		return "Star: [" + name + "," + magnitude + "," + rightAscension + "," + declination + "," + altitude + "," + azimuth + "]";
+		return "Star: [NAME: " + name + ", MAG: " + magnitude + ", RA: " + rightAscension + ", DEC: " + declination + ", ALT: " + altitude + ", AZI: " + azimuth + "]";
 	}
 }
