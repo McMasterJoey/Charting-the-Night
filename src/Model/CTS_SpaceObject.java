@@ -16,6 +16,7 @@ public abstract class CTS_SpaceObject {
 	protected double magnitude = 0.0;
 	protected String name = "Default Name";
 	protected int id;
+	protected int hip;
 	
 	/**
 	 * Inits a new space object.
@@ -46,6 +47,19 @@ public abstract class CTS_SpaceObject {
 		declination = dec;
 		altitude = alt;
 		azimuth = az;
+	}
+
+	/**
+	 * Inits a new space object with a Hipparcos catalog id.
+	 * @param id The id of the SO from the CSV database.
+	 * @param hip The Hipparcos catalog number.
+	 * @param name The name of the space object.
+	 * @param rA The Right Ascension of the space object.
+	 * @param dec The Declination of the space object.
+	 */
+	public CTS_SpaceObject(int id, int hip, String name, double rA, double dec) {
+		this(id, name, rA, dec);
+		this.hip = hip;
 	}
 	/**
 	 * Sets the Azimuth data point to the inputed value.
