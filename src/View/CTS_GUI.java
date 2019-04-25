@@ -14,6 +14,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -88,79 +89,85 @@ public class CTS_GUI extends Application {
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		double azi = 0, alt = 0, mag = 0;
-		
-		// Plot stars
-		for(int x = 0; x < n.size(); x++) {
-			CTS_Star star = n.get(x);
-			try {
-				alt = star.getAltitude();
-				azi = star.getAzimuth();
-				mag = star.getMagnitude();
-                if (alt >= 0 && mag < -20) {
-                	// The sun is the only star with mag < -20
-                	// Make it yellow
-                    double cupcake = magnitudeToRadius(mag);
-                    drawSpaceObject(star, cupcake,Color.YELLOW);
-                }
-                else if (alt >= 0 && mag < 6) {
-					// I named it cupcake because when I first tested it
-					// The result in the GUI was a cupcake!
-					double cupcake = magnitudeToRadius(mag);
-					drawSpaceObject(star, cupcake,Color.WHITE);
-				} else if (alt >= 0 && mag < 9) {
-					if (mag < 7) {
-						drawSpaceObject(star, .2,Color.GREY);
-					} else if (mag < 8){
-						drawSpaceObject(star, .14,Color.DARKGRAY);
-					} else {
-						drawSpaceObject(star, .09,Color.DARKGRAY);
+		boolean[] plottingstatus = getCheckBoxes();
+		if (plottingstatus[0]) {
+			// Plot stars
+			for(int x = 0; x < n.size(); x++) {
+				CTS_Star star = n.get(x);
+				try {
+					alt = star.getAltitude();
+					azi = star.getAzimuth();
+					mag = star.getMagnitude();
+	                if (alt >= 0 && mag < -20) {
+	                	// The sun is the only star with mag < -20
+	                	// Make it yellow
+	                    double cupcake = magnitudeToRadius(mag);
+	                    drawSpaceObject(star, cupcake,Color.YELLOW);
+	                }
+	                else if (alt >= 0 && mag < 6) {
+						// I named it cupcake because when I first tested it
+						// The result in the GUI was a cupcake!
+						double cupcake = magnitudeToRadius(mag);
+						drawSpaceObject(star, cupcake,Color.WHITE);
+					} else if (alt >= 0 && mag < 9) {
+						if (mag < 7) {
+							drawSpaceObject(star, .2,Color.GREY);
+						} else if (mag < 8){
+							drawSpaceObject(star, .14,Color.DARKGRAY);
+						} else {
+							drawSpaceObject(star, .09,Color.DARKGRAY);
+						}
+					}
+				} catch(IllegalArgumentException e) {
+					//System.err.println("An object that attempted to be drawn triggered an execption");
+				}
+			}
+		}
+		if (plottingstatus[1]) {
+			// Plot DSOs
+			for(int x = 0; x < d.size(); x++) {
+				CTS_DeepSkyObject dso = d.get(x);
+				try {
+					alt = dso.getAltitude();
+					azi = dso.getAzimuth();
+					mag = dso.getMagnitude();
+					if (alt >= 0 && mag < 6) {
+						drawSpaceObject(dso,1,Color.BROWN);
+					}
+				} catch(IllegalArgumentException e) {
+					//System.err.println("An object that attempted to be drawn triggered an execption");
+				}
+			}
+		}
+		if (plottingstatus[2]) {
+			// Plot Constellations
+			ArrayList<CTS_Constellation> constellations = controller.getConstellations();
+			if (constellations == null) {
+				return;
+			}
+			for (CTS_Constellation constellation : constellations) {
+
+				HashMap<CTS_Star, ArrayList<CTS_Star>> connections = constellation.getConnections();
+				HashSet<CTS_Star> keys = new HashSet<>(connections.keySet());
+
+				for (CTS_Star fromStar : keys) {
+
+					double[] from = getPositionOfSpaceObject(fromStar);
+
+					for (CTS_Star toStar : connections.get(fromStar)) {
+						double[] to = getPositionOfSpaceObject(toStar);
+						if (from != null && to != null) {
+							//System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
+							drawLine(from[0], from[1], to[0], to[1], Color.WHITE);
+						}
+
 					}
 				}
-			} catch(IllegalArgumentException e) {
-				//System.err.println("An object that attempted to be drawn triggered an execption");
 			}
 		}
-		
-		
-		// Plot DSOs
-		for(int x = 0; x < d.size(); x++) {
-			CTS_DeepSkyObject dso = d.get(x);
-			try {
-				alt = dso.getAltitude();
-				azi = dso.getAzimuth();
-				mag = dso.getMagnitude();
-				if (alt >= 0 && mag < 6) {
-					drawSpaceObject(dso,1,Color.BROWN);
-				}
-			} catch(IllegalArgumentException e) {
-				//System.err.println("An object that attempted to be drawn triggered an execption");
-			}
+		if (plottingstatus[3]) {
+			// TODO Plot planets
 		}
-		// Plot Constellations
-		ArrayList<CTS_Constellation> constellations = controller.getConstellations();
-		if (constellations == null) {
-			return;
-		}
-		for (CTS_Constellation constellation : constellations) {
-
-			HashMap<CTS_Star, ArrayList<CTS_Star>> connections = constellation.getConnections();
-			HashSet<CTS_Star> keys = new HashSet<>(connections.keySet());
-
-			for (CTS_Star fromStar : keys) {
-
-				double[] from = getPositionOfSpaceObject(fromStar);
-
-				for (CTS_Star toStar : connections.get(fromStar)) {
-					double[] to = getPositionOfSpaceObject(toStar);
-					if (from != null && to != null) {
-						//System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
-						drawLine(from[0], from[1], to[0], to[1], Color.WHITE);
-					}
-
-				}
-			}
-
-			}
 	}
 	/**
 	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 
@@ -329,11 +336,26 @@ public class CTS_GUI extends Application {
 		TextField date = new TextField(d.toString());
 		box2.getChildren().add(new Label("Date: "));
 		box2.getChildren().add(date);
-		
 		TextField time = new TextField(t.toString());
 		HBox box3 = new HBox(5);
 		box3.getChildren().add(new Label("Time: "));
 		box3.getChildren().add(time);
+		
+		// Check boxes
+		HBox box5 = new HBox(5);
+		CheckBox c1 = new CheckBox("Plot Stars");
+		c1.setSelected(true);
+		CheckBox c2 = new CheckBox("Plot DSOs");
+		c2.setSelected(true);
+		CheckBox c3 = new CheckBox("Plot Constellations");
+		c3.setSelected(true);
+		CheckBox c4 = new CheckBox("Plot Planets");
+		c4.setSelected(true);
+		box5.getChildren().add(c1);
+		box5.getChildren().add(c2);
+		box5.getChildren().add(c3);
+		box5.getChildren().add(c4);
+		
 		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
 		but.setPadding(new Insets(5));
@@ -345,6 +367,7 @@ public class CTS_GUI extends Application {
 		uicontrols.getChildren().add(box1);
 		uicontrols.getChildren().add(box2);
 		uicontrols.getChildren().add(box3);
+		uicontrols.getChildren().add(box5);
 		uicontrols.getChildren().add(box4);
 		
 		but.setOnAction((event) -> {
@@ -362,7 +385,7 @@ public class CTS_GUI extends Application {
         });
 		pane.setCenter(uicontrols);
 		pane.setPadding(new Insets(10));
-		Scene scene = new Scene(pane, 400, 180);
+		Scene scene = new Scene(pane, 450, 240);
 		input.setScene(scene);
 	}
 	private String getGUIErrorMsg(long errorcode) {
@@ -396,7 +419,7 @@ public class CTS_GUI extends Application {
 		return "Undefined Error Message!";
 	}
 	/**
-	 * Grabs info stored in the UI controls and translates to a series of longs.
+	 * Grabs info stored in the UI controls and translates to a series of doubles.
 	 * @return An array of length 9 with the first 2 values being latitude and longitude
 	 * The 3,4 and 5 being Year,Month,Day
 	 * The 6,7 and 8 being Hour,Minute,Second
@@ -412,10 +435,6 @@ public class CTS_GUI extends Application {
 		TextField t1 = (TextField) n1.getChildren().get(1);
 		TextField t2 = (TextField) n2.getChildren().get(1);
 		TextField t3 = (TextField) n3.getChildren().get(1);
-		//System.out.println(t0.getText());
-		//System.out.println(t1.getText());
-		//System.out.println(t2.getText());
-		//System.out.println(t3.getText());
 		double[] retval = new double[9];
 		retval[8] = 9;
 		try {
@@ -453,6 +472,23 @@ public class CTS_GUI extends Application {
 		}
 		retval[8] = 0.0;
 		return retval;
+	}
+	/**
+	 * Fetches the status of the check boxes in the GUI.
+	 * @return
+	 */
+	private boolean[] getCheckBoxes() {
+		HBox n4 = (HBox) uicontrols.getChildren().get(4);
+		CheckBox b1 = (CheckBox) n4.getChildren().get(0);
+		CheckBox b2 = (CheckBox) n4.getChildren().get(1);
+		CheckBox b3 = (CheckBox) n4.getChildren().get(2);
+		CheckBox b4 = (CheckBox) n4.getChildren().get(3);
+		boolean[] boxes = new boolean[4];
+		boxes[0] = b1.isSelected();
+		boxes[1] = b2.isSelected();
+		boxes[2] = b3.isSelected();
+		boxes[3] = b4.isSelected();
+		return boxes;
 	}
 	private long validateInput() {
 		double[] inputs = getUserInputFromUIControls();
@@ -529,18 +565,7 @@ public class CTS_GUI extends Application {
 			view_x = max(0,(299+x_val));
 			view_y = max(0,(299-y_val));
 		}
-		
-		// TESTING TESTING TESTING
-		/*
-		if (obj.getMagnitude() < -20) {
-			mattTest(obj,controller.getModel().getLatitude(),controller.getModel().getLongitude());
-			System.out.println("xval, yval = ("+x_val+", "+y_val+")");
-			System.out.println("viewx, viewy = ("+view_x+", "+view_y+")");
-		}
-		*/
-		//////////////////////////
-		
-		double[] retval = {view_x, view_y};
+		double[] retval = { view_x, view_y};
 		return retval;
 		
 	}
