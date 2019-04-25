@@ -83,18 +83,7 @@ public class CTS_GUI extends Application {
 	 */
 	public void chartTheStars() {
 		resetSkyDrawing();
-		long[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
-		/**
-		 * Grabs info stored in the UI controls and translates to a series of longs.
-		 * @return An array of length 9 with the first 2 values being latitude and longitude
-		 * The 3,4 and 5 being Year,Month,Day
-		 * The 6,7 and 8 being Hour,Minute,Second
-		 * 9 being an error code: 0 = NO ERROR
-		 * 9 = Bad latitude, 10 = Bad longitude, 11 = bad date, 12 = bad time
-		 */
-		// CTS_Controller(double latitude, double longitude, int year, int month, int day, int hour, int minutes, int seconds)
-		
-		
+		double[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
 		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
@@ -114,17 +103,17 @@ public class CTS_GUI extends Application {
                     drawSpaceObject(star, cupcake,Color.YELLOW);
                 }
                 else if (alt >= 0 && mag < 6) {
-					//drawSpaceObject(star,1,Color.WHITE);
 					// I named it cupcake because when I first tested it
 					// The result in the GUI was a cupcake!
 					double cupcake = magnitudeToRadius(mag);
-					//System.out.println(cupcake);
 					drawSpaceObject(star, cupcake,Color.WHITE);
-				} else if (alt >= 0 && mag < 8) {
+				} else if (alt >= 0 && mag < 9) {
 					if (mag < 7) {
 						drawSpaceObject(star, .2,Color.GREY);
+					} else if (mag < 8){
+						drawSpaceObject(star, .14,Color.DARKGRAY);
 					} else {
-						drawSpaceObject(star, .15,Color.DARKGRAY);
+						drawSpaceObject(star, .09,Color.DARKGRAY);
 					}
 				}
 			} catch(IllegalArgumentException e) {
@@ -164,19 +153,14 @@ public class CTS_GUI extends Application {
 				for (CTS_Star toStar : connections.get(fromStar)) {
 					double[] to = getPositionOfSpaceObject(toStar);
 					if (from != null && to != null) {
-						System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
+						//System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
 						drawLine(from[0], from[1], to[0], to[1], Color.WHITE);
 					}
 
 				}
 			}
 
-//			double[] point1 = getPositionOfSpaceObject(primarystar);
-//			for(int x = 0;  x < vertex.size(); x++) {
-//				double[] endpoint = getPositionOfSpaceObject(vertex.get(x));
-//				drawLine(1, point1[0], point1[1], endpoint[0], endpoint[1], Color.GREEN);
 			}
-		//}
 	}
 	/**
 	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 
@@ -419,7 +403,7 @@ public class CTS_GUI extends Application {
 	 * 9 being an error code: 0 = NO ERROR
 	 * 9 = Bad latitude, 10 = Bad longitude, 11 = bad date, 12 = bad time
 	 */
-	private long[] getUserInputFromUIControls() {
+	private double[] getUserInputFromUIControls() {
 		HBox n0 = (HBox) uicontrols.getChildren().get(0);
 		HBox n1 = (HBox) uicontrols.getChildren().get(1);
 		HBox n2 = (HBox) uicontrols.getChildren().get(2);
@@ -432,75 +416,75 @@ public class CTS_GUI extends Application {
 		//System.out.println(t1.getText());
 		//System.out.println(t2.getText());
 		//System.out.println(t3.getText());
-		long[] retval = new long[9];
+		double[] retval = new double[9];
 		retval[8] = 9;
 		try {
-			retval[0] = Long.parseLong(t0.getText());
-			retval[8] = 10;
-			retval[1] = Long.parseLong(t1.getText());
+			retval[0] = Double.parseDouble(t0.getText());
+			retval[8] = 10.0;
+			retval[1] = Double.parseDouble(t1.getText());
 		} catch(Exception e) {
 			return retval;
 		}
 		String[] date = t2.getText().split("-");
 		if (date.length != 3) {
-			retval[8] = 11;
+			retval[8] = 11.0;
 			return retval;
 		}
 		try {
-			retval[2] = Long.parseLong(date[0]);
-			retval[3] = Long.parseLong(date[1]);
-			retval[4] = Long.parseLong(date[2]);
+			retval[2] = floor(Double.parseDouble(date[0]));
+			retval[3] = floor(Double.parseDouble(date[1]));
+			retval[4] = floor(Double.parseDouble(date[2]));
 		} catch(Exception e) {
-			retval[8] = 11;
+			retval[8] = 11.0;
 			return retval;
 		}
 		String[] time = t3.getText().split(":");
 		if (time.length != 3) {
-			retval[8] = 12;
+			retval[8] = 12.0;
 			return retval;
 		}
 		try {
-			retval[5] = Long.parseLong(time[0]);
-			retval[6] = Long.parseLong(time[1]);
-			retval[7] = (long) floor(Double.parseDouble(time[2]));
+			retval[5] = floor(Double.parseDouble(time[0]));
+			retval[6] = floor(Double.parseDouble(time[1]));
+			retval[7] = floor(Double.parseDouble(time[2]));
 		} catch(Exception e) {
-			retval[8] = 12;
+			retval[8] = 12.0;
 			return retval;
 		}
-		retval[8] = 0;
+		retval[8] = 0.0;
 		return retval;
 	}
 	private long validateInput() {
-		long[] inputs = getUserInputFromUIControls();
+		double[] inputs = getUserInputFromUIControls();
 		if (inputs == null) {
 			return 9;
 		}
-		if (inputs[8] != 0) {
-			return inputs[8];
+		if (inputs[8] != 0.0) {
+			return (long) inputs[8];
 		}
-		if (inputs[0] > 90 || inputs[0] < -90) {
+		if (inputs[0] > 90.0 || inputs[0] < -90.0) {
 			return 1;
 		}
-		if (inputs[1] > 180 || inputs[1] < -180) {
+		if (inputs[1] > 180.0 || inputs[1] < -180.0) {
 			return 2;
 		}
 		// Year can be any number that can be fit within an integer.
 		if (inputs[2] > Integer.MAX_VALUE || inputs[2] < Integer.MIN_VALUE) {
 			return 3;
 		}
-		if (inputs[3] > 12 || inputs[3] < 1) {
+		if (inputs[3] > 12.0 || inputs[3] < 1.0) {
 			return 4;
 		}
-		if (inputs[4] > 31 || inputs[4] < 1) {
+		if (inputs[4] > 31.0 || inputs[4] < 1.0) {
 			return 5;
 		}
-		if (inputs[5] > 23 || inputs[5] < 0) {
+		if (inputs[5] > 23.0 || inputs[5] < 0.0) {
 			return 6;
 		}
-		if (inputs[6] > 59 || inputs[6] < 0) {
+		if (inputs[6] > 59.0 || inputs[6] < 0.0) {
 			return 7;
 		}
-		if (inputs[7] > 59 || inputs[7] < 0) {
+		if (inputs[7] > 59.0 || inputs[7] < 0.0) {
 			return 8;
 		}
 		return 0;
@@ -654,8 +638,4 @@ public class CTS_GUI extends Application {
 		}
 		return 1.5;
 	}
-	/*
-	 * Alt is distance from the edge of the circle. 90 deg - 0 (goes to - 90)
-	 * az - 0 - 360, degrees 
-	 */
 }
