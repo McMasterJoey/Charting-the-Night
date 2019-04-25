@@ -14,6 +14,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -55,7 +56,7 @@ public class CTS_GUI extends Application {
 	public void start(Stage stage) throws Exception {
 		controller = new CTS_Controller();
 		stage.setTitle("Charting The Stars");
-		stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
+		//stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
 		BorderPane mainpane = new BorderPane();
 		canvas = new Canvas(VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		mainpane.setCenter(canvas);
@@ -65,9 +66,32 @@ public class CTS_GUI extends Application {
 		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
 		// Setup Dialog box
         setUpDialoguebox();
+        // Plot right off the bat
+        chartTheStars();
         // Add a click handler so when the GUI is clicked, the settings menu comes up.
         mainpane.setOnMouseClicked((event) -> {
-        	input.showAndWait();
+        	double distance = distanceToCenterOfDisplay(event.getX(), event.getY());
+        	double centerx = VIEWING_AREA_WIDTH / 2;
+        	if (distance > centerx) {
+        		double x = event.getX() - centerx;
+        		double y = event.getY() - centerx;
+        		if (x < 0 && y < 0) {
+        			//System.out.println("upper left");
+        			adjustObserverLocationByClick(1,10);
+        		} else if (x < 0 && y > 0) {
+        			//System.out.println("lower left");
+        			adjustObserverLocationByClick(3,10);
+        		} else if (x > 0 && y < 0) {
+        			//System.out.println("upper right");
+        			adjustObserverLocationByClick(2,10);
+        		} else if (x > 0 && y > 0) {
+        			//System.out.println("lower right");
+        			adjustObserverLocationByClick(4,10);
+        		}
+        		chartTheStars();
+        	} else {
+        		input.showAndWait();
+        	}
         });
         		
 		// Display it!
@@ -83,100 +107,94 @@ public class CTS_GUI extends Application {
 	 */
 	public void chartTheStars() {
 		resetSkyDrawing();
-		long[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
-		/**
-		 * Grabs info stored in the UI controls and translates to a series of longs.
-		 * @return An array of length 9 with the first 2 values being latitude and longitude
-		 * The 3,4 and 5 being Year,Month,Day
-		 * The 6,7 and 8 being Hour,Minute,Second
-		 * 9 being an error code: 0 = NO ERROR
-		 * 9 = Bad latitude, 10 = Bad longitude, 11 = bad date, 12 = bad time
-		 */
-		// CTS_Controller(double latitude, double longitude, int year, int month, int day, int hour, int minutes, int seconds)
-		
-		
+		double[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
 		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
+		// strokeText(String text, double x, double y, double maxWidth)
+		gc.setStroke(Color.GREEN);
+		gc.strokeText("Latitude: " + data[0], 10, 10, 190);
+		gc.strokeText("Longitude: " + data[1], 10, 25, 190);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		double azi = 0, alt = 0, mag = 0;
-		
-		// Plot stars
-		for(int x = 0; x < n.size(); x++) {
-			CTS_Star star = n.get(x);
-			try {
-				alt = star.getAltitude();
-				azi = star.getAzimuth();
-				mag = star.getMagnitude();
-                if (alt >= 0 && mag < -20) {
-                	// The sun is the only star with mag < -20
-                	// Make it yellow
-                    double cupcake = magnitudeToRadius(mag);
-                    drawSpaceObject(star, cupcake,Color.YELLOW);
-                }
-                else if (alt >= 0 && mag < 6) {
-					//drawSpaceObject(star,1,Color.WHITE);
-					// I named it cupcake because when I first tested it
-					// The result in the GUI was a cupcake!
-					double cupcake = magnitudeToRadius(mag);
-					//System.out.println(cupcake);
-					drawSpaceObject(star, cupcake,Color.WHITE);
-				} else if (alt >= 0 && mag < 8) {
-					if (mag < 7) {
-						drawSpaceObject(star, .2,Color.GREY);
-					} else {
-						drawSpaceObject(star, .15,Color.DARKGRAY);
+		boolean[] plottingstatus = getCheckBoxes();
+		if (plottingstatus[0]) {
+			// Plot stars
+			for(int x = 0; x < n.size(); x++) {
+				CTS_Star star = n.get(x);
+				try {
+					alt = star.getAltitude();
+					azi = star.getAzimuth();
+					mag = star.getMagnitude();
+	                if (alt >= 0 && mag < -20) {
+	                	// The sun is the only star with mag < -20
+	                	// Make it yellow
+	                    double cupcake = magnitudeToRadius(mag);
+	                    drawSpaceObject(star, cupcake,Color.YELLOW);
+	                }
+	                else if (alt >= 0 && mag < 6) {
+						// I named it cupcake because when I first tested it
+						// The result in the GUI was a cupcake!
+						double cupcake = magnitudeToRadius(mag);
+						drawSpaceObject(star, cupcake,Color.WHITE);
+					} else if (alt >= 0 && mag < 9) {
+						if (mag < 7) {
+							drawSpaceObject(star, .2,Color.GREY);
+						} else if (mag < 8){
+							drawSpaceObject(star, .14,Color.DARKGRAY);
+						} else {
+							drawSpaceObject(star, .09,Color.DARKGRAY);
+						}
+					}
+				} catch(IllegalArgumentException e) {
+					//System.err.println("An object that attempted to be drawn triggered an execption");
+				}
+			}
+		}
+		if (plottingstatus[1]) {
+			// Plot DSOs
+			for(int x = 0; x < d.size(); x++) {
+				CTS_DeepSkyObject dso = d.get(x);
+				try {
+					alt = dso.getAltitude();
+					azi = dso.getAzimuth();
+					mag = dso.getMagnitude();
+					if (alt >= 0 && mag < 6) {
+						drawSpaceObject(dso,1,Color.BROWN);
+					}
+				} catch(IllegalArgumentException e) {
+					//System.err.println("An object that attempted to be drawn triggered an execption");
+				}
+			}
+		}
+		if (plottingstatus[2]) {
+			// Plot Constellations
+			ArrayList<CTS_Constellation> constellations = controller.getConstellations();
+			if (constellations == null) {
+				return;
+			}
+			for (CTS_Constellation constellation : constellations) {
+
+				HashMap<CTS_Star, ArrayList<CTS_Star>> connections = constellation.getConnections();
+				HashSet<CTS_Star> keys = new HashSet<>(connections.keySet());
+
+				for (CTS_Star fromStar : keys) {
+
+					double[] from = getPositionOfSpaceObject(fromStar);
+
+					for (CTS_Star toStar : connections.get(fromStar)) {
+						double[] to = getPositionOfSpaceObject(toStar);
+						if (from != null && to != null) {
+							//System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
+							drawLine(from[0], from[1], to[0], to[1], Color.WHITE);
+						}
+
 					}
 				}
-			} catch(IllegalArgumentException e) {
-				//System.err.println("An object that attempted to be drawn triggered an execption");
 			}
 		}
-		
-		
-		// Plot DSOs
-		for(int x = 0; x < d.size(); x++) {
-			CTS_DeepSkyObject dso = d.get(x);
-			try {
-				alt = dso.getAltitude();
-				azi = dso.getAzimuth();
-				mag = dso.getMagnitude();
-				if (alt >= 0 && mag < 6) {
-					drawSpaceObject(dso,1,Color.BROWN);
-				}
-			} catch(IllegalArgumentException e) {
-				//System.err.println("An object that attempted to be drawn triggered an execption");
-			}
+		if (plottingstatus[3]) {
+			// TODO Plot planets
 		}
-		// Plot Constellations
-		ArrayList<CTS_Constellation> constellations = controller.getConstellations();
-		if (constellations == null) {
-			return;
-		}
-		for (CTS_Constellation constellation : constellations) {
-
-			HashMap<CTS_Star, ArrayList<CTS_Star>> connections = constellation.getConnections();
-			HashSet<CTS_Star> keys = new HashSet<>(connections.keySet());
-
-			for (CTS_Star fromStar : keys) {
-
-				double[] from = getPositionOfSpaceObject(fromStar);
-
-				for (CTS_Star toStar : connections.get(fromStar)) {
-					double[] to = getPositionOfSpaceObject(toStar);
-					if (from != null && to != null) {
-						System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
-						drawLine(from[0], from[1], to[0], to[1], Color.WHITE);
-					}
-
-				}
-			}
-
-//			double[] point1 = getPositionOfSpaceObject(primarystar);
-//			for(int x = 0;  x < vertex.size(); x++) {
-//				double[] endpoint = getPositionOfSpaceObject(vertex.get(x));
-//				drawLine(1, point1[0], point1[1], endpoint[0], endpoint[1], Color.GREEN);
-			}
-		//}
 	}
 	/**
 	 * Draws a circle of the given radius, at the specific x,y location on the graphics context. 
@@ -345,11 +363,26 @@ public class CTS_GUI extends Application {
 		TextField date = new TextField(d.toString());
 		box2.getChildren().add(new Label("Date: "));
 		box2.getChildren().add(date);
-		
 		TextField time = new TextField(t.toString());
 		HBox box3 = new HBox(5);
 		box3.getChildren().add(new Label("Time: "));
 		box3.getChildren().add(time);
+		
+		// Check boxes
+		HBox box5 = new HBox(5);
+		CheckBox c1 = new CheckBox("Plot Stars");
+		c1.setSelected(true);
+		CheckBox c2 = new CheckBox("Plot DSOs");
+		c2.setSelected(true);
+		CheckBox c3 = new CheckBox("Plot Constellations");
+		c3.setSelected(true);
+		CheckBox c4 = new CheckBox("Plot Planets");
+		c4.setSelected(true);
+		box5.getChildren().add(c1);
+		box5.getChildren().add(c2);
+		box5.getChildren().add(c3);
+		box5.getChildren().add(c4);
+		
 		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
 		but.setPadding(new Insets(5));
@@ -361,6 +394,7 @@ public class CTS_GUI extends Application {
 		uicontrols.getChildren().add(box1);
 		uicontrols.getChildren().add(box2);
 		uicontrols.getChildren().add(box3);
+		uicontrols.getChildren().add(box5);
 		uicontrols.getChildren().add(box4);
 		
 		but.setOnAction((event) -> {
@@ -378,7 +412,7 @@ public class CTS_GUI extends Application {
         });
 		pane.setCenter(uicontrols);
 		pane.setPadding(new Insets(10));
-		Scene scene = new Scene(pane, 400, 180);
+		Scene scene = new Scene(pane, 450, 240);
 		input.setScene(scene);
 	}
 	private String getGUIErrorMsg(long errorcode) {
@@ -411,15 +445,66 @@ public class CTS_GUI extends Application {
 		} 
 		return "Undefined Error Message!";
 	}
+	private void adjustObserverLocationByClick(int dir, double offset) {
+		HBox n0 = (HBox) uicontrols.getChildren().get(0);
+		HBox n1 = (HBox) uicontrols.getChildren().get(1);
+		TextField t0 = (TextField) n0.getChildren().get(1); // Lat
+		TextField t1 = (TextField) n1.getChildren().get(1); // Long
+		double latitude = Double.parseDouble(t0.getText());
+		double longitude = Double.parseDouble(t1.getText());
+		if (dir == 1) { // NW
+			latitude += offset;
+			longitude -= (offset * 4);
+			if (latitude > 89.99999) {
+				latitude = 89.99999;
+			}
+			if (longitude < -180.0) {
+				longitude += 180.0;
+				longitude = 180.0 + longitude;
+			}
+		} else if (dir == 2) { // NE
+			latitude += offset;
+			longitude += (offset * 4);
+			if (latitude > 89.99999) {
+				latitude = 89.99999;
+			}
+			if (longitude > 180.0) {
+				longitude -= 180.0;
+				longitude = -180.0 + longitude;
+			}
+		} else if (dir == 3) { // SW
+			latitude -= offset;
+			longitude -= (offset * 4);
+			if (latitude < -89.99999) {
+				latitude = -89.99999;
+			}
+			if (longitude < -180.0) {
+				longitude += 180.0;
+				longitude = 180.0 + longitude;
+			}
+		} else if (dir == 4) { // SE
+			latitude -= offset;
+			longitude += (offset * 4);
+			if (latitude < -89.99999) {
+				latitude = -89.99999;
+			}
+			if (longitude > 180.0) {
+				longitude -= 180.0;
+				longitude = -180.0 + longitude;
+			}
+		}
+		t0.setText("" + latitude);
+		t1.setText("" + longitude);
+	}
 	/**
-	 * Grabs info stored in the UI controls and translates to a series of longs.
+	 * Grabs info stored in the UI controls and translates to a series of doubles.
 	 * @return An array of length 9 with the first 2 values being latitude and longitude
 	 * The 3,4 and 5 being Year,Month,Day
 	 * The 6,7 and 8 being Hour,Minute,Second
 	 * 9 being an error code: 0 = NO ERROR
 	 * 9 = Bad latitude, 10 = Bad longitude, 11 = bad date, 12 = bad time
 	 */
-	private long[] getUserInputFromUIControls() {
+	private double[] getUserInputFromUIControls() {
 		HBox n0 = (HBox) uicontrols.getChildren().get(0);
 		HBox n1 = (HBox) uicontrols.getChildren().get(1);
 		HBox n2 = (HBox) uicontrols.getChildren().get(2);
@@ -428,79 +513,92 @@ public class CTS_GUI extends Application {
 		TextField t1 = (TextField) n1.getChildren().get(1);
 		TextField t2 = (TextField) n2.getChildren().get(1);
 		TextField t3 = (TextField) n3.getChildren().get(1);
-		//System.out.println(t0.getText());
-		//System.out.println(t1.getText());
-		//System.out.println(t2.getText());
-		//System.out.println(t3.getText());
-		long[] retval = new long[9];
+		double[] retval = new double[9];
 		retval[8] = 9;
 		try {
-			retval[0] = Long.parseLong(t0.getText());
-			retval[8] = 10;
-			retval[1] = Long.parseLong(t1.getText());
+			retval[0] = Double.parseDouble(t0.getText());
+			retval[8] = 10.0;
+			retval[1] = Double.parseDouble(t1.getText());
 		} catch(Exception e) {
 			return retval;
 		}
 		String[] date = t2.getText().split("-");
 		if (date.length != 3) {
-			retval[8] = 11;
+			retval[8] = 11.0;
 			return retval;
 		}
 		try {
-			retval[2] = Long.parseLong(date[0]);
-			retval[3] = Long.parseLong(date[1]);
-			retval[4] = Long.parseLong(date[2]);
+			retval[2] = floor(Double.parseDouble(date[0]));
+			retval[3] = floor(Double.parseDouble(date[1]));
+			retval[4] = floor(Double.parseDouble(date[2]));
 		} catch(Exception e) {
-			retval[8] = 11;
+			retval[8] = 11.0;
 			return retval;
 		}
 		String[] time = t3.getText().split(":");
 		if (time.length != 3) {
-			retval[8] = 12;
+			retval[8] = 12.0;
 			return retval;
 		}
 		try {
-			retval[5] = Long.parseLong(time[0]);
-			retval[6] = Long.parseLong(time[1]);
-			retval[7] = (long) floor(Double.parseDouble(time[2]));
+			retval[5] = floor(Double.parseDouble(time[0]));
+			retval[6] = floor(Double.parseDouble(time[1]));
+			retval[7] = floor(Double.parseDouble(time[2]));
 		} catch(Exception e) {
-			retval[8] = 12;
+			retval[8] = 12.0;
 			return retval;
 		}
-		retval[8] = 0;
+		retval[8] = 0.0;
 		return retval;
 	}
+	/**
+	 * Fetches the status of the check boxes in the GUI.
+	 * @return
+	 */
+	private boolean[] getCheckBoxes() {
+		HBox n4 = (HBox) uicontrols.getChildren().get(4);
+		CheckBox b1 = (CheckBox) n4.getChildren().get(0);
+		CheckBox b2 = (CheckBox) n4.getChildren().get(1);
+		CheckBox b3 = (CheckBox) n4.getChildren().get(2);
+		CheckBox b4 = (CheckBox) n4.getChildren().get(3);
+		boolean[] boxes = new boolean[4];
+		boxes[0] = b1.isSelected();
+		boxes[1] = b2.isSelected();
+		boxes[2] = b3.isSelected();
+		boxes[3] = b4.isSelected();
+		return boxes;
+	}
 	private long validateInput() {
-		long[] inputs = getUserInputFromUIControls();
+		double[] inputs = getUserInputFromUIControls();
 		if (inputs == null) {
 			return 9;
 		}
-		if (inputs[8] != 0) {
-			return inputs[8];
+		if (inputs[8] != 0.0) {
+			return (long) inputs[8];
 		}
-		if (inputs[0] > 90 || inputs[0] < -90) {
+		if (inputs[0] > 90.0 || inputs[0] < -90.0) {
 			return 1;
 		}
-		if (inputs[1] > 180 || inputs[1] < -180) {
+		if (inputs[1] > 180.0 || inputs[1] < -180.0) {
 			return 2;
 		}
 		// Year can be any number that can be fit within an integer.
 		if (inputs[2] > Integer.MAX_VALUE || inputs[2] < Integer.MIN_VALUE) {
 			return 3;
 		}
-		if (inputs[3] > 12 || inputs[3] < 1) {
+		if (inputs[3] > 12.0 || inputs[3] < 1.0) {
 			return 4;
 		}
-		if (inputs[4] > 31 || inputs[4] < 1) {
+		if (inputs[4] > 31.0 || inputs[4] < 1.0) {
 			return 5;
 		}
-		if (inputs[5] > 23 || inputs[5] < 0) {
+		if (inputs[5] > 23.0 || inputs[5] < 0.0) {
 			return 6;
 		}
-		if (inputs[6] > 59 || inputs[6] < 0) {
+		if (inputs[6] > 59.0 || inputs[6] < 0.0) {
 			return 7;
 		}
-		if (inputs[7] > 59 || inputs[7] < 0) {
+		if (inputs[7] > 59.0 || inputs[7] < 0.0) {
 			return 8;
 		}
 		return 0;
@@ -545,18 +643,7 @@ public class CTS_GUI extends Application {
 			view_x = max(0,(299+x_val));
 			view_y = max(0,(299-y_val));
 		}
-		
-		// TESTING TESTING TESTING
-		/*
-		if (obj.getMagnitude() < -20) {
-			mattTest(obj,controller.getModel().getLatitude(),controller.getModel().getLongitude());
-			System.out.println("xval, yval = ("+x_val+", "+y_val+")");
-			System.out.println("viewx, viewy = ("+view_x+", "+view_y+")");
-		}
-		*/
-		//////////////////////////
-		
-		double[] retval = {view_x, view_y};
+		double[] retval = { view_x, view_y};
 		return retval;
 		
 	}
@@ -654,8 +741,14 @@ public class CTS_GUI extends Application {
 		}
 		return 1.5;
 	}
-	/*
-	 * Alt is distance from the edge of the circle. 90 deg - 0 (goes to - 90)
-	 * az - 0 - 360, degrees 
-	 */
+	private double distanceToCenterOfDisplay(double x, double y) {
+		// A^2 + B^2 = C^2
+		double centerx = VIEWING_AREA_WIDTH / 2;
+		double centery = VIEWING_AREA_HEIGHT / 2;
+		double diffx = abs(centerx - x);
+		double diffy = abs(centery - y);
+		diffx *= diffx;
+		diffy *= diffy;
+		return sqrt(diffx + diffy);
+	}
 }
