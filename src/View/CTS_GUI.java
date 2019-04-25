@@ -55,7 +55,7 @@ public class CTS_GUI extends Application {
 	public void start(Stage stage) throws Exception {
 		controller = new CTS_Controller();
 		stage.setTitle("Charting The Stars");
-		stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
+		//stage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
 		BorderPane mainpane = new BorderPane();
 		canvas = new Canvas(VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		mainpane.setCenter(canvas);
