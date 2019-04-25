@@ -367,14 +367,14 @@ public class CTS_Model {
 	    double decTime = (3600 * hour + 60 * minutes + seconds);
 	    decTime /= 86400;
 	    decTime -= 0.5;
-	    System.out.println("decTime = " + decTime);
+	    //System.out.println("decTime = " + decTime);
 	    // Formula from https://en.wikipedia.org/wiki/Julian_day#Julian_date_calculation
 	    double jd = (1461 * (year + 4800 + (month - 14) / 12)) / 4 +
                     (367 * (month - 2 - 12 * ((month - 14) / 12))) / 12 -
                     (3 * ((year + 4900 + (month - 14) / 12) / 100)) / 4 +
                     day - 32075;
 	    jd += decTime;
-		System.out.println("jd = " + jd);
+		//System.out.println("jd = " + jd);
 	    daysSinceStandard = jd - j2000;
 	    double minFrac = Double.valueOf(minutes / 60);
 	    double secFrac = Double.valueOf(seconds / 3600);

@@ -66,9 +66,32 @@ public class CTS_GUI extends Application {
 		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
 		// Setup Dialog box
         setUpDialoguebox();
+        // Plot right off the bat
+        chartTheStars();
         // Add a click handler so when the GUI is clicked, the settings menu comes up.
         mainpane.setOnMouseClicked((event) -> {
-        	input.showAndWait();
+        	double distance = distanceToCenterOfDisplay(event.getX(), event.getY());
+        	double centerx = VIEWING_AREA_WIDTH / 2;
+        	if (distance > centerx) {
+        		double x = event.getX() - centerx;
+        		double y = event.getY() - centerx;
+        		if (x < 0 && y < 0) {
+        			System.out.println("upper left");
+        			adjustObserverLocationByClick(1,10);
+        		} else if (x < 0 && y > 0) {
+        			System.out.println("lower left");
+        			adjustObserverLocationByClick(3,10);
+        		} else if (x > 0 && y < 0) {
+        			System.out.println("upper right");
+        			adjustObserverLocationByClick(2,10);
+        		} else if (x > 0 && y > 0) {
+        			System.out.println("lower right");
+        			adjustObserverLocationByClick(4,10);
+        		}
+        		chartTheStars();
+        	} else {
+        		input.showAndWait();
+        	}
         });
         		
 		// Display it!
@@ -418,6 +441,57 @@ public class CTS_GUI extends Application {
 		} 
 		return "Undefined Error Message!";
 	}
+	private void adjustObserverLocationByClick(int dir, double offset) {
+		HBox n0 = (HBox) uicontrols.getChildren().get(0);
+		HBox n1 = (HBox) uicontrols.getChildren().get(1);
+		TextField t0 = (TextField) n0.getChildren().get(1); // Lat
+		TextField t1 = (TextField) n1.getChildren().get(1); // Long
+		double latitude = Double.parseDouble(t0.getText());
+		double longitude = Double.parseDouble(t1.getText());
+		if (dir == 1) { // NW
+			latitude += offset;
+			longitude -= (offset * 4);
+			if (latitude > 89.99999) {
+				latitude = 89.99999;
+			}
+			if (longitude < -180.0) {
+				longitude += 180.0;
+				longitude = 180.0 - longitude;
+			}
+		} else if (dir == 2) { // NE
+			latitude += offset;
+			longitude += (offset * 4);
+			if (latitude > 89.99999) {
+				latitude = 89.99999;
+			}
+			if (longitude > 180.0) {
+				longitude -= 180.0;
+				longitude = -180.0 + longitude;
+			}
+		} else if (dir == 3) { // SW
+			latitude -= offset;
+			longitude -= (offset * 4);
+			if (latitude < -89.99999) {
+				latitude = -89.99999;
+			}
+			if (longitude < -180.0) {
+				longitude += 180.0;
+				longitude = 180.0 - longitude;
+			}
+		} else if (dir == 4) { // SE
+			latitude -= offset;
+			longitude += (offset * 4);
+			if (latitude < -89.99999) {
+				latitude = -89.99999;
+			}
+			if (longitude > 180.0) {
+				longitude -= 180.0;
+				longitude = -180.0 + longitude;
+			}
+		}
+		t0.setText("" + latitude);
+		t1.setText("" + longitude);
+	}
 	/**
 	 * Grabs info stored in the UI controls and translates to a series of doubles.
 	 * @return An array of length 9 with the first 2 values being latitude and longitude
@@ -662,5 +736,15 @@ public class CTS_GUI extends Application {
 			return 1.25;
 		}
 		return 1.5;
+	}
+	private double distanceToCenterOfDisplay(double x, double y) {
+		// A^2 + B^2 = C^2
+		double centerx = VIEWING_AREA_WIDTH / 2;
+		double centery = VIEWING_AREA_HEIGHT / 2;
+		double diffx = abs(centerx - x);
+		double diffy = abs(centery - y);
+		diffx *= diffx;
+		diffy *= diffy;
+		return sqrt(diffx + diffy);
 	}
 }
