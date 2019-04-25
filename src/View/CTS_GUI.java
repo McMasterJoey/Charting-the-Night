@@ -112,7 +112,7 @@ public class CTS_GUI extends Application {
 		// strokeText(String text, double x, double y, double maxWidth)
 		gc.setStroke(Color.GREEN);
 		gc.strokeText("Latitude: " + data[0], 10, 10, 190);
-		gc.strokeText("Longitude: " + data[0], 10, 25, 190);
+		gc.strokeText("Longitude: " + data[1], 10, 25, 190);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		double azi = 0, alt = 0, mag = 0;
