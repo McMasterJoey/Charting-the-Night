@@ -28,8 +28,20 @@ public class CTS_Star extends CTS_SpaceObject {
 		super(Id, name, rightAcension, declination);
 		this.magnitude = magnitude;
 	}
-	
-	
+
+	/**
+	 * Inits a new star.
+	 * @param Id The id number of the star from CSV database.
+	 * @param hip The Hipparcos catalog id of the star.
+	 * @param name The name of the star.
+	 * @param magnitude The Magnitude of the star.
+	 * @param rightAcension The Right Acension of the star.
+	 * @param declination The Declination of the star.
+	 */
+	public CTS_Star(int Id, int hip, String name, double magnitude, double rightAcension, double declination) {
+		super(Id, hip, name, rightAcension, declination);
+		this.magnitude = magnitude;
+	}
 	
 	/**
 	 * Inits a new star.

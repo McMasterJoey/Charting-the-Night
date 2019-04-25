@@ -98,7 +98,7 @@ public class CTS_Model {
 	private void build_starList() {
 		
 		BufferedReader fileReader = null;
-		int id; 
+		int id, hip;
 		String name = null;
 		String constellation;
 		double magnitude;
@@ -119,6 +119,13 @@ public class CTS_Model {
 		        
 		        // Get relevant star data from line
 		        id = Integer.valueOf(tokens[0]);
+
+		        if (!tokens[1].equals("")) {
+					hip = Integer.valueOf(tokens[1]);
+				} else {
+		        	hip = -1;
+				}
+
 		        
 		        if (!tokens[4].isEmpty()) {
 		        	name = tokens[4];
@@ -135,7 +142,7 @@ public class CTS_Model {
 		        declination = Double.valueOf(tokens[8]);	
 		        
 		        // Create new star object and add to starList
-		        CTS_Star newStar = new CTS_Star(id, name, magnitude, rightAscension, declination);
+		        CTS_Star newStar = new CTS_Star(id, hip, name, magnitude, rightAscension, declination);
 		        starList.add(newStar);
 		    }
 		} catch (Exception e) {
@@ -211,6 +218,45 @@ public class CTS_Model {
 	public void build_ConstellationList() {
 
 		BufferedReader in = null;
+
+		try {
+
+			int edges, fromIdx, toIdx;
+			in = new BufferedReader(new FileReader(".\\src\\Resources\\constellationship.fab"));
+			String line, name;
+			String tokens[];
+			CTS_Constellation constellation;
+
+			while ( (line = in.readLine()) != null ) {
+
+				tokens = line.split(" ");
+				name = tokens[0];
+				edges = Integer.valueOf(tokens[1]);
+				constellation = new CTS_Constellation(name);
+				fromIdx = 3;
+				toIdx = 4;
+
+				for (int i = 1; i <= edges; i++) {
+					
+					int fromHip = Integer.valueOf(tokens[fromIdx]);
+					int toHip = Integer.valueOf(tokens[toIdx]);
+					constellation.addConnection(getStarByHip(fromHip), getStarByHip(toHip));
+					fromIdx += 2;
+					toIdx += 2;
+				}
+
+				Constellations.add(constellation);
+			}
+
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void build_ConstellationList_deprecated() {
+
+		BufferedReader in = null;
 		String name;
 		int from, to;
 
@@ -236,14 +282,26 @@ public class CTS_Model {
 					previousName = name;
 				}
 
-				constellation.addConnection(getStar(from), getStar(to));
+				constellation.addConnection(getStarByID(from), getStarByID(to));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public CTS_Star getStar(int id) {
+	public CTS_Star getStarByHip(int hip) {
+
+		for (CTS_Star star : starList) {
+
+			if (star.hip == hip) {
+				return star;
+			}
+		}
+
+		return null;
+	}
+
+	public CTS_Star getStarByID(int id) {
 
 		for (CTS_Star star : starList) {
 
