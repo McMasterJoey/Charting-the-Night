@@ -76,16 +76,16 @@ public class CTS_GUI extends Application {
         		double x = event.getX() - centerx;
         		double y = event.getY() - centerx;
         		if (x < 0 && y < 0) {
-        			System.out.println("upper left");
+        			//System.out.println("upper left");
         			adjustObserverLocationByClick(1,10);
         		} else if (x < 0 && y > 0) {
-        			System.out.println("lower left");
+        			//System.out.println("lower left");
         			adjustObserverLocationByClick(3,10);
         		} else if (x > 0 && y < 0) {
-        			System.out.println("upper right");
+        			//System.out.println("upper right");
         			adjustObserverLocationByClick(2,10);
         		} else if (x > 0 && y > 0) {
-        			System.out.println("lower right");
+        			//System.out.println("lower right");
         			adjustObserverLocationByClick(4,10);
         		}
         		chartTheStars();
@@ -109,6 +109,10 @@ public class CTS_GUI extends Application {
 		resetSkyDrawing();
 		double[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
 		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
+		// strokeText(String text, double x, double y, double maxWidth)
+		gc.setStroke(Color.GREEN);
+		gc.strokeText("Latitude: " + data[0], 10, 10, 190);
+		gc.strokeText("Longitude: " + data[0], 10, 25, 190);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		double azi = 0, alt = 0, mag = 0;
@@ -456,7 +460,7 @@ public class CTS_GUI extends Application {
 			}
 			if (longitude < -180.0) {
 				longitude += 180.0;
-				longitude = 180.0 - longitude;
+				longitude = 180.0 + longitude;
 			}
 		} else if (dir == 2) { // NE
 			latitude += offset;
@@ -476,7 +480,7 @@ public class CTS_GUI extends Application {
 			}
 			if (longitude < -180.0) {
 				longitude += 180.0;
-				longitude = 180.0 - longitude;
+				longitude = 180.0 + longitude;
 			}
 		} else if (dir == 4) { // SE
 			latitude -= offset;
