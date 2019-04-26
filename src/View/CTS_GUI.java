@@ -16,6 +16,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -46,11 +49,25 @@ public class CTS_GUI extends Application {
 	private Canvas canvas;
 	private Alert GUIerrorout;
 	private CTS_Controller controller;
+	private Color[] usercolors;
+	private int colorSetterId = 0;
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
 	public CTS_GUI() { 
-		
+		// 0 = Star color, 1 = Low mag star, 2 = Very low mag star.
+		// 3 = DSO, 4 = Sky background, 5 = Circle around skybackgrund
+		// 6 = Overall background, 7 = Lat/long txt color, 8 = Constelation line color.
+		usercolors = new Color[9];
+		usercolors[0] = Color.WHITE;
+		usercolors[1] = Color.GREY;
+		usercolors[2] = Color.DARKGREY;
+		usercolors[3] = Color.BROWN;
+		usercolors[4] = Color.BLACK;
+		usercolors[5] = Color.BLUE;
+		usercolors[6] = Color.MIDNIGHTBLUE;
+		usercolors[7] = Color.LIME;
+		usercolors[8] = Color.WHITE;
 	}
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -61,9 +78,9 @@ public class CTS_GUI extends Application {
 		canvas = new Canvas(VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
 		mainpane.setCenter(canvas);
 		gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.LIGHTGREY);
+		gc.setFill(usercolors[6]);
 		gc.fillRect(0, 0,  VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
-		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
+		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, usercolors[4]);
 		// Setup Dialog box
         setUpDialoguebox();
         // Plot right off the bat
@@ -110,7 +127,7 @@ public class CTS_GUI extends Application {
 		double[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
 		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
 		// strokeText(String text, double x, double y, double maxWidth)
-		gc.setStroke(Color.GREEN);
+		gc.setStroke(usercolors[7]);
 		gc.strokeText("Latitude: " + data[0], 10, 10, 190);
 		gc.strokeText("Longitude: " + data[1], 10, 25, 190);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
@@ -135,14 +152,14 @@ public class CTS_GUI extends Application {
 						// I named it cupcake because when I first tested it
 						// The result in the GUI was a cupcake!
 						double cupcake = magnitudeToRadius(mag);
-						drawSpaceObject(star, cupcake,Color.WHITE);
+						drawSpaceObject(star, cupcake,usercolors[0]);
 					} else if (alt >= 0 && mag < 9) {
 						if (mag < 7) {
-							drawSpaceObject(star, .2,Color.GREY);
+							drawSpaceObject(star, .2,usercolors[1]);
 						} else if (mag < 8){
-							drawSpaceObject(star, .14,Color.DARKGRAY);
+							drawSpaceObject(star, .14,usercolors[2]);
 						} else {
-							drawSpaceObject(star, .09,Color.DARKGRAY);
+							drawSpaceObject(star, .09,usercolors[2]);
 						}
 					}
 				} catch(IllegalArgumentException e) {
@@ -159,7 +176,7 @@ public class CTS_GUI extends Application {
 					azi = dso.getAzimuth();
 					mag = dso.getMagnitude();
 					if (alt >= 0 && mag < 6) {
-						drawSpaceObject(dso,1,Color.BROWN);
+						drawSpaceObject(dso,1,usercolors[3]);
 					}
 				} catch(IllegalArgumentException e) {
 					//System.err.println("An object that attempted to be drawn triggered an execption");
@@ -185,7 +202,7 @@ public class CTS_GUI extends Application {
 						double[] to = getPositionOfSpaceObject(toStar);
 						if (from != null && to != null) {
 							//System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
-							drawLine(from[0], from[1], to[0], to[1], Color.WHITE);
+							drawLine(from[0], from[1], to[0], to[1], usercolors[8]);
 						}
 
 					}
@@ -231,6 +248,15 @@ public class CTS_GUI extends Application {
 		}
 		gc.setFill(color);
 		gc.fillOval(xx,yy, radius * 2, radius * 2);
+	}
+	public void drawCircleOutline(double radius, double x, double y, Color color) {
+		double xx = x - radius;
+		double yy = y - radius;
+		if (xx < 0.0 || yy < 0.0 || xx > (VIEWING_AREA_WIDTH -  radius)|| yy > (VIEWING_AREA_HEIGHT - radius)) {
+			throw new IllegalArgumentException("drawCircle: invalid set of radius and x/y cordnates");
+		}
+		gc.setStroke(color);
+		gc.strokeOval(xx,yy, radius * 2, radius * 2);
 	}
 	public void drawLine(double startx, double starty, double endx, double endy, Color color) {
 		gc.setStroke(color);
@@ -382,7 +408,104 @@ public class CTS_GUI extends Application {
 		box5.getChildren().add(c2);
 		box5.getChildren().add(c3);
 		box5.getChildren().add(c4);
-		
+		// Color Picker
+		// 0 = Star color, 1 = Low mag star, 2 = Very low mag star.
+		// 3 = DSO, 4 = Sky background, 5 = Circle around skybackgrund
+		// 6 = Overall background, 7 = Lat/long txt color, 8 = Constelation line color.
+		HBox box6 = new HBox(5);
+		TextField colorSet = new TextField("255,255,255,1");
+		Button setcolorbutton = new Button("Submit Color");
+		box6.getChildren().add(new Label("Color to Set: "));
+		box6.getChildren().add(colorSet);
+		box6.getChildren().add(setcolorbutton);
+		box6.getChildren().add(new Label("[PREVIEW COLOR]"));
+		setcolorbutton.setOnAction((event) -> {
+			boolean validvalues = true;
+			HBox n0000 = (HBox) uicontrols.getChildren().get(5);
+			TextField t0000 = (TextField) n0000.getChildren().get(1);
+			Label l0000 = (Label) n0000.getChildren().get(3);
+			String txt = t0000.getText();
+			String[] nums = txt.split(",");
+			if (nums.length != 4) {
+				validvalues = false;
+				GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
+				GUIerrorout.showAndWait();
+			}
+			if (validvalues) {
+				int[] colorvalues = new int[3];
+				double alphavalue = 1.0;
+				try {
+					for(int x = 0; x < 3; x++) {
+						colorvalues[x] = Integer.parseInt(nums[x]);
+					}
+					alphavalue = Double.parseDouble(nums[3]);
+				} catch(Exception e) {
+					validvalues = false;
+					GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
+					GUIerrorout.showAndWait();
+				}
+				if (alphavalue <= 1.0 && alphavalue >= 0.0 && colorvalues[0] >= 0 && colorvalues[0] < 256 && colorvalues[1] >= 0 && colorvalues[1] < 256 && colorvalues[2] >= 0 && colorvalues[2] < 256){
+					if (validvalues) {
+						l0000.setTextFill(Color.rgb(colorvalues[0],colorvalues[1],colorvalues[2],alphavalue));
+						usercolors[colorSetterId] = Color.rgb(colorvalues[0],colorvalues[1],colorvalues[2],alphavalue);
+					}
+				} else {
+					GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
+					GUIerrorout.showAndWait();
+				}
+			}
+        });
+        MenuBar mainmenu = new MenuBar();
+        Menu colorpickermenu = new Menu("Set Custom Colors");
+        MenuItem opt0 = new MenuItem("Star Color");
+        opt0.setOnAction((event) -> {
+        	colorSetterId = 0;
+        });
+        MenuItem opt1 = new MenuItem("Low Magnituide Star Color");
+        opt1.setOnAction((event) -> {
+        	colorSetterId = 1;
+        });
+        MenuItem opt2 = new MenuItem("Very Low Magnituide Star Color");
+        opt2.setOnAction((event) -> {
+        	colorSetterId = 2;
+        });
+        MenuItem opt3 = new MenuItem("Deep Space Object Color");
+        opt3.setOnAction((event) -> {
+        	colorSetterId = 3;
+        });
+        MenuItem opt4 = new MenuItem("Sky Background Color");
+        opt4.setOnAction((event) -> {
+        	colorSetterId = 4;
+        });
+        MenuItem opt5 = new MenuItem("Circle Around Sky Background Color");
+        opt5.setOnAction((event) -> {
+        	colorSetterId = 5;
+        });
+        MenuItem opt6 = new MenuItem("Overall Background Color");
+        opt6.setOnAction((event) -> {
+        	colorSetterId = 6;
+        });
+        MenuItem opt7 = new MenuItem("Latitude/Longitude Text Color");
+        opt7.setOnAction((event) -> {
+        	colorSetterId = 7;
+        });
+        MenuItem opt8 = new MenuItem("Constellation Line Color");
+        opt8.setOnAction((event) -> {
+        	colorSetterId = 8;
+        });
+        // Add the button the menu
+        colorpickermenu.getItems().add(opt0);
+        colorpickermenu.getItems().add(opt1);
+        colorpickermenu.getItems().add(opt2);
+        colorpickermenu.getItems().add(opt3);
+        colorpickermenu.getItems().add(opt4);
+        colorpickermenu.getItems().add(opt5);
+        colorpickermenu.getItems().add(opt6);
+        colorpickermenu.getItems().add(opt7);
+        colorpickermenu.getItems().add(opt8);
+        mainmenu.getMenus().add(colorpickermenu);
+        
+		//
 		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
 		but.setPadding(new Insets(5));
@@ -395,6 +518,7 @@ public class CTS_GUI extends Application {
 		uicontrols.getChildren().add(box2);
 		uicontrols.getChildren().add(box3);
 		uicontrols.getChildren().add(box5);
+		uicontrols.getChildren().add(box6);
 		uicontrols.getChildren().add(box4);
 		
 		but.setOnAction((event) -> {
@@ -410,9 +534,10 @@ public class CTS_GUI extends Application {
 				GUIerrorout.showAndWait();
 			}
         });
+		pane.setTop(mainmenu);
 		pane.setCenter(uicontrols);
 		pane.setPadding(new Insets(10));
-		Scene scene = new Scene(pane, 450, 240);
+		Scene scene = new Scene(pane, 460, 280);
 		input.setScene(scene);
 	}
 	private String getGUIErrorMsg(long errorcode) {
@@ -715,15 +840,14 @@ public class CTS_GUI extends Application {
 	}
 	private void resetSkyDrawing() {
 		gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.LIGHTGREY);
+		gc.setFill(usercolors[6]);
 		gc.fillRect(0, 0,  VIEWING_AREA_WIDTH, VIEWING_AREA_HEIGHT);
-		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, Color.BLACK);
+		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, usercolors[4]);
+		drawCircleOutline(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2 ,VIEWING_AREA_WIDTH / 2, usercolors[5]);
 	}
 	private double magnitudeToRadius(double mag) {
 		if (mag > 6.0) {
 			return 0.25;
-		} else if (mag < -2.0) {
-			return 4.0;
 		} else if (mag > 5.0) {
 			return 0.3;
 		} else if (mag > 4.0) {
@@ -735,11 +859,13 @@ public class CTS_GUI extends Application {
 		} else if (mag > 1.0) {
 			return 0.9;
 		} else if (mag > 0.5) {
-			return 1.1;
+			return 1.0;
 		} else if (mag > .5) {
-			return 1.25;
+			return 1.20;
+		} else if (mag < -2.0) {
+			return 5.0;
 		}
-		return 1.5;
+		return 1.75;
 	}
 	private double distanceToCenterOfDisplay(double x, double y) {
 		// A^2 + B^2 = C^2
