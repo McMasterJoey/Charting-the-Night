@@ -342,6 +342,15 @@ public class CTS_Model {
 	public ArrayList<CTS_Constellation> getConstellations() {
 		return Constellations;
 	}
+
+	/**
+	 * Getter to return the constellationDBs HashMap.
+	 * @return A HashMap<String, String> containing the list of constellation
+	 * databases by a string with the associated culture.
+	 */
+	public HashMap<String, String> getConstellationDBs() {
+		return constellationDBs;
+	}
 	
 	/**
 	 * Returns the local siderial time.
