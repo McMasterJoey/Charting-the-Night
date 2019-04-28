@@ -3,6 +3,7 @@ package Model;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * The main model used by the project.
@@ -18,6 +19,8 @@ public class CTS_Model {
 	ArrayList<CTS_Star> starList;
 	ArrayList<CTS_DeepSkyObject> DSOlist;
 	ArrayList<CTS_Constellation> Constellations;
+
+	HashMap<String, String> constellationDBs;
 	
 	// The days since J2000, including the decimal portion
 	private double daysSinceStandard;
@@ -31,7 +34,8 @@ public class CTS_Model {
 		starList = new ArrayList<CTS_Star>();
 		Constellations = new ArrayList<CTS_Constellation>();
 		build_starList();
-		build_ConstellationList();
+		build_constellationDBMap();
+		build_constellationList("western.fab");
 		
 		// Generate list of deep sky objects
 		DSOlist = new ArrayList<CTS_DeepSkyObject>();
@@ -60,7 +64,8 @@ public class CTS_Model {
 		Constellations = new ArrayList<CTS_Constellation>();
 		
 		build_starList();
-		build_ConstellationList();
+		build_constellationDBMap();
+		build_constellationList("western.fab");
 		
 		// Generate list of deep sky objects
 		DSOlist = new ArrayList<CTS_DeepSkyObject>();
@@ -215,14 +220,21 @@ public class CTS_Model {
         }
 	}
 
-	public void build_ConstellationList() {
+	/**
+	 * Builds the list of CTS_Constellation objects, given a file name.
+	 * The file should be in the Stellarium fab format, with any tabs replaced by spaces.
+	 * ASSUMES: the file resides in the src/Resources directory.
+	 * @param fileName A String indicating the name of the file to use.
+	 */
+	public void build_constellationList(String fileName) {
 
 		BufferedReader in = null;
 
 		try {
 
 			int edges, fromIdx, toIdx;
-			in = new BufferedReader(new FileReader(".\\src\\Resources\\constellationship.fab"));
+			String path = ".\\src\\Resources\\" + fileName;
+			in = new BufferedReader(new FileReader(path));
 			String line, name;
 			String tokens[];
 			CTS_Constellation constellation;
@@ -233,8 +245,16 @@ public class CTS_Model {
 				name = tokens[0];
 				edges = Integer.valueOf(tokens[1]);
 				constellation = new CTS_Constellation(name);
-				fromIdx = 3;
-				toIdx = 4;
+
+				if (tokens[2].equals("")) {
+					fromIdx = 3;
+					toIdx = 4;
+				}
+				else {
+					fromIdx = 2;
+					toIdx = 3;
+				}
+
 
 				for (int i = 1; i <= edges; i++) {
 					
@@ -254,58 +274,48 @@ public class CTS_Model {
 		}
 	}
 
-	public void build_ConstellationList_deprecated() {
+	/**
+	 * Builds the constellationDBs HashMap associating the name of a culture with
+	 * the database containing their constellations by Hipparcus catalog number.
+	 * WARNING: has no error checking of the ConstellationDB_List.csv file,
+	 * and assumes it has no empty lines.
+	 */
+	public void build_constellationDBMap() {
 
 		BufferedReader in = null;
-		String name;
-		int from, to;
 
 		try {
-			in = new BufferedReader(new FileReader(".\\src\\Resources\\Constellations.csv"));
-			String line;
-			String  previousName = "NoSuchConstellationName";
-			String tokens[];
-			CTS_Constellation constellation = null;
-			in.readLine(); // Skip the first line with column names
 
-			while ( (line = in.readLine()) != null ) {
+			in = new BufferedReader(new FileReader(".\\src\\Resources\\ConstellationDB_List.csv"));
+			String line;
+			String tokens[];
+			constellationDBs = new HashMap<>();
+
+			// Skip the header line
+			in.readLine();
+
+			while ( (line = in.readLine()) != null) {
 
 				tokens = line.split(",");
-				name = tokens[0];
-				from = Integer.valueOf(tokens[1]);
-				to = Integer.valueOf(tokens[2]);
-
-				if (!name.equals(previousName)) {
-
-					constellation = new CTS_Constellation(name);
-					Constellations.add(constellation);
-					previousName = name;
-				}
-
-				constellation.addConnection(getStarByID(from), getStarByID(to));
+				constellationDBs.put(tokens[0], tokens[1]);
 			}
+
+			in.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Finds and returns a CTS_Star object by the hip field.
+	 * @param hip An int indicating the star's Hipparcus catalog number
+	 * @return a CTS_Star object with the matching hip number, if found, or null
+	 */
 	public CTS_Star getStarByHip(int hip) {
 
 		for (CTS_Star star : starList) {
 
 			if (star.hip == hip) {
-				return star;
-			}
-		}
-
-		return null;
-	}
-
-	public CTS_Star getStarByID(int id) {
-
-		for (CTS_Star star : starList) {
-
-			if (star.id == id) {
 				return star;
 			}
 		}
