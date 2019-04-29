@@ -226,7 +226,7 @@ public class CTS_Model {
 
 	/**
 	 * Builds the list of CTS_Constellation objects, given a file name.
-	 * The file should be in the Stellarium fab format, with any tabs replaced by spaces.
+	 * The file should be in the Stellarium fab format.
 	 * ASSUMES: the file resides in the src/Resources directory.
 	 * @param fileName A String indicating the name of the file to use.
 	 * @return If it was successful or not.
@@ -246,7 +246,7 @@ public class CTS_Model {
 
 			while ( (line = in.readLine()) != null ) {
 
-				tokens = line.split(" ");
+				tokens = line.split("\\s+");
 				name = tokens[0];
 				edges = Integer.valueOf(tokens[1]);
 				constellation = new CTS_Constellation(name);
@@ -256,27 +256,11 @@ public class CTS_Model {
 					continue;
 				}
 
-				// Handle single or double space after the number of edges
-				if (tokens[2].equals("")) {
-					fromIdx = 3;
-					toIdx = 4;
-				}
-				else {
-					fromIdx = 2;
-					toIdx = 3;
-				}
+				fromIdx = 2;
+				toIdx = 3;
 
 				// Process the edges for the constellation
 				for (int i = 1; i <= edges; i++) {
-					// Handle single or double spaces between nodes
-					if (tokens[fromIdx].equals("")) {
-						fromIdx++;
-						toIdx++;
-					}
-
-					if (tokens[toIdx].equals("")) {
-						toIdx++;
-					}
 
 					int fromHip = Integer.valueOf(tokens[fromIdx]);
 					int toHip = Integer.valueOf(tokens[toIdx]);
