@@ -225,11 +225,12 @@ public class CTS_Model {
 	 * The file should be in the Stellarium fab format, with any tabs replaced by spaces.
 	 * ASSUMES: the file resides in the src/Resources directory.
 	 * @param fileName A String indicating the name of the file to use.
+	 * @return If it was successful or not.
 	 */
-	public void build_constellationList(String fileName) {
+	public boolean build_constellationList(String fileName) {
 
 		BufferedReader in = null;
-
+		Constellations = new ArrayList<CTS_Constellation>();
 		try {
 
 			int edges, fromIdx, toIdx;
@@ -257,7 +258,6 @@ public class CTS_Model {
 
 
 				for (int i = 1; i <= edges; i++) {
-					
 					int fromHip = Integer.valueOf(tokens[fromIdx]);
 					int toHip = Integer.valueOf(tokens[toIdx]);
 					constellation.addConnection(getStarByHip(fromHip), getStarByHip(toHip));
@@ -271,7 +271,9 @@ public class CTS_Model {
 			in.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
 	/**

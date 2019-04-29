@@ -51,6 +51,7 @@ public class CTS_GUI extends Application {
 	private CTS_Controller controller;
 	private Color[] usercolors;
 	private int colorSetterId = 0;
+	private String userSelectedConstellationFileName = "western.fab";
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
@@ -63,11 +64,11 @@ public class CTS_GUI extends Application {
 		usercolors[1] = Color.GREY;
 		usercolors[2] = Color.DARKGREY;
 		usercolors[3] = Color.BROWN;
-		usercolors[4] = Color.BLACK;
-		usercolors[5] = Color.BLUE;
+		usercolors[4] = Color.rgb(0,0,0,.4);
+		usercolors[5] = Color.rgb(0,0,125,.5);
 		usercolors[6] = Color.MIDNIGHTBLUE;
 		usercolors[7] = Color.LIME;
-		usercolors[8] = Color.WHITE;
+		usercolors[8] = Color.rgb(255,255,255,.25);
 	}
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -126,6 +127,7 @@ public class CTS_GUI extends Application {
 		resetSkyDrawing();
 		double[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
 		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
+		boolean succesful = controller.setConstellationType(userSelectedConstellationFileName);
 		// strokeText(String text, double x, double y, double maxWidth)
 		gc.setStroke(usercolors[7]);
 		gc.strokeText("Latitude: " + data[0], 10, 10, 190);
@@ -183,7 +185,7 @@ public class CTS_GUI extends Application {
 				}
 			}
 		}
-		if (plottingstatus[2]) {
+		if (plottingstatus[2] && succesful) {
 			// Plot Constellations
 			ArrayList<CTS_Constellation> constellations = controller.getConstellations();
 			if (constellations == null) {
@@ -208,6 +210,10 @@ public class CTS_GUI extends Application {
 					}
 				}
 			}
+		}
+		if (plottingstatus[2] && !succesful) {
+			GUIerrorout = new Alert(AlertType.ERROR, "Internal Application Error!\nConstellation files did not load in correctly.\nCheck to verify the resources package has all the needed .fab files.");
+			GUIerrorout.showAndWait();
 		}
 		if (plottingstatus[3]) {
 			// TODO Plot planets
@@ -261,78 +267,6 @@ public class CTS_GUI extends Application {
 	public void drawLine(double startx, double starty, double endx, double endy, Color color) {
 		gc.setStroke(color);
 		gc.strokeLine(startx,starty,endx,endy);
-	}
-	/**
-	 * Draws a line of inputed thickness between 2 points.
-	 * @param thickness The thickness of the line in pixels
-	 * @param startx The starting x coordinate of the line.
-	 * @param starty The starting y coordinate of the line.
-	 * @param endx The ending x coordinate of the line.
-	 * @param endy The ending y coordinate of the line.
-	 * @param color The color of the line.
-	 * @throws IllegalArgumentException If the line can not be fully displayed on the graphics context or if the thickness is less than 1.
-	 */
-	public void drawLine(double thickness, double startx, double starty, double endx, double endy, Color color) {
-		if (thickness < 1) {
-			throw new IllegalArgumentException("drawLine: thickness must be 1 or greater");
-		}
-		double offset = thickness / 2.0;
-		//System.out.println(offset);
-		double[] xcords = new double[4];
-		double[] ycords = new double[4];
-		boolean skiprest = false;
-		if (startx - endx == 0) {
-			// Case of verticle line.
-			skiprest = true;
-			xcords[0] = startx + offset;
-			xcords[1] = startx - offset;
-			xcords[2] = startx - offset;
-			xcords[3] = startx + offset;
-			ycords[0] = starty;
-			ycords[1] = starty;
-			ycords[2] = endy;
-			ycords[3] = endy;
-		}
-		double changey = endy - starty;
-		double changex = endx - startx;
-		double slope = changey / changex;
-		if (slope == 0.0 && !skiprest) {
-			// Case of horitontal line
-			skiprest = true;
-			xcords[0] = startx;
-			xcords[1] = startx;
-			xcords[2] = endx;
-			xcords[3] = endx;
-			ycords[0] = starty + offset;
-			ycords[1] = starty - offset;
-			ycords[2] = starty - offset;
-			ycords[3] = starty + offset;
-			//System.out.println("Case 2!");
-		}
-		if (!skiprest) {
-			double invslope = (1 / slope) * -1;
-			ycords[0] = starty + (invslope * offset);
-			ycords[1] = starty - (invslope * offset);
-			ycords[2] = endy - (invslope * offset);
-			ycords[3] = endy + (invslope * offset);
-			
-			xcords[0] = startx + offset;
-			xcords[1] = startx - offset;
-			xcords[2] = endx - offset;
-			xcords[3] = endx + offset;
-			
-		}
-		// Check for errors
-		for(int x = 0; x < 4; x++) {
-			if (ycords[x] < 0.0 || ycords[x] > VIEWING_AREA_HEIGHT) {
-				throw new IllegalArgumentException("drawLine: Line goes off screen.");
-			}
-			if (xcords[x] < 0.0 || xcords[x] > VIEWING_AREA_WIDTH) {
-				throw new IllegalArgumentException("drawLine: Line goes off screen.");
-			}
-		}
-		gc.setFill(color);
-		gc.fillPolygon(xcords, ycords, 4);
 	}
 	/**
 	 * Wrapper function to draw space objects.
@@ -505,7 +439,190 @@ public class CTS_GUI extends Application {
         colorpickermenu.getItems().add(opt8);
         mainmenu.getMenus().add(colorpickermenu);
         
-		//
+        Menu constellationsetpickermenu = new Menu("Constellation Set 1");
+        MenuItem _opt0 = new MenuItem("Western");
+        _opt0.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "western.fab";
+        });
+        MenuItem _opt1 = new MenuItem("Arabic");
+        _opt1.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "arabic.fab";
+        });
+        MenuItem _opt2 = new MenuItem("Armintxe");
+        _opt2.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "armintxe.fab";
+        });
+        MenuItem _opt3 = new MenuItem("Aztec");
+        _opt3.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "aztec.fab";
+        });
+        MenuItem _opt4 = new MenuItem("Belarusian");
+        _opt4.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "belarusian.fab";
+        });
+        MenuItem _opt5 = new MenuItem("Boorong");
+        _opt5.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "boorong.fab";
+        });
+        MenuItem _opt6 = new MenuItem("Chinese");
+        _opt6.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "chinese.fab";
+        });
+        MenuItem _opt7 = new MenuItem("Contemporary Chinese");
+        _opt7.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "contemporary_chinese.fab";
+        });
+        MenuItem _opt8 = new MenuItem("Dakota");
+        _opt8.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "dakota.fab";
+        });
+        MenuItem _opt9 = new MenuItem("Egyptian");
+        _opt9.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "egyptian.fab";
+        });
+        MenuItem _opt10 = new MenuItem("Hawaiian");
+        _opt10.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "hawaiian_starlines.fab";
+        });
+        MenuItem _opt11 = new MenuItem("Indian");
+        _opt11.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "indian.fab";
+        });
+        MenuItem _opt12 = new MenuItem("Inuit");
+        _opt12.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "inuit.fab";
+        });
+        MenuItem _opt13 = new MenuItem("Japanese");
+        _opt13.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "japanese_moon_stations.fab";
+        });
+        MenuItem _opt14 = new MenuItem("Kamilaroi");
+        _opt14.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "kamilaroi.fab";
+        });
+        
+        constellationsetpickermenu.getItems().add(_opt0);
+        constellationsetpickermenu.getItems().add(_opt1);
+        constellationsetpickermenu.getItems().add(_opt2);
+        constellationsetpickermenu.getItems().add(_opt3);
+        constellationsetpickermenu.getItems().add(_opt4);
+        constellationsetpickermenu.getItems().add(_opt5);
+        constellationsetpickermenu.getItems().add(_opt6);
+        constellationsetpickermenu.getItems().add(_opt7);
+        constellationsetpickermenu.getItems().add(_opt8);
+        constellationsetpickermenu.getItems().add(_opt9);
+        constellationsetpickermenu.getItems().add(_opt10);
+        constellationsetpickermenu.getItems().add(_opt11);
+        constellationsetpickermenu.getItems().add(_opt12);
+        constellationsetpickermenu.getItems().add(_opt13);
+        constellationsetpickermenu.getItems().add(_opt14);
+        mainmenu.getMenus().add(constellationsetpickermenu);
+        
+        Menu constellationsetpickermenu2 = new Menu("Constellation Set 2");
+        MenuItem __opt0 = new MenuItem("Korean");
+        __opt0.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "korean.fab";
+        });
+        MenuItem __opt1 = new MenuItem("Lokono");
+        __opt1.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "lokono.fab";
+        });
+        MenuItem __opt2 = new MenuItem("Macedonian");
+        __opt2.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "macedonian.fab";
+        });
+        MenuItem __opt3 = new MenuItem("Maori");
+        __opt3.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "maori.fab";
+        });
+        MenuItem __opt4 = new MenuItem("Maya");
+        __opt4.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "maya.fab";
+        });
+        MenuItem __opt5 = new MenuItem("Medieval Chinese");
+        __opt5.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "medieval_chinese.fab";
+        });
+        MenuItem __opt6 = new MenuItem("Mongolian");
+        __opt6.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "mongolian.fab";
+        });
+        MenuItem __opt7 = new MenuItem("Mul Apin");
+        __opt7.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "mul_apin.fab";
+        });
+        MenuItem __opt8 = new MenuItem("Navajo");
+        __opt8.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "navajo.fab";
+        });
+        MenuItem __opt9 = new MenuItem("Norse");
+        __opt9.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "norse.fab";
+        });
+        MenuItem __opt10 = new MenuItem("Northern Andes");
+        __opt10.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "northern_andes.fab";
+        });
+        MenuItem __opt11 = new MenuItem("Ojibwe");
+        __opt11.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "ojibwe.fab";
+        });
+        MenuItem __opt12 = new MenuItem("Romanian");
+        __opt12.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "romanian.fab";
+        });
+        MenuItem __opt13 = new MenuItem("Sami");
+        __opt13.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "sami.fab";
+        });
+        MenuItem __opt14 = new MenuItem("Sardinian");
+        __opt14.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "sardinian.fab";
+        });
+        constellationsetpickermenu2.getItems().add(__opt0);
+        constellationsetpickermenu2.getItems().add(__opt1);
+        constellationsetpickermenu2.getItems().add(__opt2);
+        constellationsetpickermenu2.getItems().add(__opt3);
+        constellationsetpickermenu2.getItems().add(__opt4);
+        constellationsetpickermenu2.getItems().add(__opt5);
+        constellationsetpickermenu2.getItems().add(__opt6);
+        constellationsetpickermenu2.getItems().add(__opt7);
+        constellationsetpickermenu2.getItems().add(__opt8);
+        constellationsetpickermenu2.getItems().add(__opt9);
+        constellationsetpickermenu2.getItems().add(__opt10);
+        constellationsetpickermenu2.getItems().add(__opt11);
+        constellationsetpickermenu2.getItems().add(__opt12);
+        constellationsetpickermenu2.getItems().add(__opt13);
+        constellationsetpickermenu2.getItems().add(__opt14);
+        mainmenu.getMenus().add(constellationsetpickermenu2);
+        
+        Menu constellationsetpickermenu3 = new Menu("Constellation Set 3");
+        MenuItem ___opt0 = new MenuItem("Seleucid");
+        ___opt0.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "seleucid.fab";
+        });
+        MenuItem ___opt1 = new MenuItem("Siberian");
+        ___opt1.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "siberian.fab";
+        });
+        MenuItem ___opt2 = new MenuItem("Tongan");
+        ___opt2.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "tongan.fab";
+        });
+        MenuItem ___opt3 = new MenuItem("Tukano");
+        ___opt3.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "tukano.fab";
+        });
+        MenuItem ___opt4 = new MenuItem("Tupi");
+        ___opt4.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "tupi.fab";
+        });
+        constellationsetpickermenu3.getItems().add(___opt0);
+        constellationsetpickermenu3.getItems().add(___opt1);
+        constellationsetpickermenu3.getItems().add(___opt2);
+        constellationsetpickermenu3.getItems().add(___opt3);
+        constellationsetpickermenu3.getItems().add(___opt4);
+        mainmenu.getMenus().add(constellationsetpickermenu3);
 		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
 		but.setPadding(new Insets(5));
@@ -537,7 +654,7 @@ public class CTS_GUI extends Application {
 		pane.setTop(mainmenu);
 		pane.setCenter(uicontrols);
 		pane.setPadding(new Insets(10));
-		Scene scene = new Scene(pane, 460, 280);
+		Scene scene = new Scene(pane, 520, 280);
 		input.setScene(scene);
 	}
 	private String getGUIErrorMsg(long errorcode) {
