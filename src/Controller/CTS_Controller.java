@@ -42,6 +42,12 @@ public class CTS_Controller {
 	public ArrayList<CTS_Constellation> getConstellations() {
 		return model.getConstellations();
 	}
+	public void setConstellationType(String type) {
+		model.build_constellationList(type);
+	}
+	public void setConstellationType() {
+		model.build_constellationList("western.fab");
+	}
 	private void updateAzimuthAndAltitude() {
 		// Update azimuth and altitude for all stars
 		ArrayList<CTS_Star> starList = model.getStarList();		

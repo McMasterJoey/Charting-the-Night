@@ -51,6 +51,7 @@ public class CTS_GUI extends Application {
 	private CTS_Controller controller;
 	private Color[] usercolors;
 	private int colorSetterId = 0;
+	private String userSelectedConstellationFileName = "western.fab";
 	public CTS_GUI(String[] args) {
 		launch(args);
 	}
@@ -126,6 +127,7 @@ public class CTS_GUI extends Application {
 		resetSkyDrawing();
 		double[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
 		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
+		controller.setConstellationType(userSelectedConstellationFileName);
 		// strokeText(String text, double x, double y, double maxWidth)
 		gc.setStroke(usercolors[7]);
 		gc.strokeText("Latitude: " + data[0], 10, 10, 190);
@@ -505,7 +507,84 @@ public class CTS_GUI extends Application {
         colorpickermenu.getItems().add(opt8);
         mainmenu.getMenus().add(colorpickermenu);
         
-		//
+        Menu constellationsetpickermenu = new Menu("Constellation Set");
+        MenuItem _opt0 = new MenuItem("Western");
+        _opt0.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "western.fab";
+        });
+        MenuItem _opt1 = new MenuItem("Arabic");
+        _opt1.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "arabic.fab";
+        });
+        MenuItem _opt2 = new MenuItem("Armintxe");
+        _opt2.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "armintxe.fab";
+        });
+        MenuItem _opt3 = new MenuItem("Aztec");
+        _opt3.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "aztec.fab";
+        });
+        MenuItem _opt4 = new MenuItem("Belarusian");
+        _opt4.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "belarusian.fab";
+        });
+        MenuItem _opt5 = new MenuItem("Boorong");
+        _opt5.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "boorong.fab";
+        });
+        MenuItem _opt6 = new MenuItem("Chinese");
+        _opt6.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "chinese.fab";
+        });
+        MenuItem _opt7 = new MenuItem("Contemporary Chinese");
+        _opt7.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "contemporary_chinese.fab";
+        });
+        MenuItem _opt8 = new MenuItem("Dakota");
+        _opt8.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "dakota.fab";
+        });
+        MenuItem _opt9 = new MenuItem("Egyptian");
+        _opt9.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "egyptian.fab";
+        });
+        MenuItem _opt10 = new MenuItem("Hawaiian");
+        _opt10.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "hawaiian_starlines.fab";
+        });
+        MenuItem _opt11 = new MenuItem("Indian");
+        _opt11.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "indian.fab";
+        });
+        MenuItem _opt12 = new MenuItem("Inuit");
+        _opt12.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "inuit.fab";
+        });
+        MenuItem _opt13 = new MenuItem("Japanese");
+        _opt13.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "japanese_moon_stations.fab";
+        });
+        MenuItem _opt14 = new MenuItem("Kamilaroi");
+        _opt14.setOnAction((event) -> {
+        	userSelectedConstellationFileName = "kamilaroi.fab";
+        });
+        
+        constellationsetpickermenu.getItems().add(_opt0);
+        constellationsetpickermenu.getItems().add(_opt1);
+        constellationsetpickermenu.getItems().add(_opt2);
+        constellationsetpickermenu.getItems().add(_opt3);
+        constellationsetpickermenu.getItems().add(_opt4);
+        constellationsetpickermenu.getItems().add(_opt5);
+        constellationsetpickermenu.getItems().add(_opt6);
+        constellationsetpickermenu.getItems().add(_opt7);
+        constellationsetpickermenu.getItems().add(_opt8);
+        constellationsetpickermenu.getItems().add(_opt9);
+        constellationsetpickermenu.getItems().add(_opt10);
+        constellationsetpickermenu.getItems().add(_opt11);
+        constellationsetpickermenu.getItems().add(_opt12);
+        constellationsetpickermenu.getItems().add(_opt13);
+        constellationsetpickermenu.getItems().add(_opt14);
+        mainmenu.getMenus().add(constellationsetpickermenu);
 		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
 		but.setPadding(new Insets(5));
