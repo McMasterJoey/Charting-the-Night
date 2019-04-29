@@ -63,11 +63,11 @@ public class CTS_GUI extends Application {
 		usercolors[1] = Color.GREY;
 		usercolors[2] = Color.DARKGREY;
 		usercolors[3] = Color.BROWN;
-		usercolors[4] = Color.BLACK;
-		usercolors[5] = Color.BLUE;
+		usercolors[4] = Color.rgb(0,0,0,.25);
+		usercolors[5] = Color.rgb(0,0,125,.5);
 		usercolors[6] = Color.MIDNIGHTBLUE;
 		usercolors[7] = Color.LIME;
-		usercolors[8] = Color.WHITE;
+		usercolors[8] = Color.rgb(255,255,255,.25);
 	}
 	@Override
 	public void start(Stage stage) throws Exception {
