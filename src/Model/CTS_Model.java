@@ -258,7 +258,6 @@ public class CTS_Model {
 
 
 				for (int i = 1; i <= edges; i++) {
-					
 					int fromHip = Integer.valueOf(tokens[fromIdx]);
 					int toHip = Integer.valueOf(tokens[toIdx]);
 					constellation.addConnection(getStarByHip(fromHip), getStarByHip(toHip));
