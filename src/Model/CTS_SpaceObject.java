@@ -20,10 +20,10 @@ public abstract class CTS_SpaceObject {
 	
 	/**
 	 * Inits a new space object.
-	 * @param id The id number of the SO from CSV database
-	 * @param name The name of the space object.
-	 * @param rightAcension The Right Acension of the space object.
-	 * @param declination The Declination of the space object.
+	 * @param _id The id number of the SO from CSV database
+	 * @param _name The name of the space object.
+	 * @param _rightAcension The Right Acension of the space object.
+	 * @param _declination The Declination of the space object.
 	 */
 	public CTS_SpaceObject(int _id, String _name, double _rightAcension, double _declination) {
 		id = _id;

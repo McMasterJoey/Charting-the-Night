@@ -11,6 +11,9 @@ import javafx.stage.Stage;
  */
 public class CTS_GUI_Dialoguebox extends Stage {
 
+	/**
+	 * Constructor for the class.
+	 */
 	public CTS_GUI_Dialoguebox() {
 		initModality(Modality.APPLICATION_MODAL);
 	}

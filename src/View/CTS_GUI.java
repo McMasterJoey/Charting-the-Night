@@ -273,7 +273,7 @@ public class CTS_GUI extends Application {
 	 * @param obj The space object to be drawn.
 	 * @param radius Its radius
 	 * @param color Its color
-	 * @throws IllegalArgumentException When something that is inputed causes an issue with displaying.
+	 * @throws IllegalArgumentException When something that is input causes an issue with displaying.
 	 */
 	public void drawSpaceObject(CTS_SpaceObject obj, int radius, Color color) {
 		double[] result = getPositionOfSpaceObject(obj);
@@ -288,7 +288,7 @@ public class CTS_GUI extends Application {
 	 * @param obj The space object to be drawn.
 	 * @param radius Its radius
 	 * @param color Its color
-	 * @throws IllegalArgumentException When something that is inputed causes an issue with displaying.
+	 * @throws IllegalArgumentException When something that is input causes an issue with displaying.
 	 */
 	public void drawSpaceObject(CTS_SpaceObject obj, double radius, Color color) {
 		double[] result = getPositionOfSpaceObject(obj);
@@ -344,8 +344,8 @@ public class CTS_GUI extends Application {
 		box5.getChildren().add(c4);
 		// Color Picker
 		// 0 = Star color, 1 = Low mag star, 2 = Very low mag star.
-		// 3 = DSO, 4 = Sky background, 5 = Circle around skybackgrund
-		// 6 = Overall background, 7 = Lat/long txt color, 8 = Constelation line color.
+		// 3 = DSO, 4 = Sky background, 5 = Circle around sky background
+		// 6 = Overall background, 7 = Lat/long txt color, 8 = Constellation line color.
 		HBox box6 = new HBox(5);
 		TextField colorSet = new TextField("255,255,255,1");
 		Button setcolorbutton = new Button("Submit Color");
@@ -667,7 +667,7 @@ public class CTS_GUI extends Application {
 		} else if (errorcode == 11) {
 			return "Date input format incorrect!\nValid dates go <year>-<month>-<day>\nValid month values are 1- 12 and valid day values are 1 - 31.";
 		} else if (errorcode == 12) {
-			return "Time input format incorrect!\nValid times go <hour>-<miniute>-<second>\nValid hour values are 0 - 23 and valid miniute and second values are 0 - 59";
+			return "Time input format incorrect!\nValid times go <hour>-<minute>-<second>\nValid hour values are 0 - 23 and valid minute and second values are 0 - 59";
 		} else if (errorcode == 1) {
 			return "Invalid latitude!\nValid Latitude values are -90 to 90 with negative values being south Latitude.";
 		} else if (errorcode == 2) {
@@ -795,7 +795,7 @@ public class CTS_GUI extends Application {
 	}
 	/**
 	 * Fetches the status of the check boxes in the GUI.
-	 * @return
+	 * @return A boolean array indicating if CheckBoxes are ticked or not.
 	 */
 	private boolean[] getCheckBoxes() {
 		HBox n4 = (HBox) uicontrols.getChildren().get(4);

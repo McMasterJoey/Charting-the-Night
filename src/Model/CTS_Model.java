@@ -28,7 +28,11 @@ public class CTS_Model {
 	
 	private double latitude;
 	private double longitude;
-	
+
+	/**
+	 * Basic constructor for a model. Defaults to the Western constellations, at
+	 * latitude/longitude 0, at 12:00 AM on Jan. 1, 2000.
+	 */
 	public CTS_Model() {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
@@ -55,10 +59,10 @@ public class CTS_Model {
 	 * Constructs the model with the given params
 	 * @param latitude The latitude on earth of where the observer will be
 	 * @param longitude The longitude on earth where the observer will be.
-	 * @param daysSinceStanderd Days since the year 2000
+	 * @param daysSinceStandard Days since the year 2000
 	 * @param universaltime  Time of day of where the observer will be.
 	 */
-	public CTS_Model(double latitude, double longitude, double daysSinceStanderd, double universaltime) {
+	public CTS_Model(double latitude, double longitude, double daysSinceStandard, double universaltime) {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
 		Constellations = new ArrayList<CTS_Constellation>();
@@ -72,7 +76,7 @@ public class CTS_Model {
 		build_DSOlist();
 				
 		// Set params with custom values.
-		this.daysSinceStandard = daysSinceStanderd;
+		this.daysSinceStandard = daysSinceStandard;
 		this.universalTime = universaltime;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -262,8 +266,7 @@ public class CTS_Model {
 					toIdx = 3;
 				}
 
-
-
+				// Process the edges for the constellation
 				for (int i = 1; i <= edges; i++) {
 					// Handle single or double spaces between nodes
 					if (tokens[fromIdx].equals("")) {
@@ -341,23 +344,43 @@ public class CTS_Model {
 
 		return null;
 	}
-	
+
+	/**
+	 * Setter for latitude.
+	 * @param lat A double representing the latitude in degrees.
+	 */
 	public void setLatitude(double lat) {
 		latitude = lat;
 	}
-	
+
+	/**
+	 * Setter for longitude
+	 * @param lon A double representing the longitude in degrees.
+	 */
 	public void setLongitude(double lon) {
 		longitude = lon;
 	}
 
+	/**
+	 * Getter for latitude.
+	 * @return A double representing the latitude in degrees.
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
-	
+
+	/**
+	 * Getter for longitude.
+	 * @return A double representing the longitude in degrees.
+	 */
 	public double getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 * Getter for Constellations
+	 * @return An ArrayList<CTS_Constellation> containing the current constellation objects.
+	 */
 	public ArrayList<CTS_Constellation> getConstellations() {
 		return Constellations;
 	}
