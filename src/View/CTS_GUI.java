@@ -851,6 +851,10 @@ public class CTS_GUI extends Application {
 	 * @return A set coordinates for the graph.
 	 */
 	private double[] getPositionOfSpaceObject(CTS_SpaceObject obj) {
+		if (obj == null) {
+			System.out.println("null obj passed to getPositionOfSpaceObject!");
+			return null;
+		}
 		double azimuth = obj.getAzimuth();
 		double altitude = obj.getAltitude();
 		if (altitude < 0 || altitude > 90) {

@@ -247,6 +247,12 @@ public class CTS_Model {
 				edges = Integer.valueOf(tokens[1]);
 				constellation = new CTS_Constellation(name);
 
+				// At least one file lists a constellation with no edges
+				if (edges == 0) {
+					continue;
+				}
+
+				// Handle single or double space after the number of edges
 				if (tokens[2].equals("")) {
 					fromIdx = 3;
 					toIdx = 4;
@@ -257,7 +263,18 @@ public class CTS_Model {
 				}
 
 
+
 				for (int i = 1; i <= edges; i++) {
+					// Handle single or double spaces between nodes
+					if (tokens[fromIdx].equals("")) {
+						fromIdx++;
+						toIdx++;
+					}
+
+					if (tokens[toIdx].equals("")) {
+						toIdx++;
+					}
+
 					int fromHip = Integer.valueOf(tokens[fromIdx]);
 					int toHip = Integer.valueOf(tokens[toIdx]);
 					constellation.addConnection(getStarByHip(fromHip), getStarByHip(toHip));
