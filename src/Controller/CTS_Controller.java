@@ -130,5 +130,13 @@ public class CTS_Controller {
 	}
 
 
+	/**
+	 * Getter to return the constellationDBs HashMap.
+	 * @return A HashMap<String, String> containing the list of constellation
+	 * databases by a string with the associated culture.
+	 */
+	public HashMap<String, String> getModelConstellationDBs() {
+		return model.getConstellationDBs();
+	}
 	
 }
