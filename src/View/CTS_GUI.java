@@ -130,8 +130,13 @@ public class CTS_GUI extends Application {
 		boolean succesful = controller.setConstellationType(userSelectedConstellationFileName);
 		// strokeText(String text, double x, double y, double maxWidth)
 		gc.setStroke(usercolors[7]);
-		gc.strokeText("Latitude: " + data[0], 10, 10, 190);
-		gc.strokeText("Longitude: " + data[1], 10, 25, 190);
+		gc.strokeText("Latitude: " + data[0], 10, 15, 190);
+		gc.strokeText("Longitude: " + data[1], 10, 30, 190);
+		gc.strokeText("Date: " + String.format("%.0f", data[2]) + "-" + String.format("%.0f", data[3]) + "-" + String.format("%.0f", data[4]),
+				10,	45, 190);
+		gc.strokeText("Time: " + String.format("%.0f", data[5]) + ":" + String.format("%.0f", data[6]) + ":" + String.format("%.0f", data[7]) ,
+				10,	60, 190);
+		//gc.strokeText("Constellations: " + uicontrols.getChildren(), 10, 90, 190);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
 		double azi = 0, alt = 0, mag = 0;
