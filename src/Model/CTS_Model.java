@@ -375,6 +375,15 @@ public class CTS_Model {
 		CTS_Planet Mars = new CTS_Planet(U, W, V, L, "Mars", 200003);
 		this.Planets.add(Mars);
 		
+		//JUPITER
+		L = 0.089608 + 0.00023080893 * t;
+		L = helperIgnoreme(L);
+		V = 0.38966 * Math.sin(2 * Math.PI * L);
+		U = 0.36891 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
+		W = 0.18063 * Math.sin(-1 * 2 * Math.PI * L);
+		CTS_Planet Jupiter = new CTS_Planet(U, W, V, L, "Jupiter", 200003);
+		this.Planets.add(Jupiter);
+		
 	}
 	
 	public double helperIgnoreme (double In) {
