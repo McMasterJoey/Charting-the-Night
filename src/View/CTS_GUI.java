@@ -136,6 +136,8 @@ public class CTS_GUI extends Application {
 				10,	45, 190);
 		gc.strokeText("Time: " + String.format("%.0f", data[5]) + ":" + String.format("%.0f", data[6]) + ":" + String.format("%.0f", data[7]) ,
 				10,	60, 190);
+		gc.strokeText("Contellsation set: " + userSelectedConstellationFileName.substring(0,1).toUpperCase() + userSelectedConstellationFileName.substring(1,userSelectedConstellationFileName.length() - 4),
+		10,	(VIEWING_AREA_HEIGHT - 5), 210);
 		//gc.strokeText("Constellations: " + uicontrols.getChildren(), 10, 90, 190);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
@@ -328,7 +330,7 @@ public class CTS_GUI extends Application {
 		TextField date = new TextField(d.toString());
 		box2.getChildren().add(new Label("Date: "));
 		box2.getChildren().add(date);
-		TextField time = new TextField(t.toString());
+		TextField time = new TextField(t.getHour() + ":" + t.getMinute() + ":" + (int) floor(t.getSecond()));
 		HBox box3 = new HBox(5);
 		box3.getChildren().add(new Label("Time: "));
 		box3.getChildren().add(time);
