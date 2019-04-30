@@ -136,7 +136,7 @@ public class CTS_GUI extends Application {
 				10,	45, 190);
 		gc.strokeText("Time: " + String.format("%.0f", data[5]) + ":" + String.format("%.0f", data[6]) + ":" + String.format("%.0f", data[7]) ,
 				10,	60, 190);
-		gc.strokeText("Contellsation set: " + userSelectedConstellationFileName.substring(0,1).toUpperCase() + userSelectedConstellationFileName.substring(1,userSelectedConstellationFileName.length() - 4),
+		gc.strokeText("Constellation set: " + userSelectedConstellationFileName.substring(0,1).toUpperCase() + userSelectedConstellationFileName.substring(1,userSelectedConstellationFileName.length() - 4),
 		10,	(VIEWING_AREA_HEIGHT - 5), 210);
 		//gc.strokeText("Constellations: " + uicontrols.getChildren(), 10, 90, 190);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
