@@ -477,7 +477,7 @@ public class CTS_Model {
      */
 	public void calcDaysSinceStandard(int year, int month, int day, int hour, int minutes, int seconds) {
 	    double j2000 =  2451545.0;
-	    double decTime = (3600 * hour + 60 * minutes + seconds);
+	    double decTime = ((3600 * hour) + (60 * minutes) + seconds);
 	    decTime /= 86400;
 	    decTime -= 0.5;
 	    //System.out.println("decTime = " + decTime);
@@ -489,9 +489,13 @@ public class CTS_Model {
 	    jd += decTime;
 		//System.out.println("jd = " + jd);
 	    daysSinceStandard = jd - j2000;
-	    double minFrac = Double.valueOf(minutes / 60);
-	    double secFrac = Double.valueOf(seconds / 3600);
-	    universalTime = hour + minutes + seconds;
+	    double minFrac = Double.valueOf((double) minutes / 60);
+	    double secFrac = Double.valueOf((double) seconds / 3600);
+	    //System.out.println(minFrac);
+	    //System.out.println(secFrac);
+	    System.out.println(universalTime);
+	    universalTime = hour + minFrac + secFrac;
+	    System.out.println(universalTime);
     }
 	
     /**

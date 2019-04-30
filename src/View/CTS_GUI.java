@@ -114,9 +114,6 @@ public class CTS_GUI extends Application {
         });
         		
 		// Display it!
-        
-        //privateTests();
-        
 		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT);
         stage.setScene(scene);
         stage.show();
@@ -127,7 +124,7 @@ public class CTS_GUI extends Application {
 	public void chartTheStars() {
 		resetSkyDrawing();
 		double[] data = getUserInputFromUIControls(); // ASSUMES IT IS VALID.
-		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3],(int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
+		controller = new CTS_Controller(data[0],data[1],(int) data[2], (int) data[3], (int) data[4],(int) data[5], (int) data[6], (int) data[7]); // Only using latitude and longitude
 		boolean succesful = controller.setConstellationType(userSelectedConstellationFileName);
 		// strokeText(String text, double x, double y, double maxWidth)
 		gc.setStroke(usercolors[7]);
@@ -923,71 +920,6 @@ public class CTS_GUI extends Application {
 		
 	}
 	
-	/** Matt testing function to print relevant info for online calculator
-	 * 
-	 */
-	private void mattTest(CTS_SpaceObject obj, double lati, double longi) {
-		System.out.println(obj);
-		double dec = obj.getDeclination();
-		double ra = obj.getRightAscension();
-		
-		
-		int decdeg = (int) dec;
-		
-		if (dec > 1) {
-			while (dec>1) {
-				dec--;
-			}
-		} else {
-			while (dec<-1) {
-				dec++;
-			}
-		}
-		double decmin = Math.abs(dec*60);
-		
-	
-		double rahour = ra/15;
-
-		int rah = (int) rahour;
-
-		
-		
-		double ramin = Math.abs((rahour-rah)*60);
-		
-		System.out.print("DEC: " + decdeg +"deg, "+decmin+" min,   RA: " +rah+" hours, "+ ramin + " mins...\n\n");
-		
-		
-	}
-	
-	/**
-	 * Joeys speific testing function to test, inprogress
-	 * Varrious draw functions. 
-	 */
-	private void privateTests() {
-		// Test lines
-		//drawLine(5,20,20,580,580,Color.RED);
-		//drawLine(5,20,580,580,20,Color.RED);
-		//drawLine(8,250,100,350,10,Color.BLUE);
-		//drawLine(1,1,1,4,500,Color.GREEN);
-		CTS_Star n1 = new CTS_Star(0, "Test", 0, 0, 0,90,50);
-		
-		CTS_Star n5 = new CTS_Star(0, "Test", 0, 0, 0,10,0);
-		CTS_Star n = new CTS_Star(0, "Test", 0, 0, 0,10,90);
-		CTS_Star n6 = new CTS_Star(0, "Test", 0, 0, 0,10,180);
-		CTS_Star n2 = new CTS_Star(0, "Test", 0, 0, 0,10,270);
-		CTS_Star n3 = new CTS_Star(0, "Test", 0, 0, 0,45,300);
-		CTS_Star n4 = new CTS_Star(0, "Test", 0, 0, 0,45,10); //Incorrect
-		
-		// CTS_Star(int Id, String name, double magnitude, double rightAcension, double declination, 
-		// double altitude, double azimuth)
-		drawSpaceObject(n, 2, Color.RED);
-		drawSpaceObject(n1,2,Color.YELLOW);
-		drawSpaceObject(n2,2,Color.BLUE);
-		drawSpaceObject(n3,10,Color.GREEN);
-		drawSpaceObject(n4,20,Color.PINK);
-		drawSpaceObject(n5,2,Color.ORANGE);
-		drawSpaceObject(n6,2,Color.AQUA);
-	}
 	private void resetSkyDrawing() {
 		gc = canvas.getGraphicsContext2D();
 		gc.setFill(usercolors[6]);
