@@ -42,6 +42,9 @@ public class CTS_Model {
 		DSOlist = new ArrayList<CTS_DeepSkyObject>();
 		build_DSOlist();
 		
+		Planets = new ArrayList<CTS_Planet>();
+		build_PlanetList();
+		
 		// Set default days since standard and universal time
 		daysSinceStandard = 0.0;
 		universalTime = 0.0;
@@ -71,7 +74,10 @@ public class CTS_Model {
 		// Generate list of deep sky objects
 		DSOlist = new ArrayList<CTS_DeepSkyObject>();
 		build_DSOlist();
-				
+		
+		Planets = new ArrayList<CTS_Planet>();
+		build_PlanetList();
+		
 		// Set params with custom values.
 		this.daysSinceStandard = daysSinceStanderd;
 		this.universalTime = universaltime;
@@ -318,11 +324,43 @@ public class CTS_Model {
 		
 		double t = this.daysSinceStandard;
 		double T = t/36525 +1;
+		double U, V, W, L;
 		
+		double seven = 0.779072 + 0.00273790931 * t;
+		seven = helperIgnoreme(seven);
 		
+		//TODO jump here
+		//============================================================================
+		//These all rely on magic numbers, so I can't do any big fun loop, I've just got to do all this dumb stuff right here
+		
+		//MECURY 
+		L = 0.700695 + 0.01136771400 * t;
+		L = helperIgnoreme(L);
+		V = 0.36951 * Math.sin((2 * Math.PI * seven));
+		U = 0.65089 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
+		W = -0.33605 * Math.sin((2 * Math.PI * seven) - (2 * Math.PI * L));
+		CTS_Planet mecury = new CTS_Planet(U, W, V, L, "Mecury", 200000);
+		this.Planets.add(mecury);
+		
+		//VENUS
+		V = 0.32238 * Math.sin(2 * Math.PI * seven);
+		L = 0.505498 + 0.00445046867 * t;
+		L = helperIgnoreme(L);
+		U = 0.94848 * Math.cos((2 * Math.PI * seven)  - (2 * Math.PI * L));
+		W = -0.56128 * Math.sin((2 * Math.PI * seven) - (2 * Math.PI * L));
+		CTS_Planet venus = new CTS_Planet(U, W, V, L, "Venus", 200001);
+		this.Planets.add(venus);
 		
 	}
-
+	
+	public double helperIgnoreme (double In) {
+		if (In > 0) {
+			return In - Math.floor(In);
+		} else {
+			return In - Math.ceil(In);
+		}
+	}
+	
 	/**
 	 * Finds and returns a CTS_Star object by the hip field.
 	 * @param hip An int indicating the star's Hipparcus catalog number

@@ -114,6 +114,10 @@ public class CTS_Controller {
 		
 		star.setAzimuth(azimuth);
 		
+		
+		if (star instanceof CTS_Planet) {
+			System.out.println("The altitude of " + star.getName() + " is " + star.getAltitude()  + " and the Azimuth is " + star.getAzimuth());
+		}
 
 	}
 	

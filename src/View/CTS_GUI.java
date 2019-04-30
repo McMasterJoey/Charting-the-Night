@@ -217,9 +217,11 @@ public class CTS_GUI extends Application {
 			GUIerrorout.showAndWait();
 		}
 		if (plottingstatus[3]) {
-			// TODO Plot planets
+			// TODO jump
 			for (CTS_Planet x : controller.getModel().getPlanetList()) {
-				drawSpaceObject(x , 4 , Color.PINK);
+				if (x.getAltitude() >= 0 && x.getAltitude() <= 90) {
+					drawSpaceObject(x , 4 , Color.PINK);
+				}
 			}
 			
 		}
