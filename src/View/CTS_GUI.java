@@ -224,11 +224,20 @@ public class CTS_GUI extends Application {
 			GUIerrorout.showAndWait();
 		}
 		if (plottingstatus[3]) {
-			// TODO jump
-			for (CTS_Planet x : controller.getModel().getPlanetList()) {
-				if (x.getAltitude() >= 0 && x.getAltitude() <= 90) {
-					drawSpaceObject(x , 4 , Color.PINK);
+			try {
+				for (CTS_Planet x : controller.getModel().getPlanetList()) {
+					if (x.getAltitude() >= 0 && x.getAltitude() <= 90) {
+						if (x.getId() == 200000) { // Mercury 
+							drawSpaceObject(x , 4, Color.BROWN);
+						} else if (x.getId() == 200001) {
+							drawSpaceObject(x , 5, Color.TOMATO);
+						} else if (x.getId() == 200002) {
+							drawSpaceObject(x , 7, Color.DARKSLATEGREY);
+						}
+					}
 				}
+			} catch(IllegalArgumentException e) {
+				//System.err.println("An object that attempted to be drawn triggered an execption");
 			}
 			
 		}
@@ -706,8 +715,14 @@ public class CTS_GUI extends Application {
 		HBox n1 = (HBox) uicontrols.getChildren().get(1);
 		TextField t0 = (TextField) n0.getChildren().get(1); // Lat
 		TextField t1 = (TextField) n1.getChildren().get(1); // Long
-		double latitude = Double.parseDouble(t0.getText());
-		double longitude = Double.parseDouble(t1.getText());
+		double latitude = 0.0;
+		double longitude = 0.0;
+		try {
+			latitude = Double.parseDouble(t0.getText());
+			longitude = Double.parseDouble(t1.getText());
+		} catch(NumberFormatException e) {
+			// Ignore, assume default values.
+		}
 		if (dir == 1) { // NW
 			latitude += offset;
 			longitude -= (offset * 4);
