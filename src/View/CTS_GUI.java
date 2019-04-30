@@ -817,6 +817,11 @@ public class CTS_GUI extends Application {
 			return retval;
 		}
 		retval[8] = 0.0;
+		if (retval[0] == 90.0) {
+			retval[0] = 89.9999999;
+		} else if (retval[0] == -90.0) {
+			retval[0] = -89.9999999;
+		}
 		return retval;
 	}
 	/**

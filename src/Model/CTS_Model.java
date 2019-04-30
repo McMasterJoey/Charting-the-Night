@@ -491,11 +491,7 @@ public class CTS_Model {
 	    daysSinceStandard = jd - j2000;
 	    double minFrac = Double.valueOf((double) minutes / 60);
 	    double secFrac = Double.valueOf((double) seconds / 3600);
-	    //System.out.println(minFrac);
-	    //System.out.println(secFrac);
-	    System.out.println(universalTime);
 	    universalTime = hour + minFrac + secFrac;
-	    System.out.println(universalTime);
     }
 	
     /**
