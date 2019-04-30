@@ -384,6 +384,18 @@ public class CTS_Model {
 		CTS_Planet Jupiter = new CTS_Planet(U, W, V, L, "Jupiter", 200003);
 		this.Planets.add(Jupiter);
 		
+		//SATURN
+		//JUPITER
+		L = 0.133296 + 0.00009294371 * t;
+		L = helperIgnoreme(L);
+		V = 0.39412 * Math.sin(2 * Math.PI * L);
+		U = 0.20588 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
+		double twentytwo = 0.882987 + 0.00009294371 * t;
+		twentytwo = helperIgnoreme(twentytwo);
+		W = 0.10619 * Math.sin( 2 * Math.PI * twentytwo);
+		CTS_Planet Saturn = new CTS_Planet(U, W, V, L, "Saturn", 200003);
+		this.Planets.add(Saturn);
+		
 	}
 	
 	public double helperIgnoreme (double In) {
