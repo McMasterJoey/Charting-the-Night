@@ -406,6 +406,14 @@ public class CTS_Model {
 		CTS_Planet Uranus = new CTS_Planet(U, W, V, L, "Uarnus", 200006);
 		this.Planets.add(Uranus);
 		
+		//NEPTUNE
+		L = 0.846912 + 0.00001672092 * t;
+		L = helperIgnoreme(L);
+		V = 0.39763 * Math.sin(2 * Math.PI * L);
+		U = 0.06640 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
+		W = -0.04126 * Math.sin(4 * Math.PI * L);
+		CTS_Planet Neptune = new CTS_Planet(U, W, V, L, "Neptune", 200007);
+		this.Planets.add(Neptune);
 	}
 	
 	public double helperIgnoreme (double In) {
