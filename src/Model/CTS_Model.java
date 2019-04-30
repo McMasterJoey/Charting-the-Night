@@ -370,6 +370,36 @@ public class CTS_Model {
 		CTS_Planet Moon = new CTS_Planet(U, W, V, L, "Moon", 200002);
 		this.Planets.add(Moon);
 		
+		//MARS
+		L = 0.987353 + 0.00145575328 * t;
+		L = helperIgnoreme(L);
+		V = 0.32967 * Math.sin(2 * Math.PI * L);
+		U = 0.90471 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
+		W = 0.52354 * Math.sin((2 * Math.PI * seven) - (2 * Math.PI * L));
+		CTS_Planet Mars = new CTS_Planet(U, W, V, L, "Mars", 200003);
+		this.Planets.add(Mars);
+		
+		//JUPITER
+		L = 0.089608 + 0.00023080893 * t;
+		L = helperIgnoreme(L);
+		V = 0.38966 * Math.sin(2 * Math.PI * L);
+		U = 0.36891 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
+		W = 0.18063 * Math.sin(-1 * 2 * Math.PI * L);
+		CTS_Planet Jupiter = new CTS_Planet(U, W, V, L, "Jupiter", 200003);
+		this.Planets.add(Jupiter);
+		
+		//SATURN
+		//JUPITER
+		L = 0.133296 + 0.00009294371 * t;
+		L = helperIgnoreme(L);
+		V = 0.39412 * Math.sin(2 * Math.PI * L);
+		U = 0.20588 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
+		double twentytwo = 0.882987 + 0.00009294371 * t;
+		twentytwo = helperIgnoreme(twentytwo);
+		W = 0.10619 * Math.sin( 2 * Math.PI * twentytwo);
+		CTS_Planet Saturn = new CTS_Planet(U, W, V, L, "Saturn", 200003);
+		this.Planets.add(Saturn);
+		
 	}
 	
 	public double helperIgnoreme (double In) {
