@@ -354,13 +354,13 @@ public class CTS_Model {
 		//Moon
 		double three = 0.259091 + 0.03674819520 * t;
 		three = helperIgnoreme(three);
-		double five = 0.347343 - 0.00014709391 * t;
-		five = helperIgnoreme(five);
-		V = 0.39558 * Math.sin((2*Math.PI * three) + (2*Math.PI * five));
+		double temp1 = 0.347343 - 0.00014709391 * t;
+		temp1 = helperIgnoreme(temp1);
+		V = 0.39558 * Math.sin((2*Math.PI * three) + (2*Math.PI * temp1));
 		double two = 0.374897 + 0.03629164709 * t;
-		two = helperIgnoreme(two);
-		U = -0.10828 * Math.cos(2* Math.PI * two);
-		W = 0.10478 * Math.sin(2 * Math.PI * two);
+		temp1 = helperIgnoreme(temp1);
+		U = -0.10828 * Math.cos(2* Math.PI * temp1);
+		W = 0.10478 * Math.sin(2 * Math.PI * temp1);
 		L = 0.606434 + 0.03660110129 * t;
 		L = helperIgnoreme(L);
 		CTS_Planet Moon = new CTS_Planet(U, W, V, L, "Moon", 200002);
@@ -381,20 +381,30 @@ public class CTS_Model {
 		V = 0.38966 * Math.sin(2 * Math.PI * L);
 		U = 0.36891 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
 		W = 0.18063 * Math.sin(-1 * 2 * Math.PI * L);
-		CTS_Planet Jupiter = new CTS_Planet(U, W, V, L, "Jupiter", 200003);
+		CTS_Planet Jupiter = new CTS_Planet(U, W, V, L, "Jupiter", 200004);
 		this.Planets.add(Jupiter);
 		
 		//SATURN
-		//JUPITER
 		L = 0.133296 + 0.00009294371 * t;
 		L = helperIgnoreme(L);
 		V = 0.39412 * Math.sin(2 * Math.PI * L);
 		U = 0.20588 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
-		double twentytwo = 0.882987 + 0.00009294371 * t;
-		twentytwo = helperIgnoreme(twentytwo);
-		W = 0.10619 * Math.sin( 2 * Math.PI * twentytwo);
-		CTS_Planet Saturn = new CTS_Planet(U, W, V, L, "Saturn", 200003);
+		temp1 = 0.882987 + 0.00009294371 * t;
+		temp1 = helperIgnoreme(temp1);
+		W = 0.10619 * Math.sin( 2 * Math.PI * temp1);
+		CTS_Planet Saturn = new CTS_Planet(U, W, V, L, "Saturn", 200005);
 		this.Planets.add(Saturn);
+		
+		//URANUS
+		L = 0.870169 + 0.00003269438 * t;
+		L = helperIgnoreme(L);
+		V = 0.39633 * Math.sin(2 * Math.PI * L);
+		U = 0.10346 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
+		temp1 = 0.400589 + 0.00003269438 * t;
+		temp1 = helperIgnoreme(temp1);
+		W = 0.08987 * Math.sin( 2 * Math.PI * temp1);
+		CTS_Planet Uranus = new CTS_Planet(U, W, V, L, "Uarnus", 200006);
+		this.Planets.add(Uranus);
 		
 	}
 	
