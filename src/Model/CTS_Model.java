@@ -355,6 +355,21 @@ public class CTS_Model {
 		CTS_Planet venus = new CTS_Planet(U, W, V, L, "Venus", 200001);
 		this.Planets.add(venus);
 		
+		//Moon
+		double three = 0.259091 + 0.03674819520 * t;
+		three = helperIgnoreme(three);
+		double five = 0.347343 - 0.00014709391 * t;
+		five = helperIgnoreme(five);
+		V = 0.39558 * Math.sin((2*Math.PI * three) + (2*Math.PI * five));
+		double two = 0.374897 + 0.03629164709 * t;
+		two = helperIgnoreme(two);
+		U = -0.10828 * Math.cos(2* Math.PI * two);
+		W = 0.10478 * Math.sin(2 * Math.PI * two);
+		L = 0.606434 + 0.03660110129 * t;
+		L = helperIgnoreme(L);
+		CTS_Planet Moon = new CTS_Planet(U, W, V, L, "Moon", 200002);
+		this.Planets.add(Moon);
+		
 	}
 	
 	public double helperIgnoreme (double In) {
