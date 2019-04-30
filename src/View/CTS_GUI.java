@@ -226,10 +226,20 @@ public class CTS_GUI extends Application {
 					if (x.getAltitude() >= 0 && x.getAltitude() <= 90) {
 						if (x.getId() == 200000) { // Mercury 
 							drawSpaceObject(x , 4, Color.BROWN);
-						} else if (x.getId() == 200001) {
+						} else if (x.getId() == 200001) { // Venus
 							drawSpaceObject(x , 5, Color.TOMATO);
-						} else if (x.getId() == 200002) {
+						} else if (x.getId() == 200002) { // Moon
 							drawSpaceObject(x , 7, Color.DARKSLATEGREY);
+						} else if (x.getId() == 200003) { // Mars
+							drawSpaceObject(x , 6, Color.DARKRED);
+						} else if (x.getId() == 200004) { // Jupiter
+							drawSpaceObject(x , 5, Color.TAN);
+						} else if (x.getId() == 200005) { // Saturn
+							drawSpaceObject(x , 4, Color.BEIGE);
+						} else if (x.getId() == 200006) { // uranus
+							drawSpaceObject(x , 3, Color.LIGHTBLUE);
+						} else if (x.getId() == 200007) { // neptune
+							drawSpaceObject(x , 2, Color.DARKBLUE);
 						}
 					}
 				}
