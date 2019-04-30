@@ -7,6 +7,7 @@ import Model.CTS_Constellation;
 import Model.CTS_SpaceObject;
 import Model.CTS_Star;
 import Model.CTS_DeepSkyObject;
+import Model.CTS_Planet;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -223,7 +224,13 @@ public class CTS_GUI extends Application {
 			GUIerrorout.showAndWait();
 		}
 		if (plottingstatus[3]) {
-			// TODO Plot planets
+			// TODO jump
+			for (CTS_Planet x : controller.getModel().getPlanetList()) {
+				if (x.getAltitude() >= 0 && x.getAltitude() <= 90) {
+					drawSpaceObject(x , 4 , Color.PINK);
+				}
+			}
+			
 		}
 	}
 	/**
