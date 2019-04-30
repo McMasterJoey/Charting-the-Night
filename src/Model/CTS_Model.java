@@ -19,6 +19,7 @@ public class CTS_Model {
 	ArrayList<CTS_Star> starList;
 	ArrayList<CTS_DeepSkyObject> DSOlist;
 	ArrayList<CTS_Constellation> Constellations;
+	ArrayList<CTS_Planet> Planets;
 
 	HashMap<String, String> constellationDBs;
 	
@@ -95,6 +96,10 @@ public class CTS_Model {
 	 */
 	public ArrayList<CTS_DeepSkyObject> getDSOlist() {
 		return this.DSOlist;
+	}
+	
+	public ArrayList<CTS_Planet> getPlanetList(){
+		return this.Planets;
 	}
 	
 	/**
@@ -306,6 +311,16 @@ public class CTS_Model {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void build_PlanetList() {
+		
+		double t = this.daysSinceStandard;
+		double T = t/36525 +1;
+		
+		
+		
 	}
 
 	/**

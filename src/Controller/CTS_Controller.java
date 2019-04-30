@@ -59,7 +59,12 @@ public class CTS_Controller {
 		ArrayList<CTS_DeepSkyObject> DSOlist = model.getDSOlist();
 		for (CTS_DeepSkyObject dso : DSOlist) {
 			calcAzimuthAndAltitude(dso);
-		}	
+		}
+		
+		ArrayList<CTS_Planet> planets = model.getPlanetList();
+		for (CTS_Planet planet : planets) {
+			calcAzimuthAndAltitude(planet);
+		}
 	}
 	
 	
