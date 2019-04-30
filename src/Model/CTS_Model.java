@@ -54,7 +54,7 @@ public class CTS_Model {
 	 * @param daysSinceStanderd Days since the year 2000
 	 * @param universaltime  Time of day of where the observer will be.
 	 */
-	public CTS_Model(double latitude, double longitude, double daysSinceStanderd, double universaltime) {
+	public CTS_Model(double latitude, double longitude, double daysSinceStandard, double universaltime) {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
 		Constellations = new ArrayList<CTS_Constellation>();
@@ -67,7 +67,7 @@ public class CTS_Model {
 		build_DSOlist();
 				
 		// Set params with custom values.
-		this.daysSinceStandard = daysSinceStanderd;
+		this.daysSinceStandard = daysSinceStandard;
 		this.universalTime = universaltime;
 		this.latitude = latitude;
 		this.longitude = longitude;

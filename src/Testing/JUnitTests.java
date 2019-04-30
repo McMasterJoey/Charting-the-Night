@@ -1,7 +1,8 @@
 package Testing;
 import static org.junit.jupiter.api.Assertions.*;
 
-import Model.CTS_Star;
+import Model.*;
+import Controller.*;
 import org.junit.jupiter.api.Test;
 
 import java.math.RoundingMode;
@@ -33,4 +34,23 @@ public class JUnitTests {
 //		star.calcDaysSinceStandard(2008, 4, 4, 15, 30, 0);
 //		assertEquals("3016.1458", round4.format(star.getDaysSinceStandard()));
 //	}
+	
+	@Test
+	void test_controller_calcMoonPosition() {
+		double lati;
+		double longi;
+		double dss;
+		double utc;
+		
+		lati = 0;
+		longi = 0;
+		dss = 1460.5;
+		utc = 12.0;
+		
+		CTS_Model model = new CTS_Model(lati, longi, dss, utc);
+		CTS_Controller cont = new CTS_Controller(model);
+		
+		cont.calcMoonPosition();
+		
+	}
 }

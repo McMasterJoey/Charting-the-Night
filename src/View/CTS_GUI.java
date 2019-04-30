@@ -132,6 +132,20 @@ public class CTS_GUI extends Application {
 			}
 		}
 		
+		// Plot the moon
+		double[] moonRAdec = controller.calcMoonPosition();
+		CTS_Star moon = new CTS_Star(Integer.MAX_VALUE,"Moon",-12.6,moonRAdec[0],moonRAdec[1]);
+		controller.calcAzimuthAndAltitude(moon);
+		alt = moon.getAltitude();
+		System.out.println("MOON_ALT: "+alt+",  MOON_AZ:" + moon.getAzimuth());
+		try {
+			if (alt >= 0) {
+				drawSpaceObject(moon,magnitudeToRadius(moon.getMagnitude()),Color.WHITE);
+			}
+		} catch(IllegalArgumentException e) {
+			// Moon outside the viewing area
+		}
+		
 		
 		// Plot DSOs
 		for(int x = 0; x < d.size(); x++) {
@@ -148,7 +162,8 @@ public class CTS_GUI extends Application {
 			}
 		}
 		// Plot Constellations
-		ArrayList<CTS_Constellation> constellations = controller.getConstellations();
+		//ArrayList<CTS_Constellation> constellations = controller.getConstellations();
+		ArrayList<CTS_Constellation> constellations = null;
 		if (constellations == null) {
 			return;
 		}
@@ -513,6 +528,14 @@ public class CTS_GUI extends Application {
 	private double[] getPositionOfSpaceObject(CTS_SpaceObject obj) {
 		double azimuth = obj.getAzimuth();
 		double altitude = obj.getAltitude();
+		
+		//DBUG CODE
+		if (obj.getName().equals("Moon")) {
+			System.out.println(azimuth);
+			System.out.println(altitude);
+		}
+
+		
 		if (altitude < 0 || altitude > 90) {
 			return null;
 		}
