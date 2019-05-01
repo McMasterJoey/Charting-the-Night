@@ -479,7 +479,7 @@ public class CTS_Model {
 
 	/**
 	 * Getter for Constellations
-	 * @return An ArrayList<CTS_Constellation> containing the current constellation objects.
+	 * @return  containing the current constellation objects.
 	 */
 	public ArrayList<CTS_Constellation> getConstellations() {
 		return Constellations;
@@ -487,7 +487,7 @@ public class CTS_Model {
 
 	/**
 	 * Getter to return the constellationDBs HashMap.
-	 * @return A HashMap<String, String> containing the list of constellation
+	 * @return  containing the list of constellation
 	 * databases by a string with the associated culture.
 	 */
 	public HashMap<String, String> getConstellationDBs() {

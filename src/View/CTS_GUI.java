@@ -596,11 +596,7 @@ public class CTS_GUI extends Application {
 		CheckBox b2 = (CheckBox) n4.getChildren().get(1);
 		CheckBox b3 = (CheckBox) n4.getChildren().get(2);
 		CheckBox b4 = (CheckBox) n4.getChildren().get(3);
-		boolean[] boxes = new boolean[4];
-		boxes[0] = b1.isSelected();
-		boxes[1] = b2.isSelected();
-		boxes[2] = b3.isSelected();
-		boxes[3] = b4.isSelected();
+		boolean[] boxes = { b1.isSelected(),b2.isSelected(),b3.isSelected(),b4.isSelected()};
 		return boxes;
 	}
 	/**
