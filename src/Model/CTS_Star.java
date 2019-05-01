@@ -11,8 +11,6 @@ import java.util.ArrayList;
  *
  */
 public class CTS_Star extends CTS_SpaceObject {
-
-
 	// List of other stars in this constellation this star is "connected" to
 	// in the visual drawing of a constellation
 	private ArrayList<CTS_Star> linesTo;
@@ -28,7 +26,6 @@ public class CTS_Star extends CTS_SpaceObject {
 		super(Id, name, rightAscension, declination);
 		this.magnitude = magnitude;
 	}
-
 	/**
 	 * Inits a new star.
 	 * @param Id The id number of the star from CSV database.
@@ -42,7 +39,6 @@ public class CTS_Star extends CTS_SpaceObject {
 		super(Id, hip, name, rightAscension, declination);
 		this.magnitude = magnitude;
 	}
-	
 	/**
 	 * Inits a new star.
 	 * @param Id The id number of the star from CSV database
@@ -58,8 +54,6 @@ public class CTS_Star extends CTS_SpaceObject {
 		super(Id, name, rightAscension, declination, altitude, azimuth);
 		this.magnitude = magnitude;
 	}
-	
-	
 	/**
 	 * Fetches the magnitude of the star.
 	 * @return The magnitude of the star.
@@ -68,9 +62,6 @@ public class CTS_Star extends CTS_SpaceObject {
 		// This is a constant set directly from Stars.csv, setter not needed
 		return magnitude;
 	}
-
-
-
 	/**
 	 * Makes the object printable easily.
 	 * @return The string representation of the CTS_Star object.

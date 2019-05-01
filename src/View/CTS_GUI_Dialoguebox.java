@@ -7,10 +7,8 @@ import javafx.stage.Stage;
  * @author Nicholas Fiegel
  * @author Matt Theisen
  * @author Jackson
- *
  */
 public class CTS_GUI_Dialoguebox extends Stage {
-
 	/**
 	 * Constructor for the class.
 	 */

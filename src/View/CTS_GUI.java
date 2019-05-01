@@ -132,7 +132,7 @@ public class CTS_GUI extends Application {
 				10,	45, 190);
 		gc.strokeText("Time: " + String.format("%.0f", data[5]) + ":" + String.format("%.0f", data[6]) + ":" + String.format("%.0f", data[7]) ,
 				10,	60, 190);
-		gc.strokeText("Constellation set: " + userSelectedConstellationFileName.substring(0,1).toUpperCase() + userSelectedConstellationFileName.substring(1,userSelectedConstellationFileName.length() - 4),
+		gc.strokeText("Constellation set: " + upperCaseFL(userSelectedConstellationFileName).substring(0,userSelectedConstellationFileName.length() - 4),
 				10,	(VIEWING_AREA_HEIGHT - 5), 210);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
@@ -337,27 +337,16 @@ public class CTS_GUI extends Application {
 		BorderPane pane = new BorderPane();
 		LocalTime t = LocalTime.now();
 		LocalDate d = LocalDate.now();
-		
 		uicontrols = new VBox(10);
 		HBox box0 = new HBox(5);
-		TextField lat = new TextField("0");
-		box0.getChildren().add(new Label("Latitude: "));
-		box0.getChildren().add(lat);
-		
-		TextField lon = new TextField("0");
+		box0.getChildren().addAll(new Label("Latitude: "),new TextField("0"));
 		HBox box1 = new HBox(5);
-		box1.getChildren().add(new Label("Longitude: "));
-		box1.getChildren().add(lon);
-		
+		box1.getChildren().addAll(new Label("Longitude: "),new TextField("0"));
 		HBox box2 = new HBox(5);
-		TextField date = new TextField(d.toString());
-		box2.getChildren().add(new Label("Date: "));
-		box2.getChildren().add(date);
+		box2.getChildren().addAll(new Label("Date: "),new TextField(d.toString()));
 		TextField time = new TextField(t.getHour() + ":" + t.getMinute() + ":" + (int) floor(t.getSecond()));
 		HBox box3 = new HBox(5);
-		box3.getChildren().add(new Label("Time: "));
-		box3.getChildren().add(time);
-		
+		box3.getChildren().addAll(new Label("Time: "),time);
 		// Check boxes
 		HBox box5 = new HBox(5);
 		CheckBox c1 = new CheckBox("Plot Stars");
@@ -368,10 +357,7 @@ public class CTS_GUI extends Application {
 		c3.setSelected(true);
 		CheckBox c4 = new CheckBox("Plot Planets");
 		c4.setSelected(true);
-		box5.getChildren().add(c1);
-		box5.getChildren().add(c2);
-		box5.getChildren().add(c3);
-		box5.getChildren().add(c4);
+		box5.getChildren().addAll(c1,c2,c3,c4);
 		// Color Picker
 		// 0 = Star color, 1 = Low mag star, 2 = Very low mag star.
 		// 3 = DSO, 4 = Sky background, 5 = Circle around sky background
@@ -379,298 +365,54 @@ public class CTS_GUI extends Application {
 		HBox box6 = new HBox(5);
 		TextField colorSet = new TextField("255,255,255,1");
 		Button setcolorbutton = new Button("Submit Color");
-		box6.getChildren().add(new Label("Color to Set: "));
-		box6.getChildren().add(colorSet);
-		box6.getChildren().add(setcolorbutton);
-		box6.getChildren().add(new Label("[PREVIEW COLOR]"));
-		setcolorbutton.setOnAction((event) -> {
-			boolean validvalues = true;
-			HBox n0000 = (HBox) uicontrols.getChildren().get(5);
-			TextField t0000 = (TextField) n0000.getChildren().get(1);
-			Label l0000 = (Label) n0000.getChildren().get(3);
-			String txt = t0000.getText();
-			String[] nums = txt.split(",");
-			if (nums.length != 4) {
-				validvalues = false;
-				GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
-				GUIerrorout.showAndWait();
-			}
-			if (validvalues) {
-				int[] colorvalues = new int[3];
-				double alphavalue = 1.0;
-				try {
-					for(int x = 0; x < 3; x++) {
-						colorvalues[x] = Integer.parseInt(nums[x]);
-					}
-					alphavalue = Double.parseDouble(nums[3]);
-				} catch(Exception e) {
-					validvalues = false;
-					GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
-					GUIerrorout.showAndWait();
-				}
-				if (alphavalue <= 1.0 && alphavalue >= 0.0 && colorvalues[0] >= 0 && colorvalues[0] < 256 && colorvalues[1] >= 0 && colorvalues[1] < 256 && colorvalues[2] >= 0 && colorvalues[2] < 256){
-					if (validvalues) {
-						l0000.setTextFill(Color.rgb(colorvalues[0],colorvalues[1],colorvalues[2],alphavalue));
-						usercolors[colorSetterId] = Color.rgb(colorvalues[0],colorvalues[1],colorvalues[2],alphavalue);
-					}
-				} else {
-					GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
-					GUIerrorout.showAndWait();
-				}
-			}
-        });
+		box6.getChildren().addAll(new Label("Color to Set: "),colorSet,setcolorbutton,new Label("[PREVIEW COLOR]"));
+		setcolorbutton.setOnAction((event) -> { colorPickerHander(); });
         MenuBar mainmenu = new MenuBar();
         Menu colorpickermenu = new Menu("Set Custom Colors");
-        MenuItem opt0 = new MenuItem("Star Color");
-        opt0.setOnAction((event) -> {
-        	colorSetterId = 0;
-        });
-        MenuItem opt1 = new MenuItem("Low Magnituide Star Color");
-        opt1.setOnAction((event) -> {
-        	colorSetterId = 1;
-        });
-        MenuItem opt2 = new MenuItem("Very Low Magnituide Star Color");
-        opt2.setOnAction((event) -> {
-        	colorSetterId = 2;
-        });
-        MenuItem opt3 = new MenuItem("Deep Space Object Color");
-        opt3.setOnAction((event) -> {
-        	colorSetterId = 3;
-        });
-        MenuItem opt4 = new MenuItem("Sky Background Color");
-        opt4.setOnAction((event) -> {
-        	colorSetterId = 4;
-        });
-        MenuItem opt5 = new MenuItem("Circle Around Sky Background Color");
-        opt5.setOnAction((event) -> {
-        	colorSetterId = 5;
-        });
-        MenuItem opt6 = new MenuItem("Overall Background Color");
-        opt6.setOnAction((event) -> {
-        	colorSetterId = 6;
-        });
-        MenuItem opt7 = new MenuItem("Latitude/Longitude Text Color");
-        opt7.setOnAction((event) -> {
-        	colorSetterId = 7;
-        });
-        MenuItem opt8 = new MenuItem("Constellation Line Color");
-        opt8.setOnAction((event) -> {
-        	colorSetterId = 8;
-        });
-        // Add the button the menu
-        colorpickermenu.getItems().add(opt0);
-        colorpickermenu.getItems().add(opt1);
-        colorpickermenu.getItems().add(opt2);
-        colorpickermenu.getItems().add(opt3);
-        colorpickermenu.getItems().add(opt4);
-        colorpickermenu.getItems().add(opt5);
-        colorpickermenu.getItems().add(opt6);
-        colorpickermenu.getItems().add(opt7);
-        colorpickermenu.getItems().add(opt8);
-        mainmenu.getMenus().add(colorpickermenu);
-        
-        Menu constellationsetpickermenu = new Menu("Constellation Set 1");
-        MenuItem _opt0 = new MenuItem("Western");
-        _opt0.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "western.fab";
-        });
-        MenuItem _opt1 = new MenuItem("Arabic");
-        _opt1.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "arabic.fab";
-        });
-        MenuItem _opt2 = new MenuItem("Armintxe");
-        _opt2.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "armintxe.fab";
-        });
-        MenuItem _opt3 = new MenuItem("Aztec");
-        _opt3.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "aztec.fab";
-        });
-        MenuItem _opt4 = new MenuItem("Belarusian");
-        _opt4.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "belarusian.fab";
-        });
-        MenuItem _opt5 = new MenuItem("Boorong");
-        _opt5.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "boorong.fab";
-        });
-        MenuItem _opt6 = new MenuItem("Chinese");
-        _opt6.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "chinese.fab";
-        });
-        MenuItem _opt7 = new MenuItem("Contemporary Chinese");
-        _opt7.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "contemporary_chinese.fab";
-        });
-        MenuItem _opt8 = new MenuItem("Dakota");
-        _opt8.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "dakota.fab";
-        });
-        MenuItem _opt9 = new MenuItem("Egyptian");
-        _opt9.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "egyptian.fab";
-        });
-        MenuItem _opt10 = new MenuItem("Hawaiian");
-        _opt10.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "hawaiian_starlines.fab";
-        });
-        MenuItem _opt11 = new MenuItem("Indian");
-        _opt11.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "indian.fab";
-        });
-        MenuItem _opt12 = new MenuItem("Inuit");
-        _opt12.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "inuit.fab";
-        });
-        MenuItem _opt13 = new MenuItem("Japanese");
-        _opt13.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "japanese_moon_stations.fab";
-        });
-        MenuItem _opt14 = new MenuItem("Kamilaroi");
-        _opt14.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "kamilaroi.fab";
-        });
-        
-        constellationsetpickermenu.getItems().add(_opt0);
-        constellationsetpickermenu.getItems().add(_opt1);
-        constellationsetpickermenu.getItems().add(_opt2);
-        constellationsetpickermenu.getItems().add(_opt3);
-        constellationsetpickermenu.getItems().add(_opt4);
-        constellationsetpickermenu.getItems().add(_opt5);
-        constellationsetpickermenu.getItems().add(_opt6);
-        constellationsetpickermenu.getItems().add(_opt7);
-        constellationsetpickermenu.getItems().add(_opt8);
-        constellationsetpickermenu.getItems().add(_opt9);
-        constellationsetpickermenu.getItems().add(_opt10);
-        constellationsetpickermenu.getItems().add(_opt11);
-        constellationsetpickermenu.getItems().add(_opt12);
-        constellationsetpickermenu.getItems().add(_opt13);
-        constellationsetpickermenu.getItems().add(_opt14);
-        mainmenu.getMenus().add(constellationsetpickermenu);
-        
-        Menu constellationsetpickermenu2 = new Menu("Constellation Set 2");
-        MenuItem __opt0 = new MenuItem("Korean");
-        __opt0.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "korean.fab";
-        });
-        MenuItem __opt1 = new MenuItem("Lokono");
-        __opt1.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "lokono.fab";
-        });
-        MenuItem __opt2 = new MenuItem("Macedonian");
-        __opt2.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "macedonian.fab";
-        });
-        MenuItem __opt3 = new MenuItem("Maori");
-        __opt3.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "maori.fab";
-        });
-        MenuItem __opt4 = new MenuItem("Maya");
-        __opt4.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "maya.fab";
-        });
-        MenuItem __opt5 = new MenuItem("Medieval Chinese");
-        __opt5.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "medieval_chinese.fab";
-        });
-        MenuItem __opt6 = new MenuItem("Mongolian");
-        __opt6.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "mongolian.fab";
-        });
-        MenuItem __opt7 = new MenuItem("Mul Apin");
-        __opt7.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "mul_apin.fab";
-        });
-        MenuItem __opt8 = new MenuItem("Navajo");
-        __opt8.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "navajo.fab";
-        });
-        MenuItem __opt9 = new MenuItem("Norse");
-        __opt9.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "norse.fab";
-        });
-        MenuItem __opt10 = new MenuItem("Northern Andes");
-        __opt10.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "northern_andes.fab";
-        });
-        MenuItem __opt11 = new MenuItem("Ojibwe");
-        __opt11.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "ojibwe.fab";
-        });
-        MenuItem __opt12 = new MenuItem("Romanian");
-        __opt12.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "romanian.fab";
-        });
-        MenuItem __opt13 = new MenuItem("Sami");
-        __opt13.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "sami.fab";
-        });
-        MenuItem __opt14 = new MenuItem("Sardinian");
-        __opt14.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "sardinian.fab";
-        });
-        constellationsetpickermenu2.getItems().add(__opt0);
-        constellationsetpickermenu2.getItems().add(__opt1);
-        constellationsetpickermenu2.getItems().add(__opt2);
-        constellationsetpickermenu2.getItems().add(__opt3);
-        constellationsetpickermenu2.getItems().add(__opt4);
-        constellationsetpickermenu2.getItems().add(__opt5);
-        constellationsetpickermenu2.getItems().add(__opt6);
-        constellationsetpickermenu2.getItems().add(__opt7);
-        constellationsetpickermenu2.getItems().add(__opt8);
-        constellationsetpickermenu2.getItems().add(__opt9);
-        constellationsetpickermenu2.getItems().add(__opt10);
-        constellationsetpickermenu2.getItems().add(__opt11);
-        constellationsetpickermenu2.getItems().add(__opt12);
-        constellationsetpickermenu2.getItems().add(__opt13);
-        constellationsetpickermenu2.getItems().add(__opt14);
-        mainmenu.getMenus().add(constellationsetpickermenu2);
-        
-        Menu constellationsetpickermenu3 = new Menu("Constellation Set 3");
-        MenuItem ___opt0 = new MenuItem("Seleucid");
-        ___opt0.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "seleucid.fab";
-        });
-        MenuItem ___opt1 = new MenuItem("Siberian");
-        ___opt1.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "siberian.fab";
-        });
-        MenuItem ___opt2 = new MenuItem("Tongan");
-        ___opt2.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "tongan.fab";
-        });
-        MenuItem ___opt3 = new MenuItem("Tukano");
-        ___opt3.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "tukano.fab";
-        });
-        MenuItem ___opt4 = new MenuItem("Tupi");
-        ___opt4.setOnAction((event) -> {
-        	userSelectedConstellationFileName = "tupi.fab";
-        });
-        constellationsetpickermenu3.getItems().add(___opt0);
-        constellationsetpickermenu3.getItems().add(___opt1);
-        constellationsetpickermenu3.getItems().add(___opt2);
-        constellationsetpickermenu3.getItems().add(___opt3);
-        constellationsetpickermenu3.getItems().add(___opt4);
-        mainmenu.getMenus().add(constellationsetpickermenu3);
+        String[] colorstrs = {"Star Color","Low Magnituide Star Color","Very Low Magnituide Star Color", "Deep Space Object Color","Sky Background Color",
+        		"Circle Around Sky Background Color","Overall Background Color", "Latitude/Longitude Text Color","Constellation Line Color"};
+        for(int x = 0; x < colorstrs.length; x++) {
+        	MenuItem opt = new MenuItem(colorstrs[x]);
+        	int id = x;
+        	opt.setOnAction((event) -> { colorSetterId = id; });
+        	colorpickermenu.getItems().add(opt);
+        }
+        Menu cspm = new Menu("Constellation Set 1");
+        Menu cspm2 = new Menu("Constellation Set 2");
+        Menu cspm3 = new Menu("Constellation Set 3");
+        String[] filenames = {"western","arabic","armintxe","belarusian","boorong","chinese","contemporary_chinese","dakota","egyptian","hawaiian_starlines","indian"};
+        for(int x = 0; x < filenames.length; x++) {
+        	String datafile = filenames[x] + ".fab";
+        	filenames[x].replace('_', ' ');
+        	MenuItem opt = new MenuItem(upperCaseFL(filenames[x]));
+        	opt.setOnAction((event) -> { userSelectedConstellationFileName = datafile; });
+        	cspm.getItems().add(opt);
+        }
+        String[] filenames2 = {"inuit","japanese_moon_stations","kamilaroi","korean","lokono","macedonian", "maori","maya","medieval_chinese","mongolian","mul_apin","navajo"};
+        for(int x = 0; x < filenames2.length; x++) {
+        	String datafile = filenames2[x] + ".fab";
+        	filenames2[x].replace('_', ' ');
+        	MenuItem opt = new MenuItem(upperCaseFL(filenames2[x]));
+        	opt.setOnAction((event) -> { userSelectedConstellationFileName = datafile; });
+        	cspm2.getItems().add(opt);
+        }
+        String[] filenames3 = {"norse","northern_andes","ojibwe","romanian","sami","sardinian","seleucid","siberian", "tongan","tukano","tupi"};
+        for(int x = 0; x < filenames3.length; x++) {
+        	String datafile = filenames3[x] + ".fab";
+        	filenames3[x].replace('_', ' ');
+        	MenuItem opt = new MenuItem(upperCaseFL(filenames3[x]));
+        	opt.setOnAction((event) -> { userSelectedConstellationFileName = datafile; });
+        	cspm3.getItems().add(opt);
+        }
+        mainmenu.getMenus().addAll(colorpickermenu,cspm,cspm2,cspm3);
 		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
 		but.setPadding(new Insets(5));
 		Button but2 = new Button("Submit");
 		but2.setPadding(new Insets(5));
-		box4.getChildren().add(but);
-		box4.getChildren().add(but2);
-		uicontrols.getChildren().add(box0);
-		uicontrols.getChildren().add(box1);
-		uicontrols.getChildren().add(box2);
-		uicontrols.getChildren().add(box3);
-		uicontrols.getChildren().add(box5);
-		uicontrols.getChildren().add(box6);
-		uicontrols.getChildren().add(box4);
-		
-		but.setOnAction((event) -> {
-        	input.close();
-        });
+		box4.getChildren().addAll(but,but2);
+		uicontrols.getChildren().addAll(box0,box1,box2,box3,box5,box6,box4);
+		but.setOnAction((event) -> { input.close(); });
 		but2.setOnAction((event) -> {
 			long i = validateInput();
 			if (i == 0) {
@@ -993,5 +735,52 @@ public class CTS_GUI extends Application {
 		diffx *= diffx;
 		diffy *= diffy;
 		return sqrt(diffx + diffy);
+	}
+	/**
+	 * Handles the fetching and processing of the color setter.
+	 */
+	private void colorPickerHander() {
+		boolean validvalues = true;
+		HBox n0000 = (HBox) uicontrols.getChildren().get(5);
+		TextField t0000 = (TextField) n0000.getChildren().get(1);
+		Label l0000 = (Label) n0000.getChildren().get(3);
+		String txt = t0000.getText();
+		String[] nums = txt.split(",");
+		if (nums.length != 4) {
+			validvalues = false;
+			GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
+			GUIerrorout.showAndWait();
+		}
+		if (validvalues) {
+			int[] colorvalues = new int[3];
+			double alphavalue = 1.0;
+			try {
+				for(int x = 0; x < 3; x++) {
+					colorvalues[x] = Integer.parseInt(nums[x]);
+				}
+				alphavalue = Double.parseDouble(nums[3]);
+			} catch(Exception e) {
+				validvalues = false;
+				GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
+				GUIerrorout.showAndWait();
+			}
+			if (alphavalue <= 1.0 && alphavalue >= 0.0 && colorvalues[0] >= 0 && colorvalues[0] < 256 && colorvalues[1] >= 0 && colorvalues[1] < 256 && colorvalues[2] >= 0 && colorvalues[2] < 256){
+				if (validvalues) {
+					l0000.setTextFill(Color.rgb(colorvalues[0],colorvalues[1],colorvalues[2],alphavalue));
+					usercolors[colorSetterId] = Color.rgb(colorvalues[0],colorvalues[1],colorvalues[2],alphavalue);
+				}
+			} else {
+				GUIerrorout = new Alert(AlertType.ERROR, "Invalid Color Format!\nFormat: <0-255>,<0-255>,<0-255>,<0-1> \n (red),(green),(blue),(alpha)");
+				GUIerrorout.showAndWait();
+			}
+		}
+	}
+	/**
+	 * Takes a string, and sets its first letter to upper case.
+	 * @param in A string of length 1 or higher. Does not error check.
+	 * @return The string with its first letter capitalized.
+	 */
+	private String upperCaseFL(String in) {
+		return in.substring(0,1).toUpperCase() + in.substring(1,in.length());
 	}
 }
