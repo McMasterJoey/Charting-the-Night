@@ -72,6 +72,9 @@ public class CTS_GUI extends Application {
 		usercolors[8] = Color.rgb(255,255,255,.25);
 	}
 	@Override
+	/**
+	 * The starting point of the app.
+	 */
 	public void start(Stage stage) throws Exception {
 		controller = new CTS_Controller();
 		stage.setTitle("Charting The Stars");
@@ -95,16 +98,12 @@ public class CTS_GUI extends Application {
         		double x = event.getX() - centerx;
         		double y = event.getY() - centerx;
         		if (x < 0 && y < 0) {
-        			//System.out.println("upper left");
         			adjustObserverLocationByClick(1,10);
         		} else if (x < 0 && y > 0) {
-        			//System.out.println("lower left");
         			adjustObserverLocationByClick(3,10);
         		} else if (x > 0 && y < 0) {
-        			//System.out.println("upper right");
         			adjustObserverLocationByClick(2,10);
         		} else if (x > 0 && y > 0) {
-        			//System.out.println("lower right");
         			adjustObserverLocationByClick(4,10);
         		}
         		chartTheStars();
@@ -112,7 +111,6 @@ public class CTS_GUI extends Application {
         		input.showAndWait();
         	}
         });
-        		
 		// Display it!
 		Scene scene = new Scene(mainpane, VIEWING_AREA_WIDTH , VIEWING_AREA_HEIGHT);
         stage.setScene(scene);
@@ -135,11 +133,10 @@ public class CTS_GUI extends Application {
 		gc.strokeText("Time: " + String.format("%.0f", data[5]) + ":" + String.format("%.0f", data[6]) + ":" + String.format("%.0f", data[7]) ,
 				10,	60, 190);
 		gc.strokeText("Constellation set: " + userSelectedConstellationFileName.substring(0,1).toUpperCase() + userSelectedConstellationFileName.substring(1,userSelectedConstellationFileName.length() - 4),
-		10,	(VIEWING_AREA_HEIGHT - 5), 210);
-		//gc.strokeText("Constellations: " + uicontrols.getChildren(), 10, 90, 190);
+				10,	(VIEWING_AREA_HEIGHT - 5), 210);
 		ArrayList<CTS_Star> n = controller.getModel().getStarList();
 		ArrayList<CTS_DeepSkyObject> d = controller.getModel().getDSOlist();
-		double azi = 0, alt = 0, mag = 0;
+		double alt = 0, mag = 0;
 		boolean[] plottingstatus = getCheckBoxes();
 		if (plottingstatus[0]) {
 			// Plot stars
@@ -147,18 +144,15 @@ public class CTS_GUI extends Application {
 				CTS_Star star = n.get(x);
 				try {
 					alt = star.getAltitude();
-					azi = star.getAzimuth();
 					mag = star.getMagnitude();
+					// I named it cupcake because when I first tested it
+					// The result in the GUI was a cupcake!
+					double cupcake = magnitudeToRadius(mag);
 	                if (alt >= 0 && mag < -20) {
-	                	// The sun is the only star with mag < -20
-	                	// Make it yellow
-	                    double cupcake = magnitudeToRadius(mag);
+	                	// The sun is the only star with mag < -20, color it yellow.
 	                    drawSpaceObject(star, cupcake,Color.YELLOW);
 	                }
 	                else if (alt >= 0 && mag < 6) {
-						// I named it cupcake because when I first tested it
-						// The result in the GUI was a cupcake!
-						double cupcake = magnitudeToRadius(mag);
 						drawSpaceObject(star, cupcake,usercolors[0]);
 					} else if (alt >= 0 && mag < 9) {
 						if (mag < 7) {
@@ -170,7 +164,6 @@ public class CTS_GUI extends Application {
 						}
 					}
 				} catch(IllegalArgumentException e) {
-					//System.err.println("An object that attempted to be drawn triggered an execption");
 				}
 			}
 		}
@@ -180,13 +173,11 @@ public class CTS_GUI extends Application {
 				CTS_DeepSkyObject dso = d.get(x);
 				try {
 					alt = dso.getAltitude();
-					azi = dso.getAzimuth();
 					mag = dso.getMagnitude();
 					if (alt >= 0 && mag < 6) {
 						drawSpaceObject(dso,1,usercolors[3]);
 					}
 				} catch(IllegalArgumentException e) {
-					//System.err.println("An object that attempted to be drawn triggered an execption");
 				}
 			}
 		}
@@ -197,21 +188,15 @@ public class CTS_GUI extends Application {
 				return;
 			}
 			for (CTS_Constellation constellation : constellations) {
-
 				HashMap<CTS_Star, ArrayList<CTS_Star>> connections = constellation.getConnections();
 				HashSet<CTS_Star> keys = new HashSet<>(connections.keySet());
-
 				for (CTS_Star fromStar : keys) {
-
 					double[] from = getPositionOfSpaceObject(fromStar);
-
 					for (CTS_Star toStar : connections.get(fromStar)) {
 						double[] to = getPositionOfSpaceObject(toStar);
 						if (from != null && to != null) {
-							//System.out.println(from[0] + " " + from[1] + " " + to[0] + " " + to[1]);
 							drawLine(from[0], from[1], to[0], to[1], usercolors[8]);
 						}
-
 					}
 				}
 			}
@@ -244,7 +229,6 @@ public class CTS_GUI extends Application {
 					}
 				}
 			} catch(IllegalArgumentException e) {
-				//System.err.println("An object that attempted to be drawn triggered an execption");
 			}
 			
 		}
@@ -285,6 +269,14 @@ public class CTS_GUI extends Application {
 		gc.setFill(color);
 		gc.fillOval(xx,yy, radius * 2, radius * 2);
 	}
+	/**
+	 * draws a circle outline of the given radius at the inputed coornates of the given color.
+	 * @param radius The radius of the circle
+	 * @param x The horizontal coordinate of the grid to put the circle center. 
+	 * @param y The vertical coordinate of the grid to put the circle center.
+	 * @param color The color of the circle.
+	 * @throws IllegalArgumentException If the circle can not be fully displayed on the graphics context.
+	 */
 	public void drawCircleOutline(double radius, double x, double y, Color color) {
 		double xx = x - radius;
 		double yy = y - radius;
@@ -294,6 +286,14 @@ public class CTS_GUI extends Application {
 		gc.setStroke(color);
 		gc.strokeOval(xx,yy, radius * 2, radius * 2);
 	}
+	/**
+	 * draws a line between the two points of the inputed color.
+	 * @param startx The x of the start of the line.
+	 * @param starty The y of the start of the line.
+	 * @param endx The x of the end of the line.
+	 * @param endy The y of the end of the line.
+	 * @param color The color of the line.
+	 */
 	public void drawLine(double startx, double starty, double endx, double endy, Color color) {
 		gc.setStroke(color);
 		gc.strokeLine(startx,starty,endx,endy);
@@ -687,6 +687,11 @@ public class CTS_GUI extends Application {
 		Scene scene = new Scene(pane, 520, 280);
 		input.setScene(scene);
 	}
+	/**
+	 * Returns a String representing an error message.
+	 * @param errorcode The id of the error.
+	 * @return The error message.
+	 */
 	private String getGUIErrorMsg(long errorcode) {
 		if (errorcode == 0) {
 			return "This popup shouldn't have launched!";
@@ -717,6 +722,12 @@ public class CTS_GUI extends Application {
 		} 
 		return "Undefined Error Message!";
 	}
+	/**
+	 * Takes a direction int, (1 - 4) and offset value. Moves the latitude and longitude.
+	 * If dir is invalid, resets the latitude and longitiude to 0. 
+	 * @param dir (1 - 4) indicates direction. 
+	 * @param offset The amout to be moved latitude wise (longitude is moved 4x this). 
+	 */
 	private void adjustObserverLocationByClick(int dir, double offset) {
 		HBox n0 = (HBox) uicontrols.getChildren().get(0);
 		HBox n1 = (HBox) uicontrols.getChildren().get(1);
@@ -728,7 +739,6 @@ public class CTS_GUI extends Application {
 			latitude = Double.parseDouble(t0.getText());
 			longitude = Double.parseDouble(t1.getText());
 		} catch(NumberFormatException e) {
-			// Ignore, assume default values.
 		}
 		if (dir == 1) { // NW
 			latitude += offset;
@@ -851,6 +861,10 @@ public class CTS_GUI extends Application {
 		boxes[3] = b4.isSelected();
 		return boxes;
 	}
+	/**
+	 * Validates input found in the main settings menu input feilds. 
+	 * @return The error code. 0 is no error. 
+	 */
 	private long validateInput() {
 		double[] inputs = getUserInputFromUIControls();
 		if (inputs == null) {
@@ -887,13 +901,13 @@ public class CTS_GUI extends Application {
 		return 0;
 	}
 	/**
-	 * Determines where to plot space objects on the graph
-	 * @param obj A space object with defined azimuth and alititude feilds.
+	 * Determines where to plot space objects on the graph. Returns null if fails. 
+	 * @param obj A space object with defined azimuth and altitude fields.
 	 * @return A set coordinates for the graph.
 	 */
 	private double[] getPositionOfSpaceObject(CTS_SpaceObject obj) {
 		if (obj == null) {
-			System.out.println("null obj passed to getPositionOfSpaceObject!");
+			//System.out.println("null obj passed to getPositionOfSpaceObject!");
 			return null;
 		}
 		double azimuth = obj.getAzimuth();
@@ -901,22 +915,16 @@ public class CTS_GUI extends Application {
 		if (altitude < 0 || altitude > 90) {
 			return null;
 		}
-
 		double radAlt = toRadians(altitude);
-
 		double r = VIEWING_AREA_WIDTH / 2;
-		
 		double x_val, y_val, distanceFromCenter;
 		distanceFromCenter = abs(r*cos(radAlt));
-		
 		// x_val, y_val are coords relative to the center of the viewing area
 		// being considered 0,0 on the Cartesian plane
 		x_val = distanceFromCenter*(sin(toRadians(azimuth)));
 		y_val = distanceFromCenter*(cos(toRadians(azimuth)));
-		
 		// view_x, view_y are the actual JavaFX coordinates to draw at
 		double view_x = 0, view_y = 0;
-		
 		if (azimuth < 90) {
 			view_x = x_val + 299;
 			view_y = max(0,(299-y_val));
@@ -932,9 +940,10 @@ public class CTS_GUI extends Application {
 		}
 		double[] retval = { view_x, view_y};
 		return retval;
-		
 	}
-	
+	/**
+	 * Resets the state of the graphics context for redrawing.
+	 */
 	private void resetSkyDrawing() {
 		gc = canvas.getGraphicsContext2D();
 		gc.setFill(usercolors[6]);
@@ -942,6 +951,11 @@ public class CTS_GUI extends Application {
 		drawCircle(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2, usercolors[4]);
 		drawCircleOutline(VIEWING_AREA_WIDTH / 2, VIEWING_AREA_HEIGHT / 2 ,VIEWING_AREA_WIDTH / 2, usercolors[5]);
 	}
+	/**
+	 * Converts an objects magnitude to a radius to be displayed at
+	 * @param mag The magnitude of the object.
+	 * @return The radius it will apear as on screen.
+	 */
 	private double magnitudeToRadius(double mag) {
 		if (mag > 6.0) {
 			return 0.25;
@@ -964,6 +978,12 @@ public class CTS_GUI extends Application {
 		}
 		return 1.75;
 	}
+	/**
+	 * Determines the distance from the given x,y values to the center of screen.
+	 * @param x The x postion of the start point.
+	 * @param y The y postion of the start point.
+	 * @return The distance between the x,y pair and the x,y pair at the center of screen.
+	 */
 	private double distanceToCenterOfDisplay(double x, double y) {
 		// A^2 + B^2 = C^2
 		double centerx = VIEWING_AREA_WIDTH / 2;
