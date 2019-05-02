@@ -36,19 +36,19 @@ public class JUnitTests {
 		CTS_Constellation cos = c.getConstellations().get(0);
 		assertTrue(cos.getConnections().size() == 5);
 		c.getModel().build_constellationList("seleucid.fab");
-		CTS_Star star = cos.getConnections().keySet().iterator().next();
-		// [NAME: 65The Aql, MAG: 3.24, RA: 302.826195, DEC: -0.821461, ALT: 29.37366182948049, AZI: 225.86179890378565]
+		CTS_Star star = c.getModel().getStarByHip(736);
+		//[NAME: UNNAMED STAR, MAG: 9.2, RA: 2.26398, DEC: -59.280974, ALT: -20.575535485780453, AZI: 168.86856287504375]
 		double mag = star.getMagnitude();
-		double ra = Math.floor(star.getRightAscension());
-		double dec = Math.floor(star.getDeclination());
-		double alt = Math.floor(star.getAltitude());
-		double azi = Math.floor(star.getAzimuth());
+		double ra = star.getRightAscension();
+		double dec = star.getDeclination();
+		double alt = star.getAltitude();
+		double azi = star.getAzimuth();
 		System.out.println(star);
-		assertTrue(mag == 3.24);
-		assertTrue(ra == 302.0);
-		assertTrue(dec == -1.0);
-		assertTrue(alt == 29);
-		assertTrue(azi == 225);
+		assertEquals(9.200, mag, .01);
+		assertEquals(2.26398, ra, .01);
+		assertEquals(-59.280974, dec, 0.01);
+		assertEquals(-20.575535485780453, alt, .01);
+		assertEquals(168.86856287504375, azi, 0.01);
 	}
 	@Test
 	void modelTest1() {
