@@ -26,6 +26,7 @@ public class CTS_Model {
 	// The days since J2000, including the decimal portion
 	private double daysSinceStandard;
 	private double universalTime;
+	private double planetTime;
 	
 	private double latitude;
 	private double longitude;
@@ -321,99 +322,19 @@ public class CTS_Model {
 	
 	
 	public void build_PlanetList() {
+		double M, e, a, N, w, i, ecl;
 		
-		double t = this.daysSinceStandard;
-		double T = t/36525 +1;
-		double U, V, W, L;
+		ecl = 23.4393 - (3.563 * planetTime * Math.pow(10, -7.0));
+		//Mercury
+		M = 168.6562 + 4.0923344368 * planetTime;
+		e = 0.205635 + (5.59 * planetTime * Math.pow(10.0, -10.0));
+		a = 0.387098;
+		N = 48.3313 + (3.24587 * planetTime * Math.pow(10.0, -5.0));
+		w = 29.1241 + (1.01444 * planetTime * Math.pow(10.0, -5.0));
+		i = 7.0047 + (5 * planetTime * Math.pow(10.0, -8.0));
+		CTS_Planet mercury = new CTS_Planet("Mercury", 200000, M, e, a, N, w, i, ecl);
+		this.Planets.add(mercury);
 		
-		double seven = 0.779072 + 0.00273790931 * t;
-		seven = helperIgnoreme(seven);
-		
-		//TODO jump here
-		//============================================================================
-		//These all rely on magic numbers, so I can't do any big fun loop, I've just got to do all this dumb stuff right here
-		
-		//MECURY 
-		L = 0.700695 + 0.01136771400 * t;
-		L = helperIgnoreme(L);
-		V = 0.36951 * Math.sin((2 * Math.PI * seven));
-		U = 0.65089 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
-		W = -0.33605 * Math.sin((2 * Math.PI * seven) - (2 * Math.PI * L));
-		CTS_Planet mecury = new CTS_Planet(U, W, V, L, "Mecury", 200000);
-		this.Planets.add(mecury);
-		
-		//VENUS
-		V = 0.32238 * Math.sin(2 * Math.PI * seven);
-		L = 0.505498 + 0.00445046867 * t;
-		L = helperIgnoreme(L);
-		U = 0.94848 * Math.cos((2 * Math.PI * seven)  - (2 * Math.PI * L));
-		W = -0.56128 * Math.sin((2 * Math.PI * seven) - (2 * Math.PI * L));
-		CTS_Planet venus = new CTS_Planet(U, W, V, L, "Venus", 200001);
-		this.Planets.add(venus);
-		
-		//Moon
-		double three = 0.259091 + 0.03674819520 * t;
-		three = helperIgnoreme(three);
-		double temp1 = 0.347343 - 0.00014709391 * t;
-		temp1 = helperIgnoreme(temp1);
-		V = 0.39558 * Math.sin((2*Math.PI * three) + (2*Math.PI * temp1));
-		double two = 0.374897 + 0.03629164709 * t;
-		temp1 = helperIgnoreme(temp1);
-		U = -0.10828 * Math.cos(2* Math.PI * temp1);
-		W = 0.10478 * Math.sin(2 * Math.PI * temp1);
-		L = 0.606434 + 0.03660110129 * t;
-		L = helperIgnoreme(L);
-		CTS_Planet Moon = new CTS_Planet(U, W, V, L, "Moon", 200002);
-		this.Planets.add(Moon);
-		
-		//MARS
-		L = 0.987353 + 0.00145575328 * t;
-		L = helperIgnoreme(L);
-		V = 0.32967 * Math.sin(2 * Math.PI * L);
-		U = 0.90471 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
-		W = 0.52354 * Math.sin((2 * Math.PI * seven) - (2 * Math.PI * L));
-		CTS_Planet Mars = new CTS_Planet(U, W, V, L, "Mars", 200003);
-		this.Planets.add(Mars);
-		
-		//JUPITER
-		L = 0.089608 + 0.00023080893 * t;
-		L = helperIgnoreme(L);
-		V = 0.38966 * Math.sin(2 * Math.PI * L);
-		U = 0.36891 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
-		W = 0.18063 * Math.sin(-1 * 2 * Math.PI * L);
-		CTS_Planet Jupiter = new CTS_Planet(U, W, V, L, "Jupiter", 200004);
-		this.Planets.add(Jupiter);
-		
-		//SATURN
-		L = 0.133296 + 0.00009294371 * t;
-		L = helperIgnoreme(L);
-		V = 0.39412 * Math.sin(2 * Math.PI * L);
-		U = 0.20588 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
-		temp1 = 0.882987 + 0.00009294371 * t;
-		temp1 = helperIgnoreme(temp1);
-		W = 0.10619 * Math.sin( 2 * Math.PI * temp1);
-		CTS_Planet Saturn = new CTS_Planet(U, W, V, L, "Saturn", 200005);
-		this.Planets.add(Saturn);
-		
-		//URANUS
-		L = 0.870169 + 0.00003269438 * t;
-		L = helperIgnoreme(L);
-		V = 0.39633 * Math.sin(2 * Math.PI * L);
-		U = 0.10346 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
-		temp1 = 0.400589 + 0.00003269438 * t;
-		temp1 = helperIgnoreme(temp1);
-		W = 0.08987 * Math.sin( 2 * Math.PI * temp1);
-		CTS_Planet Uranus = new CTS_Planet(U, W, V, L, "Uarnus", 200006);
-		this.Planets.add(Uranus);
-		
-		//NEPTUNE
-		L = 0.846912 + 0.00001672092 * t;
-		L = helperIgnoreme(L);
-		V = 0.39763 * Math.sin(2 * Math.PI * L);
-		U = 0.06640 * Math.cos((2 * Math.PI * seven) - (2 * Math.PI * L));
-		W = -0.04126 * Math.sin(4 * Math.PI * L);
-		CTS_Planet Neptune = new CTS_Planet(U, W, V, L, "Neptune", 200007);
-		this.Planets.add(Neptune);
 	}
 	
 	public double helperIgnoreme (double In) {
@@ -516,6 +437,10 @@ public class CTS_Model {
 	    double minFrac = Double.valueOf(minutes / 60);
 	    double secFrac = Double.valueOf(seconds / 3600);
 	    universalTime = hour + minutes + seconds;
+	    
+	    planetTime = 367*year - 7 * ( year + (month+9)/12 ) / 4 - 3 * ( ( year + (month-9)/7 ) / 100 + 1 ) / 4 + 275*month/9 +
+	    		day - 730515;
+	    planetTime += (hour + (double)minutes/60 + (double)seconds/3600)/24.0;
     }
 	
     /**

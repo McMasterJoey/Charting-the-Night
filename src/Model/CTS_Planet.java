@@ -59,7 +59,7 @@ public class CTS_Planet extends CTS_SpaceObject{
 		double ze = yg * Math.sin(ecl) + zg * Math.cos(ecl);
 		
 		this.rightAscension = Math.atan2(ye, xe);
-		this.declination = Math.atan2(ze, Math.sqrt(xe*xe+ye*ye));
+		this.declination = Math.atan2(ze, Math.sqrt(xe*xe+ye*ye)); 
 		
 		
 		
