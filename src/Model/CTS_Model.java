@@ -166,13 +166,11 @@ public class CTS_Model {
 		        starList.add(newStar);
 		    }
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	    
 	    try {
             fileReader.close();
         } catch (Exception e) {
-            e.printStackTrace();
         }
 	}
 	
@@ -225,13 +223,11 @@ public class CTS_Model {
 		        
 		    }
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	    
 	    try {
             fileReader.close();
         } catch (Exception e) {
-            e.printStackTrace();
         }
 	}
 
@@ -263,10 +259,6 @@ public class CTS_Model {
 				constellation = new CTS_Constellation(name);
 
 				// At least one file lists a constellation with no edges
-				if (edges == 0) {
-					continue;
-				}
-
 				fromIdx = 2;
 				toIdx = 3;
 
