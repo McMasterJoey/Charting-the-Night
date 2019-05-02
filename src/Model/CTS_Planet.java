@@ -5,7 +5,7 @@ import java.lang.Math;
 public class CTS_Planet extends CTS_SpaceObject{
 	
 	
-	public CTS_Planet(String nameIn, int setID, double M, double e, double a) {
+	public CTS_Planet(String nameIn, int setID, double M, double e, double a, double N, double w, double i, double ecl) {
 		super (setID, nameIn, 0.0, 0.0);
 		
 		M = Math.toRadians(M);
@@ -26,6 +26,40 @@ public class CTS_Planet extends CTS_SpaceObject{
 		
 		double v = Math.atan2(yv, xv);
 		double r = Math.sqrt(xv*xv + yv*yv);
+		
+		double xh = r * (Math.cos(N) * Math.cos(v+w) - Math.sin(N) * Math.sin(v+w) * Math.cos(i));
+		double yh = r * ( Math.sin(N) * Math.cos(v+w) + Math.cos(N) * Math.sin(v+w) * Math.cos(i) );
+		double zh = r * ( Math.sin(v+w) * Math.sin(i) );
+		
+		double lonecl = Math.atan2( yh, xh );
+		double latecl = Math.atan2( zh, Math.sqrt(xh*xh+yh*yh) );
+		
+		xh = r * Math.cos(lonecl) * Math.cos(latecl);
+		yh = r * Math.sin(lonecl) * Math.cos(latecl);
+		zh = r * Math.sin(latecl);
+		
+		double xg, yg, zg;
+		
+		if (nameIn.equals("Moon")) {
+			xg = xh;
+			yg = yh;
+			zg = zh;
+		} else {
+			double lonsun = v + w;
+			double xs = r * Math.cos(lonsun);
+			double ys = r * Math.sin(lonsun);
+			
+			xg = xh + xs;
+			yg = yh + ys;
+			zg = zh;
+		}
+		
+		double xe = xg;
+		double ye = yg * Math.cos(ecl) - zg * Math.sin(ecl);
+		double ze = yg * Math.sin(ecl) + zg * Math.cos(ecl);
+		
+		this.rightAscension = Math.atan2(ye, xe);
+		this.declination = Math.atan2(ze, Math.sqrt(xe*xe+ye*ye));
 		
 		
 		
