@@ -1,10 +1,29 @@
 package Model;
 
 import java.lang.Math;
-
+/**
+ * The Planet object used by the project.
+ * Stores an instance of a planet.
+ * @author Joey McMaster
+ * @author Nicholas Fiegel
+ * @author Matt Theisen
+ * @author Jackson
+ *
+ */
 public class CTS_Planet extends CTS_SpaceObject{
 	
-	
+	/**
+	 * The constructor of the object. Inits it and sets it up.
+	 * @param nameIn Something.
+	 * @param setID Something.
+	 * @param M Something.
+	 * @param e Something.
+	 * @param a Something.
+	 * @param N Something.
+	 * @param w Something.
+	 * @param i Something.
+	 * @param ecl Something.
+	 */
 	public CTS_Planet(String nameIn, int setID, double M, double e, double a, double N, double w, double i, double ecl) {
 		super (setID, nameIn, 0.0, 0.0);
 		
@@ -58,9 +77,8 @@ public class CTS_Planet extends CTS_SpaceObject{
 		double ye = yg * Math.cos(ecl) - zg * Math.sin(ecl);
 		double ze = yg * Math.sin(ecl) + zg * Math.cos(ecl);
 		
-		this.rightAscension = Math.atan2(ye, xe);
-		this.declination = Math.atan2(ze, Math.sqrt(xe*xe+ye*ye)); 
-		
+		this.rightAscension = Math.toDegrees(Math.atan2(ye, xe));
+		this.declination = Math.toDegrees(Math.atan2(ze, Math.sqrt(xe*xe+ye*ye))); 
 		
 		
 	}

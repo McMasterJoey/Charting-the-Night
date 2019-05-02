@@ -55,4 +55,9 @@ public class JUnitTests {
 		CTS_Model m = new CTS_Model();
 		m.build_constellationList("seleucid.fab");
 	}
+	@Test
+	void starTest1() {
+		CTS_Star s = new CTS_Star(0,"test",-2,3,4);
+		CTS_Star s1 = new CTS_Star(1,"Test2",-1,5,6,1,3);
+	}
 }

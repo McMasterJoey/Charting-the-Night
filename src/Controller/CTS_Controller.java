@@ -65,14 +65,6 @@ public class CTS_Controller {
 		return model.build_constellationList(type);
 	}
 	/**
-	 * Sets the constellation data base to be used.
-	 * Uses a default filename of "western.fab"
-	 * @return If it succeeded or not.
-	 */
-	public boolean setConstellationType() {
-		return model.build_constellationList("western.fab");
-	}
-	/**
 	 * Updates the Azimuth and Altitude of all objects in that data bases.
 	 */
 	private void updateAzimuthAndAltitude() {

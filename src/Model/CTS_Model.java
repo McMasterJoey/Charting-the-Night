@@ -316,7 +316,9 @@ public class CTS_Model {
 		}
 	}
 	
-	
+	/**
+	 * Builds the planet list to be used by the program.
+	 */
 	public void build_PlanetList() {
 		double M, e, a, N, w, i, ecl;
 		
