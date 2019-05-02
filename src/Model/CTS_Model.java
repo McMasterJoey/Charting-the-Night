@@ -335,6 +335,25 @@ public class CTS_Model {
 		CTS_Planet mercury = new CTS_Planet("Mercury", 200000, M, e, a, N, w, i, ecl);
 		this.Planets.add(mercury);
 		
+		//Venus
+		M = 48.0052 + 1.6021302244 * planetTime;
+		e = 0.006773 - (1.302 * planetTime * Math.pow(10.0, -9.0));
+		a = 0.723330;
+		N = 76.6799 + (2.46590 * planetTime * Math.pow(10.0, -5.0));
+		w = 54.8910 + (1.38374 * planetTime * Math.pow(10.0, -5.0));
+		i = 3.3946 + (2.75 * planetTime * Math.pow(10.0, -8.0));
+		CTS_Planet venus = new CTS_Planet("Venus", 200001, M, e, a, N, w, i, ecl);
+		this.Planets.add(venus);
+		
+		//Mars
+		M = 18.6021 + 0.5240207766 * planetTime;
+		e = 0.093405 + (2.516 * planetTime * Math.pow(10.0, -9.0));
+		a = 1.523688;
+		N = 49.5574 + (2.11081 * planetTime * Math.pow(10.0, -5.0));
+		w = 286.5016 + (2.92961 * planetTime * Math.pow(10.0, -5.0));
+		i = 1.8497 - (1.78 * planetTime * Math.pow(10.0, -8.0));
+		CTS_Planet mars = new CTS_Planet("Mars", 200002, M, e, a, N, w, i, ecl);
+		this.Planets.add(mars);
 	}
 	
 	public double helperIgnoreme (double In) {
