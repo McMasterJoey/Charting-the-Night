@@ -354,6 +354,56 @@ public class CTS_Model {
 		i = 1.8497 - (1.78 * planetTime * Math.pow(10.0, -8.0));
 		CTS_Planet mars = new CTS_Planet("Mars", 200002, M, e, a, N, w, i, ecl);
 		this.Planets.add(mars);
+		
+		//Jupiter
+		M = 19.8950 + 0.0830853001 * planetTime;
+		e = 0.048498 + (4.469 * planetTime * Math.pow(10.0, -9.0));
+		a = 5.20256;
+		N = 100.4542 + (2.76854 * planetTime * Math.pow(10.0, -5.0));
+		w = 273.8777 + (1.64505 * planetTime * Math.pow(10.0, -5.0));
+		i = 1.3030 - (1.557 * planetTime * Math.pow(10.0, -7.0));
+		CTS_Planet jupiter = new CTS_Planet("Jupiter", 200003, M, e, a, N, w, i, ecl);
+		this.Planets.add(jupiter);
+		
+		//Saturn
+		M = 316.9670 + 0.0334442282 * planetTime;
+		e = 0.055546 - (9.499 * planetTime * Math.pow(10.0, -9.0));
+		a = 9.55475;
+		N = 113.6634 + (2.38980 * planetTime * Math.pow(10.0, -5.0));
+		w = 339.3939 + (2.97661 * planetTime * Math.pow(10.0, -5.0));
+		i = 2.4886 - (1.081 * planetTime * Math.pow(10.0, -7.0));
+		CTS_Planet Saturn = new CTS_Planet("Saturn", 200004, M, e, a, N, w, i, ecl);
+		this.Planets.add(Saturn);
+		
+		//Uranus
+		M = 142.5905 + 0.011725806 * planetTime;
+		e = 0.047318 + (7.45 * planetTime * Math.pow(10.0, -9.0));
+		a = 19.18171 - (1.55 * planetTime * Math.pow(10.0, -8.0));
+		N = 74.0005 + (1.3978 * planetTime * Math.pow(10.0, -5.0));
+		w = 96.6612 + (3.0565 * planetTime * Math.pow(10.0, -5.0));
+		i = 0.7733 + (1.9 * planetTime * Math.pow(10.0, -8.0));
+		CTS_Planet Uranus = new CTS_Planet("Uranus", 200005, M, e, a, N, w, i, ecl);
+		this.Planets.add(Uranus);
+		
+		//Neptune
+		M = 260.2471 + 0.005995147 * planetTime;
+		e = 0.008606 + (2.15 * planetTime * Math.pow(10.0, -9.0));
+		a = 30.05826 + (3.313 * planetTime * Math.pow(10.0, -8.0));
+		N = 131.7806 + (3.0173 * planetTime * Math.pow(10.0, -5.0));
+		w = 272.8461 - (6.027 * planetTime * Math.pow(10.0, -6.0));
+		i = 1.7700  - (2.55 * planetTime * Math.pow(10.0, -7.0));
+		CTS_Planet Neptune = new CTS_Planet("Neptune", 200006, M, e, a, N, w, i, ecl);
+		this.Planets.add(Neptune);
+		
+		//Moon
+		M = 115.3654 + 13.0649929509 * planetTime;
+		e = 0.054900;
+		a = 60.2666;
+		N = 125.1228 - 0.0529538083 * planetTime;
+		w = 318.0634 + 0.1643573223 * planetTime;
+		i = 5.1454;
+		CTS_Planet Moon = new CTS_Planet("Moon", 200007, M, e, a, N, w, i, ecl);
+		this.Planets.add(Moon);
 	}
 	
 	public double helperIgnoreme (double In) {
