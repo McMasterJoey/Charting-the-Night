@@ -6,7 +6,6 @@ package Model;
  * @author Nicholas Fiegel
  * @author Matt Theisen
  * @author Jackson
- *
  */
 public abstract class CTS_SpaceObject {
 	protected double rightAscension = 0.0;
@@ -17,13 +16,12 @@ public abstract class CTS_SpaceObject {
 	protected String name = "Default Name";
 	protected int id;
 	protected int hip;
-	
 	/**
 	 * Inits a new space object.
-	 * @param id The id number of the SO from CSV database
-	 * @param name The name of the space object.
-	 * @param rightAcension The Right Acension of the space object.
-	 * @param declination The Declination of the space object.
+	 * @param _id The id number of the SO from CSV database
+	 * @param _name The name of the space object.
+	 * @param _rightAcension The Right Acension of the space object.
+	 * @param _declination The Declination of the space object.
 	 */
 	public CTS_SpaceObject(int _id, String _name, double _rightAcension, double _declination) {
 		id = _id;
@@ -48,7 +46,6 @@ public abstract class CTS_SpaceObject {
 		altitude = alt;
 		azimuth = az;
 	}
-
 	/**
 	 * Inits a new space object with a Hipparcos catalog id.
 	 * @param id The id of the SO from the CSV database.
@@ -131,5 +128,4 @@ public abstract class CTS_SpaceObject {
 	public String toString() {
 		return "SpaceObject: [NAME: " + name + ", MAG: " + magnitude + ", RA: " + rightAscension + ", DEC: " + declination + ", ALT: " + altitude + ", AZI: " + azimuth + "]";
 	}
-
 }

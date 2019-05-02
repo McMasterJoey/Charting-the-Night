@@ -22,32 +22,59 @@ import java.util.Scanner;
  */
 public class CTS_Controller {
 
-	CTS_Model model;
+	private CTS_Model model;
 	
-	
-	
+	/**
+	 * The constructor without any args.
+	 * Default constructor.
+	 */
 	public CTS_Controller() {
 		model = new CTS_Model();
 		updateAzimuthAndAltitude();
 		
 	}
-	
-	
+	/**
+	 * The constructor for speific instance of time.
+	 * @param latitude The latitude of the origin being observed from.
+	 * @param longitude The longitude of the origin being observed from.
+	 * @param year The year that be viewed from.
+	 * @param month The month that is being viewed from.
+	 * @param day The day that is being viewed from.
+	 * @param hour The hour that is being viewed from.
+	 * @param minutes The minute that is being viewed from.
+	 * @param seconds The second that is being viewed from.
+	 */
 	public CTS_Controller(double latitude, double longitude, int year, int month, int day, int hour, int minutes, int seconds) {
 		model = new CTS_Model(latitude, longitude, 0, 0);
 		model.calcDaysSinceStandard(year, month, day, hour, minutes, seconds);
 		updateAzimuthAndAltitude();
 	}
-	// Placeholder
+	/**
+	 * Fetches the constellations from the model.
+	 * @return The constellations.
+	 */
 	public ArrayList<CTS_Constellation> getConstellations() {
 		return model.getConstellations();
 	}
+	/**
+	 * Sets the constellation data base to be used.
+	 * @param type The file name to be used.
+	 * @return If it succeeded or not.
+	 */
 	public boolean setConstellationType(String type) {
 		return model.build_constellationList(type);
 	}
+	/**
+	 * Sets the constellation data base to be used.
+	 * Uses a default filename of "western.fab"
+	 * @return If it succeeded or not.
+	 */
 	public boolean setConstellationType() {
 		return model.build_constellationList("western.fab");
 	}
+	/**
+	 * Updates the Azimuth and Altitude of all objects in that data bases.
+	 */
 	private void updateAzimuthAndAltitude() {
 		// Update azimuth and altitude for all stars
 		ArrayList<CTS_Star> starList = model.getStarList();		
@@ -67,7 +94,10 @@ public class CTS_Controller {
 		}
 	}
 	
-	
+	/**
+	 * Returns a pointer to the model.
+	 * @return A pointer to the model.
+	 */
 	public CTS_Model getModel() {
 		return model;
 	}
@@ -76,12 +106,12 @@ public class CTS_Controller {
 	 * Calculates and sets the azimuth and altitude for a star.
 	 * USES: getHourAngle, so transitively the assumptions in getLocalSiderialTime
 	 * are in full affect for this method.
+	 * @param star The star to the calculate the Azimuth and Altitude of.
 	 */
 	public void calcAzimuthAndAltitude(CTS_SpaceObject star) {
 		// Convert these values from degrees to radians prior to using math libs
 		double declination = Math.toRadians(star.getDeclination());
 		double latitude = Math.toRadians(model.getLatitude());
-		double longitude = Math.toRadians(model.getLongitude());
 		double ha = Math.toRadians(getHourAngle(star));
 		double azimuth;
 		
@@ -91,12 +121,9 @@ public class CTS_Controller {
 		// Convert altitude back to degrees and set it
 		star.setAltitude(Math.toDegrees(altitude));
 		
-		
 		// Calc azimuth		
 		double sinDec = Math.sin(declination);
-		double cosDec = Math.cos(declination);
 		double sinHA = Math.sin(ha);
-		double cosHA = Math.cos(ha);
 		double sinLat  = Math.sin(latitude);
 		double cosLat = Math.cos(latitude);
 		double sinAlt = Math.sin(altitude);
@@ -127,6 +154,7 @@ public class CTS_Controller {
 	 * Calculates and returns the hour angle of a star.
 	 * USES: getLocalSiderialTime, so the assumptions in getLocalSiderialTime
 	 * are in full affect for this method.
+	 * @param star A star to get the hour angle of.
 	 * @return a double representing the hour angle
 	 */
 	public double getHourAngle(CTS_SpaceObject star) {
@@ -147,7 +175,7 @@ public class CTS_Controller {
 
 	/**
 	 * Getter to return the constellationDBs HashMap.
-	 * @return A HashMap<String, String> containing the list of constellation
+	 * @return A data structure containing the list of constellation
 	 * databases by a string with the associated culture.
 	 */
 	public HashMap<String, String> getModelConstellationDBs() {

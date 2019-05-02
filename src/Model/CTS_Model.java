@@ -30,7 +30,11 @@ public class CTS_Model {
 	
 	private double latitude;
 	private double longitude;
-	
+
+	/**
+	 * Basic constructor for a model. Defaults to the Western constellations, at
+	 * latitude/longitude 0, at 12:00 AM on Jan. 1, 2000.
+	 */
 	public CTS_Model() {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
@@ -60,10 +64,10 @@ public class CTS_Model {
 	 * Constructs the model with the given params
 	 * @param latitude The latitude on earth of where the observer will be
 	 * @param longitude The longitude on earth where the observer will be.
-	 * @param daysSinceStanderd Days since the year 2000
+	 * @param daysSinceStandard Days since the year 2000
 	 * @param universaltime  Time of day of where the observer will be.
 	 */
-	public CTS_Model(double latitude, double longitude, double daysSinceStanderd, double universaltime) {
+	public CTS_Model(double latitude, double longitude, double daysSinceStandard, double universaltime) {
 		// Generate list of star objects
 		starList = new ArrayList<CTS_Star>();
 		Constellations = new ArrayList<CTS_Constellation>();
@@ -80,7 +84,7 @@ public class CTS_Model {
 		build_PlanetList();
 		
 		// Set params with custom values.
-		this.daysSinceStandard = daysSinceStanderd;
+		this.daysSinceStandard = daysSinceStandard;
 		this.universalTime = universaltime;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -234,7 +238,7 @@ public class CTS_Model {
 
 	/**
 	 * Builds the list of CTS_Constellation objects, given a file name.
-	 * The file should be in the Stellarium fab format, with any tabs replaced by spaces.
+	 * The file should be in the Stellarium fab format.
 	 * ASSUMES: the file resides in the src/Resources directory.
 	 * @param fileName A String indicating the name of the file to use.
 	 * @return If it was successful or not.
@@ -254,22 +258,22 @@ public class CTS_Model {
 
 			while ( (line = in.readLine()) != null ) {
 
-				tokens = line.split(" ");
+				tokens = line.split("\\s+");
 				name = tokens[0];
 				edges = Integer.valueOf(tokens[1]);
 				constellation = new CTS_Constellation(name);
 
-				if (tokens[2].equals("")) {
-					fromIdx = 3;
-					toIdx = 4;
-				}
-				else {
-					fromIdx = 2;
-					toIdx = 3;
+				// At least one file lists a constellation with no edges
+				if (edges == 0) {
+					continue;
 				}
 
+				fromIdx = 2;
+				toIdx = 3;
 
+				// Process the edges for the constellation
 				for (int i = 1; i <= edges; i++) {
+
 					int fromHip = Integer.valueOf(tokens[fromIdx]);
 					int toHip = Integer.valueOf(tokens[toIdx]);
 					constellation.addConnection(getStarByHip(fromHip), getStarByHip(toHip));
@@ -430,30 +434,50 @@ public class CTS_Model {
 
 		return null;
 	}
-	
+
+	/**
+	 * Setter for latitude.
+	 * @param lat A double representing the latitude in degrees.
+	 */
 	public void setLatitude(double lat) {
 		latitude = lat;
 	}
-	
+
+	/**
+	 * Setter for longitude
+	 * @param lon A double representing the longitude in degrees.
+	 */
 	public void setLongitude(double lon) {
 		longitude = lon;
 	}
 
+	/**
+	 * Getter for latitude.
+	 * @return A double representing the latitude in degrees.
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
-	
+
+	/**
+	 * Getter for longitude.
+	 * @return A double representing the longitude in degrees.
+	 */
 	public double getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 * Getter for Constellations
+	 * @return  containing the current constellation objects.
+	 */
 	public ArrayList<CTS_Constellation> getConstellations() {
 		return Constellations;
 	}
 
 	/**
 	 * Getter to return the constellationDBs HashMap.
-	 * @return A HashMap<String, String> containing the list of constellation
+	 * @return  containing the list of constellation
 	 * databases by a string with the associated culture.
 	 */
 	public HashMap<String, String> getConstellationDBs() {
@@ -491,7 +515,7 @@ public class CTS_Model {
      */
 	public void calcDaysSinceStandard(int year, int month, int day, int hour, int minutes, int seconds) {
 	    double j2000 =  2451545.0;
-	    double decTime = (3600 * hour + 60 * minutes + seconds);
+	    double decTime = ((3600 * hour) + (60 * minutes) + seconds);
 	    decTime /= 86400;
 	    decTime -= 0.5;
 	    //System.out.println("decTime = " + decTime);
@@ -503,11 +527,10 @@ public class CTS_Model {
 	    jd += decTime;
 		//System.out.println("jd = " + jd);
 	    daysSinceStandard = jd - j2000;
-	    double minFrac = Double.valueOf(minutes / 60);
-	    double secFrac = Double.valueOf(seconds / 3600);
-	    universalTime = hour + minutes + seconds;
-	    
-	    planetTime = 367*year - 7 * ( year + (month+9)/12 ) / 4 - 3 * ( ( year + (month-9)/7 ) / 100 + 1 ) / 4 + 275*month/9 +
+	    double minFrac = Double.valueOf((double) minutes / 60);
+	    double secFrac = Double.valueOf((double) seconds / 3600);
+	    universalTime = hour + minFrac + secFrac;
+      planetTime = 367*year - 7 * ( year + (month+9)/12 ) / 4 - 3 * ( ( year + (month-9)/7 ) / 100 + 1 ) / 4 + 275*month/9 +
 	    		day - 730515;
 	    planetTime += (hour + (double)minutes/60 + (double)seconds/3600)/24.0;
     }

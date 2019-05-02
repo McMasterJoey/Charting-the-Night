@@ -11,8 +11,6 @@ import java.util.ArrayList;
  *
  */
 public class CTS_Star extends CTS_SpaceObject {
-
-
 	// List of other stars in this constellation this star is "connected" to
 	// in the visual drawing of a constellation
 	private ArrayList<CTS_Star> linesTo;
@@ -21,44 +19,41 @@ public class CTS_Star extends CTS_SpaceObject {
 	 * @param Id The id number of the star from CSV database
 	 * @param name The name of the star.
 	 * @param magnitude The Magnitude of the star.
-	 * @param rightAcension The Right Acension of the star.
+	 * @param rightAscension The Right Ascension of the star.
 	 * @param declination The Declination of the star.
 	 */
-	public CTS_Star(int Id, String name, double magnitude, double rightAcension, double declination) {
-		super(Id, name, rightAcension, declination);
+	public CTS_Star(int Id, String name, double magnitude, double rightAscension, double declination) {
+		super(Id, name, rightAscension, declination);
 		this.magnitude = magnitude;
 	}
-
 	/**
 	 * Inits a new star.
 	 * @param Id The id number of the star from CSV database.
 	 * @param hip The Hipparcos catalog id of the star.
 	 * @param name The name of the star.
 	 * @param magnitude The Magnitude of the star.
-	 * @param rightAcension The Right Acension of the star.
+	 * @param rightAscension The Right Ascension of the star.
 	 * @param declination The Declination of the star.
 	 */
-	public CTS_Star(int Id, int hip, String name, double magnitude, double rightAcension, double declination) {
-		super(Id, hip, name, rightAcension, declination);
+	public CTS_Star(int Id, int hip, String name, double magnitude, double rightAscension, double declination) {
+		super(Id, hip, name, rightAscension, declination);
 		this.magnitude = magnitude;
 	}
-	
 	/**
 	 * Inits a new star.
 	 * @param Id The id number of the star from CSV database
 	 * @param name The name of the star.
 	 * @param magnitude The Magnitude of the star.
-	 * @param rightAcension The Right Acension of the star.
+	 * @param rightAscension The Right Ascension of the star.
 	 * @param declination The Declination of the star.
 	 * @param altitude The altitude of the star.
 	 * @param azimuth The azimuth of the star.
 	 */
-	public CTS_Star(int Id, String name, double magnitude, double rightAcension, double declination, double altitude, double azimuth) {
-		super(Id, name, rightAcension, declination, altitude, azimuth);
+	public CTS_Star(int Id, String name, double magnitude, double rightAscension, double declination, double altitude
+			, double azimuth) {
+		super(Id, name, rightAscension, declination, altitude, azimuth);
 		this.magnitude = magnitude;
 	}
-	
-	
 	/**
 	 * Fetches the magnitude of the star.
 	 * @return The magnitude of the star.
@@ -67,9 +62,6 @@ public class CTS_Star extends CTS_SpaceObject {
 		// This is a constant set directly from Stars.csv, setter not needed
 		return magnitude;
 	}
-
-
-
 	/**
 	 * Makes the object printable easily.
 	 * @return The string representation of the CTS_Star object.
