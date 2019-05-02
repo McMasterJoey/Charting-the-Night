@@ -16,6 +16,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -377,43 +378,28 @@ public class CTS_GUI extends Application {
         	opt.setOnAction((event) -> { colorSetterId = id; });
         	colorpickermenu.getItems().add(opt);
         }
-        Menu cspm = new Menu("Constellation Set 1");
-        Menu cspm2 = new Menu("Constellation Set 2");
-        Menu cspm3 = new Menu("Constellation Set 3");
-        String[] filenames = {"western","arabic","armintxe","belarusian","boorong","chinese","contemporary_chinese","dakota","egyptian","hawaiian_starlines","indian"};
-        for(int x = 0; x < filenames.length; x++) {
-        	String datafile = filenames[x] + ".fab";
-        	filenames[x].replace('_', ' ');
-        	MenuItem opt = new MenuItem(upperCaseFL(filenames[x]));
-        	opt.setOnAction((event) -> { userSelectedConstellationFileName = datafile; });
-        	cspm.getItems().add(opt);
+        
+        ComboBox<String> consts = new ComboBox<>();
+        HashMap<String, String> cdbs = controller.getModelConstellationDBs();
+
+        for (String name : cdbs.keySet()) {
+            consts.getItems().add(name);
         }
-        String[] filenames2 = {"inuit","japanese_moon_stations","kamilaroi","korean","lokono","macedonian", "maori","maya","medieval_chinese","mongolian","mul_apin","navajo"};
-        for(int x = 0; x < filenames2.length; x++) {
-        	String datafile = filenames2[x] + ".fab";
-        	filenames2[x].replace('_', ' ');
-        	MenuItem opt = new MenuItem(upperCaseFL(filenames2[x]));
-        	opt.setOnAction((event) -> { userSelectedConstellationFileName = datafile; });
-        	cspm2.getItems().add(opt);
-        }
-        String[] filenames3 = {"norse","northern_andes","ojibwe","romanian","sami","sardinian","seleucid","siberian", "tongan","tukano","tupi"};
-        for(int x = 0; x < filenames3.length; x++) {
-        	String datafile = filenames3[x] + ".fab";
-        	filenames3[x].replace('_', ' ');
-        	MenuItem opt = new MenuItem(upperCaseFL(filenames3[x]));
-        	opt.setOnAction((event) -> { userSelectedConstellationFileName = datafile; });
-        	cspm3.getItems().add(opt);
-        }
-        mainmenu.getMenus().addAll(colorpickermenu,cspm,cspm2,cspm3);
+        HBox box7 = new HBox(5);
+        box7.getChildren().addAll(new Label("Select Constellation Set"), consts);
+        
+        consts.getSelectionModel().select("Western");
+        mainmenu.getMenus().addAll(colorpickermenu);
 		HBox box4 = new HBox(5);
 		Button but = new Button("Cancel");
 		but.setPadding(new Insets(5));
 		Button but2 = new Button("Submit");
 		but2.setPadding(new Insets(5));
 		box4.getChildren().addAll(but,but2);
-		uicontrols.getChildren().addAll(box0,box1,box2,box3,box5,box6,box4);
+		uicontrols.getChildren().addAll(box0,box1,box2,box3,box5,box6,box7,box4);
 		but.setOnAction((event) -> { input.close(); });
 		but2.setOnAction((event) -> {
+			userSelectedConstellationFileName = cdbs.get(consts.getValue());
 			long i = validateInput();
 			if (i == 0) {
 				chartTheStars();
@@ -426,7 +412,7 @@ public class CTS_GUI extends Application {
 		pane.setTop(mainmenu);
 		pane.setCenter(uicontrols);
 		pane.setPadding(new Insets(10));
-		Scene scene = new Scene(pane, 520, 280);
+		Scene scene = new Scene(pane, 520, 310);
 		input.setScene(scene);
 	}
 	/**
